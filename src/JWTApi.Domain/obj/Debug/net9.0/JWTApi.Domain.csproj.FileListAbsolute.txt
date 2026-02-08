@@ -1,0 +1,13 @@
+D:\api\api-test1\src\JWTApi.Domain\bin\Debug\net9.0\JWTApi.Domain.deps.json
+D:\api\api-test1\src\JWTApi.Domain\bin\Debug\net9.0\JWTApi.Domain.dll
+D:\api\api-test1\src\JWTApi.Domain\bin\Debug\net9.0\JWTApi.Domain.pdb
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\JWTApi.Domain.csproj.AssemblyReference.cache
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\JWTApi.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\JWTApi.Domain.AssemblyInfoInputs.cache
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\JWTApi.Domain.AssemblyInfo.cs
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\JWTApi.Domain.csproj.CoreCompileInputs.cache
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\JWTApi.Domain.dll
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\refint\JWTApi.Domain.dll
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\JWTApi.Domain.pdb
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\ref\JWTApi.Domain.dll
+D:\api\api-test1\src\JWTApi.Domain\obj\Debug\net9.0\JWTApi.Domain.sourcelink.json
