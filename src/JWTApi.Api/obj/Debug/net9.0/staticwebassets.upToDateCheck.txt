@@ -1,4 +1,8 @@
 wwwroot\uploads\1196ba5f-2306-460c-9792-8cb11700d44e_303ab6eb-da4f-41ff-9db5-4debe147733e.PNG
+wwwroot\uploads\Images\img1.webp
+wwwroot\uploads\Images\img2.webp
+wwwroot\uploads\Images\img4.webp
+wwwroot\uploads\Images\noHome.png
 wwwroot\uploads\test_170a17ac-9555-488e-a57f-add6ac2be9ed.PNG
 wwwroot\uploads\users\_07d34215-24ad-40a4-bf4e-ae707e4141a5.PNG
 wwwroot\uploads\users\24673aaa-8720-40c6-b46d-99815a2ac6ed_asasd.PNG

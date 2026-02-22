@@ -105,7 +105,7 @@ namespace JWTApi.Application.Services
         TotalCount = result.TotalCount,
         PageNumber = result.PageNumber,
         PageSize = result.PageSize,
-        Max = result.Max
+   
     };
 }
 
@@ -138,7 +138,7 @@ namespace JWTApi.Application.Services
                 TotalCount = result.TotalCount,
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize,
-                Max = result.Max
+              
             };
         }
 

@@ -50,7 +50,7 @@ namespace JWTApi.Api.Controllers
                 Items = result.Items,
                 TotalCount = result.TotalCount,
                 TotalPages = result.TotalPages,
-                Max=result.Max
+      
             };
             return ResponseApi.Ok(response).ToHttpResponse();
 
@@ -65,7 +65,7 @@ namespace JWTApi.Api.Controllers
                 Items = result.Items,
                 TotalCount = result.TotalCount,
                 TotalPages = result.TotalPages,
-                Max = result.Max
+      
             };
             return ResponseApi.Ok(response).ToHttpResponse();
 

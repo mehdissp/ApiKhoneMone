@@ -1,16 +1,17 @@
 ﻿using JWTApi.Api.Response;
+using JWTApi.Api.ViewModels;
 using JWTApi.Application.DTOs;
+using JWTApi.Application.Helper;
 using JWTApi.Application.Services;
+using JWTApi.Domain.Entities;
 using JWTApi.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using static System.Net.Mime.MediaTypeNames;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-
-using JWTApi.Api.ViewModels;
-using JWTApi.Domain.Entities;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace JWTApi.API.Controllers
 {
@@ -22,13 +23,91 @@ namespace JWTApi.API.Controllers
         private readonly BaleService _baleService;
         private readonly IMemoryCache _memoryCache;
         private static readonly Random Rand = new();
-        public AuthController(AuthService authService , IMemoryCache memoryCache, BaleService baleService)
+        private readonly string _modelPath;
+        private readonly IWebHostEnvironment _environment; // اضافه کردن این فیلد
+        public AuthController(AuthService authService , IMemoryCache memoryCache, BaleService baleService, IWebHostEnvironment environment)
         {
             _memoryCache = memoryCache;
             _authService = authService;
             _baleService = baleService;
+            _environment = environment;
+            _modelPath = Path.Combine(_environment.ContentRootPath, "places365.onnx");
         }
+        [HttpPost("check")]
+        public async Task<ActionResult<HouseCheckResponse>> CheckHouseImage([FromForm] HouseCheckRequest request)
+        {
+            try
+            {
+                if (request.Image == null || request.Image.Length == 0)
+                {
+                    return BadRequest(new HouseCheckResponse
+                    {
+                        IsHouseRelated = false,
+                        Message = "لطفاً یک عکس انتخاب کنید"
+                    });
+                }
 
+                // بررسی فرمت فایل
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".bmp" };
+                var fileExtension = Path.GetExtension(request.Image.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    return BadRequest(new HouseCheckResponse
+                    {
+                        IsHouseRelated = false,
+                        Message = "فرمت فایل پشتیبانی نمی‌شود. فرمت‌های مجاز: JPG, PNG, BMP"
+                    });
+                }
+
+                // محدودیت حجم فایل (مثلاً 5 مگابایت)
+                if (request.Image.Length > 5 * 1024 * 1024)
+                {
+                    return BadRequest(new HouseCheckResponse
+                    {
+                        IsHouseRelated = false,
+                        Message = "حجم فایل نباید بیشتر از 5 مگابایت باشد"
+                    });
+                }
+
+                // ذخیره موقت فایل
+                var tempFilePath = Path.GetTempFileName();
+
+                using (var stream = System.IO.File.Create(tempFilePath))
+                {
+                    await request.Image.CopyToAsync(stream);
+                }
+
+                try
+                {
+                    // فراخوانی متد تشخیص
+                    var result = Ai.IsHouseRelated(tempFilePath);
+
+                    return Ok(new HouseCheckResponse
+                    {
+                        IsHouseRelated = result,
+                        Message = result ? "عکس مرتبط با خانه است" : "عکس مرتبط با خانه نیست",
+                        PredictedLabel = "اطلاعات بیشتر در log موجود است" // می‌توانید متد را تغییر دهید تا label را هم برگرداند
+                    });
+                }
+                finally
+                {
+                    // پاکسازی فایل موقت
+                    if (System.IO.File.Exists(tempFilePath))
+                    {
+                        System.IO.File.Delete(tempFilePath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new HouseCheckResponse
+                {
+                    IsHouseRelated = false,
+                    Message = $"خطا در پردازش عکس: {ex.Message}"
+                });
+            }
+        }
         [HttpGet]
         [Authorize]
         [RequirePermission("Get")]

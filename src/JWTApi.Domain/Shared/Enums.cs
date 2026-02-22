@@ -8,9 +8,9 @@ namespace JWTApi.Domain.Shared
 {
     public enum CategoryType : byte
     {
-        Mortgage = 0,
-        Rent = 1,
-        Procurement=2
+        MortgageAndRent = 0,
+         
+        Procurement=1
 
     }
 }

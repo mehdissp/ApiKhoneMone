@@ -6,13 +6,18 @@ using System.Threading.Tasks;
 
 namespace JWTApi.Domain.Dtos
 {
-    public class PagedResult<T>
+    [Serializable]
+    public class PagedResult<T> where T : class
     {
-        public List<T> Items { get; set; }
+        public IReadOnlyList<T> Items { get; set; } = Array.Empty<T>();
         public int TotalCount { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
-        public int? Max { get; set; }
+        public int TotalPages { get; set; }
+        public bool HasPreviousPage => PageNumber > 1;
+        public bool HasNextPage => PageNumber < TotalPages;
+
+        // خاصیت کمکی برای JSON
+        public bool IsEmpty => Items == null || Items.Count == 0;
     }
 }

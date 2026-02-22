@@ -1,3 +1,11 @@
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.csproj.AssemblyReference.cache
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.GeneratedMSBuildEditorConfig.editorconfig
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.AssemblyInfoInputs.cache
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.AssemblyInfo.cs
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.csproj.CoreCompileInputs.cache
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.MvcApplicationPartsAssemblyInfo.cs
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.MvcApplicationPartsAssemblyInfo.cache
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.sourcelink.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\appsettings.Development.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\appsettings.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Api.staticwebassets.runtime.json
@@ -7,6 +15,8 @@ D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Api.deps.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Api.runtimeconfig.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Api.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Api.pdb
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\AutoMapper.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Azure.Core.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Azure.Identity.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Dapper.dll
@@ -49,6 +59,7 @@ D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.IdentityModel.Logging
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.ML.OnnxRuntime.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.OpenApi.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.SqlServer.Server.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.Win32.SystemEvents.dll
@@ -71,6 +82,7 @@ D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\System.Private.Windows.Core.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\System.Formats.Asn1.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\System.Memory.Data.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\System.Numerics.Tensors.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\System.Security.Cryptography.Pkcs.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\System.Security.Cryptography.ProtectedData.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\System.Text.Json.dll
@@ -157,6 +169,21 @@ D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win\lib\net9.0\Microso
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\android\native\onnxruntime.aar
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\ios\native\onnxruntime.xcframework.zip
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\linux-arm64\native\libonnxruntime.so
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\linux-arm64\native\libonnxruntime_providers_shared.so
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\linux-x64\native\libonnxruntime.so
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\linux-x64\native\libonnxruntime_providers_shared.so
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\osx-arm64\native\libonnxruntime.dylib
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-arm64\native\onnxruntime.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-arm64\native\onnxruntime.lib
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-arm64\native\onnxruntime_providers_shared.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-arm64\native\onnxruntime_providers_shared.lib
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-x64\native\onnxruntime.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-x64\native\onnxruntime.lib
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-x64\native\onnxruntime_providers_shared.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win-x64\native\onnxruntime_providers_shared.lib
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win\lib\net9.0\Microsoft.Win32.SystemEvents.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.Diagnostics.EventLog.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.Security.Cryptography.Pkcs.dll
@@ -166,13 +193,6 @@ D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Infrastructure.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Application.pdb
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Domain.pdb
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Infrastructure.pdb
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.csproj.AssemblyReference.cache
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.GeneratedMSBuildEditorConfig.editorconfig
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.AssemblyInfoInputs.cache
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.AssemblyInfo.cs
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.csproj.CoreCompileInputs.cache
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.MvcApplicationPartsAssemblyInfo.cs
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.MvcApplicationPartsAssemblyInfo.cache
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\scopedcss\bundle\JWTApi.Api.styles.css
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\staticwebassets.build.json
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\staticwebassets.build.json.cache
@@ -185,4 +205,3 @@ D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\refint\JWTApi.Api.dll
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.pdb
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.genruntimeconfig.cache
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\ref\JWTApi.Api.dll
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.sourcelink.json

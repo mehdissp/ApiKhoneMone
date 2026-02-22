@@ -28,4 +28,8 @@ namespace JWTApi.Application.DTOs
 
     public record LoginDto(string Username, string Password);
     public record RefreshDto(string Username, string RefreshToken);
+
+    public record InsertCategoryDto(string name, string icon, string desc, byte typeCategory);
+    public record UpdateCategoryDto(int id,string name, string icon, string desc, byte typeCategory);
+
 }

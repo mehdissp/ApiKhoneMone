@@ -9,10 +9,10 @@ D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructur
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructure.AssemblyInfoInputs.cache
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructure.AssemblyInfo.cs
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructure.csproj.CoreCompileInputs.cache
+D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructure.sourcelink.json
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.I.61F292DF.Up2Date
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructure.dll
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\refint\JWTApi.Infrastructure.dll
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructure.pdb
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructure.genruntimeconfig.cache
 D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\ref\JWTApi.Infrastructure.dll
-D:\api\api-test1\src\JWTApi.Infrastructure\obj\Debug\net9.0\JWTApi.Infrastructure.sourcelink.json

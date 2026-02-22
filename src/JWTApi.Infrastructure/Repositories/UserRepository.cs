@@ -370,7 +370,7 @@ namespace JWTApi.Infrastructure.Repositories
                 TotalCount = totalCount,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                Max = 0
+             
             };
         }
 

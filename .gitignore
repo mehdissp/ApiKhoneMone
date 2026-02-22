@@ -1,5 +1,28 @@
-".vs/" 
-"bin/" 
-"obj/" 
-"*.user" 
-"*.suo" 
+## فایل‌های مخصوص Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+## پوشه‌های build
+bin/
+obj/
+Debug/
+Release/
+*.dll
+*.exe
+*.pdb
+
+## پوشه‌های publish
+publish/
+published/
+
+## فایل‌های آپلود
+wwwroot/uploads/
+
+## فایل‌های runtime
+runtimes/
+
+## فایل‌های لاگ
+*.log

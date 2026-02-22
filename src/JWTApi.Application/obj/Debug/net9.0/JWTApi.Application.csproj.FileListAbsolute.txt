@@ -10,9 +10,9 @@ D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.Application.Gene
 D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.Application.AssemblyInfoInputs.cache
 D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.Application.AssemblyInfo.cs
 D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.Application.csproj.CoreCompileInputs.cache
+D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.Application.sourcelink.json
 D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.A.1CCF3B5B.Up2Date
 D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.Application.dll
 D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\refint\JWTApi.Application.dll
 D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.Application.pdb
 D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\ref\JWTApi.Application.dll
-D:\api\api-test1\src\JWTApi.Application\obj\Debug\net9.0\JWTApi.Application.sourcelink.json

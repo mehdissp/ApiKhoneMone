@@ -259,21 +259,24 @@
 using JwtApi.Api.Middleware;
 using JWTApi.Api.Middleware;
 using JWTApi.Application.Services;
-
+using JWTApi.Application.Services.Categories;
 using JWTApi.Application.Services.Menus;
+using JWTApi.Application.Services.RealEstates;
 using JWTApi.Application.Services.Roles;
 
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
-
+using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.Menus;
+using JWTApi.Domain.Interfaces.RealEstates;
 using JWTApi.Domain.Interfaces.Roles;
 
 using JWTApi.Domain.Interfaces.TokenBlacklist;
 using JWTApi.Infrastructure.Data;
 using JWTApi.Infrastructure.Repositories;
-
+using JWTApi.Infrastructure.Repositories.Categories;
 using JWTApi.Infrastructure.Repositories.Menus;
+using JWTApi.Infrastructure.Repositories.RealEstates;
 using JWTApi.Infrastructure.Repositories.Roles;
 
 using JWTApi.Infrastructure.Repositories.TokenBlacklist;
@@ -281,10 +284,12 @@ using JWTApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -300,7 +305,14 @@ ConfigureAuthentication(builder);
 ConfigureControllers(builder);
 ConfigureSwagger(builder);
 ConfigureHttpClients(builder);
+builder.Services.AddSwaggerGen(); // اختیاری - برای مستندسازی API
 
+// تنظیم محدودیت حجم آپلود
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = 5 * 1024 * 1024; // 5MB
+    options.MultipartBodyLengthLimit = 5 * 1024 * 1024; // 5MB
+});
 var app = builder.Build();
 
 ConfigureMiddlewarePipeline(app);
@@ -319,11 +331,16 @@ Console.WriteLine($"Uploads Path: {uploadsPath}");
 Console.WriteLine($"WWWRoot Exists: {Directory.Exists(wwwrootPath)}");
 Console.WriteLine($"Uploads Exists: {Directory.Exists(uploadsPath)}");
 // Configuration Methods
-app.Run("https://localhost:5000");
+app.Run("https://localhost:7178");
 static void ConfigureDatabase(WebApplicationBuilder builder)
 {
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    builder.Services.AddScoped<IDbConnection>(sp =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        return new SqlConnection(connectionString);
+    });
 }
 
 static void ConfigureCors(WebApplicationBuilder builder)
@@ -358,11 +375,14 @@ static void ConfigureCors(WebApplicationBuilder builder)
 
 static void ConfigureDependencies(WebApplicationBuilder builder)
 {
+    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     // Infrastructure
     builder.Services.AddMemoryCache();
     builder.Services.AddHttpContextAccessor();
     // Repositories
     builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<ICategoryRepository, CategoriesRepository>();
+
     builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
     builder.Services.AddScoped<IUnitOfWork, UnitOfWorkRepository>();
@@ -372,7 +392,10 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     builder.Services.AddScoped<IMenuRepository, MenuRepository>();
     builder.Services.AddScoped<ITokenBlacklistRepository, TokenBlacklistRepository>();
 
+    builder.Services.AddScoped<IRealEstatesRepository, RealEstatesRepository>();
+
     builder.Services.AddScoped<RoleService>();
+    builder.Services.AddScoped<CategoriesService>();
     builder.Services.AddScoped<MenuService>();
 
     builder.Services.AddScoped<JwtService>();
@@ -380,6 +403,7 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     builder.Services.AddScoped<AuthService>();
     builder.Services.AddScoped<UserService>();
     builder.Services.AddScoped<ProjectService>();
+    builder.Services.AddScoped<RealEstatesService>();
 
 
     // Identity
@@ -447,6 +471,31 @@ static void ConfigureSwagger(WebApplicationBuilder builder)
             Version = "v1",
             Description = "API for JWT Authentication with Refresh Token"
         });
+
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme.",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT"
+        });
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+
     });
 }
 

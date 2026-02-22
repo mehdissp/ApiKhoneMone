@@ -9,6 +9,6 @@ namespace JWTApi.Domain.Interfaces
   public  interface IUnitOfWork
     {
         Task SaveChanges(CancellationToken cancellationToken);
-        Task CheckAccess(int todoId, string userId, CancellationToken cancellationToken);
+        Task CheckAccess(string roleId, string userId, CancellationToken cancellationToken);
     }
 }

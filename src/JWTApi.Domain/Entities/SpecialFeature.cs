@@ -19,6 +19,7 @@ namespace JWTApi.Domain.Entities
         public Category Category { get; set; } = default!;
         public SpecialFeature? Parent { get; set; } // Nullable
         public ICollection<SpecialFeature> Children { get; set; } = new List<SpecialFeature>(); // لیست 
+        public ICollection<RealEstates_SpecialFeature> RealEstates_SpecialFeatures { get; set; } = new List<RealEstates_SpecialFeature>();
 
     }
 }

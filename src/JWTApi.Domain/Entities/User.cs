@@ -24,12 +24,17 @@ namespace JWTApi.Domain.Entities
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
         //public ICollection<Project> Projects { get; set; } = new List<Project>();
         public ICollection<ExtraProject> ExtraProjects { get; set; } = new List<ExtraProject>();
         public ICollection<UserPackage> UserPackages { get; set; } = new List<UserPackage>();
         public ICollection<ProjectUser> ProjectUsers { get; set; } = new List<ProjectUser>();
+        public ICollection<RealEstates> RealEstates { get; set; } = new List<RealEstates>();
+  
+
+        
 
         private User() { }
 

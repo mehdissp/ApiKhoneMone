@@ -22,13 +22,14 @@ namespace JWTApi.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync(cancellationToken);
         }
-        public async Task CheckAccess(int todoId, string userId,CancellationToken cancellationToken)
+        public async Task CheckAccess(string roleId, string userId,CancellationToken cancellationToken)
         {
             var userGuid = Guid.Parse(userId);
+            
             //var check= await _context.Todos.AnyAsync(s => s.Id == todoId && (s.UserId == userGuid || s.UserTodo == userGuid), cancellationToken);
             //if (check==false)
             //{
-            //    throw new RestBasedException(ApiErrorCodeMessage.Error_Access);
+                throw new RestBasedException(ApiErrorCodeMessage.Error_Access);
             //}
 
         }

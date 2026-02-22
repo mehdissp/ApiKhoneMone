@@ -16,6 +16,7 @@ namespace JWTApi.Domain.Entities
         public string? DescriptionRows { get; set; }
         public DateTime CreatedAt { get; set; }
         public Category Category { get; set; } = default!;
+        public ICollection<RealEstates_Facilities> RealEstates_Facilities { get; set; } = new List<RealEstates_Facilities>();
 
 
     }
