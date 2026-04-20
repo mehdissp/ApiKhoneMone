@@ -26,7 +26,11 @@ namespace JWTApi.Infrastructure.Repositories
         {
           return  await _context.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefaultAsync(u => u.Username == username && u.IsActive == true, cancellationToken);
         }
-         
+        public async Task<User?> GetByMobileNumberAsync(string mobileNumber, CancellationToken cancellationToken)
+        {
+            return await _context.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefaultAsync(u => u.MobileNumber == mobileNumber && u.IsActive == true, cancellationToken);
+        }
+
         public async Task<List<string>> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken)
     =>  await _context.UserRoles
             .Where(ur => ur.UserId == userId)
@@ -475,6 +479,9 @@ namespace JWTApi.Infrastructure.Repositories
             }
 
         }
+
+
+
 
     }
 }

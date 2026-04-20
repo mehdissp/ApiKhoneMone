@@ -13,4 +13,15 @@ namespace JWTApi.Domain.Shared
         Procurement=1
 
     }
+
+    // نقش‌ها (فقط برای تعیین نوع کاربر)
+    public enum UserRoleType
+    {
+        Admin=0,
+        RealEstateAgent = 1,  // مشاور املاک (دارای پروفایل تخصصی)
+        IndependentAgent = 2, // مشاور مستقل
+        EndUser = 3   ,       // فروشنده/خریدار
+        Manager=4,
+        
+    }
 }

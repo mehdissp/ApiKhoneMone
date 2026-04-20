@@ -36,15 +36,18 @@ namespace JWTApi.Infrastructure.Data
         public DbSet<SearchMatch> SearchMatches { get; set; }
         public DbSet<SearchRequest> SearchRequests { get; set; }
 
-
+        public DbSet<Facilities> Facilities { get; set; }
 
         public DbSet<BookMark> BookMarks { get; set; }
         public DbSet<RealEstates_SpecialFeature> RealEstates_SpecialFeatures { get; set; }
         public DbSet<RealEstates_Facilities> RealEstates_Facilities { get; set; }
+        public DbSet<IndependentAgentProfile> IndependentAgentProfiles { get; set; }
+        public DbSet<RealEstateAgentProfile> RealEstateAgentProfiles { get; set; }
 
 
         public DbSet<RealEstatesRent_SpecialFeature> RealEstatesRent_SpecialFeatures { get; set; }
         public DbSet<RealEstatesRent_Facilities> RealEstatesRent_Facilities { get; set; }
+        public DbSet<Warning> Warnings { get; set; }
 
         public DbSet<Image> Images { get; set; }
 
@@ -66,7 +69,16 @@ namespace JWTApi.Infrastructure.Data
         
             });
 
+            modelBuilder.Entity<Warning>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.Property(p => p.DescriptionRows).HasMaxLength(500);
+                b.Property(p => p.Name).HasMaxLength(150);
+                b.HasOne(p => p.Category)
+   .WithMany(t => t.Warnings)
+   .HasForeignKey(p => p.CategoryId);
 
+            });
 
             modelBuilder.Entity<UserRole>().HasKey(x => new { x.UserId, x.RoleId });
             modelBuilder.Entity<RolePermission>().HasKey(x => new { x.RoleId, x.PermissionId });
@@ -92,6 +104,26 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(x => x.Name).HasMaxLength(250).IsRequired();
 
             });
+          //*------------  RealEstateAgentProfile
+            modelBuilder.Entity<RealEstateAgentProfile>(b =>
+            {
+
+                b.HasKey(x => x.Id);
+                b.Property(u => u.AgentCode).HasMaxLength(25).IsRequired();
+                b.Property(u => u.LicenseNumber).HasMaxLength(20);
+                b.Property(u => u.NationalCartNumber).HasMaxLength(15);
+                b.Property(u => u.OfficeAddress).HasMaxLength(200);
+                b.HasOne(r => r.User).WithOne(s => s.RealEstateAgentProfile);
+            });
+            //*------------  IndependentAgentProfile
+            modelBuilder.Entity<IndependentAgentProfile>(b =>
+            {
+
+                b.HasKey(x => x.Id);
+                b.Property(u => u.BusinessLicense).HasMaxLength(25).IsRequired();
+
+            });
+
             // ---------------- User ----------------
             modelBuilder.Entity<User>(b =>
             {
@@ -104,6 +136,8 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(u => u.CreatedAt).HasDefaultValueSql("GETDATE()");
                 b.Property(r => r.IsActive).HasDefaultValue(true);
                 b.Property(p => p.IsDeleted).HasDefaultValueSql("0");
+                b.Property(p => p.IsMobileVerified).HasDefaultValueSql("0");
+                
                 b.HasMany(u => u.ExtraProjects)
                  .WithOne(p => p.User)
                  .HasForeignKey(p => p.UserId);
@@ -138,6 +172,10 @@ namespace JWTApi.Infrastructure.Data
                  .WithOne(t => t.Category)
                  .HasForeignKey(t => t.CategoryId);
 
+                b.HasMany(p => p.Warnings)
+             .WithOne(t => t.Category)
+             .HasForeignKey(t => t.CategoryId);
+
 
                 b.HasMany(p => p.SpecialFeature)
                  .WithOne(t => t.Category)
@@ -163,9 +201,12 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(p => p.IsDeleted).HasDefaultValueSql("0");
                 b.Property(p => p.IsHasElevator).HasDefaultValueSql("0");
                 b.Property(p => p.IsHasParking).HasDefaultValueSql("0");
+                b.Property(p => p.IsHaLoan).HasDefaultValueSql("0");
+                
                 b.Property(p => p.IsHasElevator).HasDefaultValueSql("0");
                 b.Property(p => p.IsHasPool).HasDefaultValueSql("0");
                 b.Property(p => p.DescriptionRows).HasMaxLength(450);
+                b.Property(p => p.Address).HasMaxLength(450);
                 b.Property(p => p.AdditionalInformation).HasMaxLength(250);
                 b.Property(p => p.Latitude)
                     .HasColumnType("decimal(10,8)"); 

@@ -131,6 +131,22 @@
   },
   {
     "ContainingType": "JWTApi.API.Controllers.AuthController",
+    "Method": "SendOtp",
+    "RelativePath": "api/Auth/send-otp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "JWTApi.Api.ViewModels.SMS.SendOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.API.Controllers.AuthController",
     "Method": "VerifyCaptcha",
     "RelativePath": "api/Auth/verify-captcha",
     "HttpMethod": "POST",
@@ -140,6 +156,22 @@
       {
         "Name": "model",
         "Type": "JWTApi.Api.ViewModels.VerifyCaptchaModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.API.Controllers.AuthController",
+    "Method": "VerifyOtp",
+    "RelativePath": "api/Auth/verify-otp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "JWTApi.Api.ViewModels.SMS.VerifyOtpRequest",
         "IsRequired": true
       }
     ],
@@ -377,6 +409,22 @@
       },
       {
         "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRealEstateDetails",
+    "RelativePath": "api/RealEstatePage/GetRealEstateDetails",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
         "Type": "System.Int32",
         "IsRequired": false
       }

@@ -2,6 +2,8 @@
 using JWTApi.Domain.Dtos;
 using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Interfaces.RealEstates;
+using JWTApi.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,16 +20,19 @@ namespace JWTApi.Infrastructure.Repositories.RealEstates
         private readonly IDbConnection _connection;
         private readonly IMemoryCache _cache;
         private readonly ILogger<RealEstatesRepository> _logger;
+        private readonly AppDbContext _context;
         private const string LastItemsCacheKey = "last_realestates_tab_{0}_page_{1}_size_{2}";
 
         public RealEstatesRepository(
             IDbConnection connection,
             IMemoryCache cache,
+            AppDbContext context,
             ILogger<RealEstatesRepository> logger)
         {
             _connection = connection;
             _cache = cache;
             _logger = logger;
+            _context= context;
         }
         public async Task<List<RealEstateDto>> GetRandomLastItemRealEstates(int tabId, CancellationToken cancellation)
         {
@@ -191,6 +196,106 @@ SELECT @TotalCount;";
                     TotalPages = 0
                 };
             }
+        }
+
+
+        //public async Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken)
+        //{
+        //    var realEstate = await _context.RealEstates.Include(s=>s.Region).FirstOrDefaultAsync(s => s.Id == id);
+        //    var query = await _context.RealEstates.FirstOrDefaultAsync(s => s.Id == id);
+        //    var images = await _context.Images.Where(s => s.RealEstateId == id).Select(s => s.FullAddress).ToArrayAsync();
+        //    var warnings = await _context.Warnings.Where(s => s.CategoryId == realEstate.CategoryId).Select(s => s.DescriptionRows).ToArrayAsync();
+        //    var facilities = (from r in _context.RealEstates_Facilities
+        //                      join f in _context.Facilities on r.FacilitiesId equals f.Id
+        //                      where r.RealEstatesId == id
+        //                      select f.Name)
+        //      .ToArray();
+        //    return new RealEstateDetails
+        //    {
+        //        IsHasStoreRoom = realEstate.IsHasStoreRoom,
+        //        IsHasLoan = realEstate.IsHaLoan,
+        //        Images = images,
+        //        Warnings = warnings,
+        //        Facilities = facilities,
+        //        Floor = realEstate.Floor,
+        //        CountFloor = realEstate.CountFloor,
+        //        Address = realEstate.Address,
+        //        AdditionalInformation = realEstate.AdditionalInformation,
+        //        CreatedAt = realEstate.CreatedAt,
+        //        ConstructionYear = realEstate.ConstructionYear,
+        //        IsHasElevator = realEstate.IsHasElevator,
+        //        IsHasParking = realEstate.IsHasParking,
+        //        lat = realEstate.Latitude,
+        //        lng = realEstate.Longitude,
+        //        Price = (long)realEstate.Price,
+        //        Title = realEstate.Title,
+        //        IsHasPool = realEstate.IsHasPool,
+        //        views = 0,
+        //        RegionName=realEstate.Region.Name,
+
+        //    };
+        //}
+
+
+        public async Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken)
+        {
+           // var realEstate = await _context.RealEstates.Include(s => s.Region).FirstOrDefaultAsync(s => s.Id == id);
+            var realEstate = await _context.RealEstates.Include(s=>s.Category).Include(s => s.Region).FirstOrDefaultAsync(s => s.Id == id);
+            var images = await _context.Images.Where(s => s.RealEstateId == id).AsNoTracking().Select(s => s.FullAddress).ToArrayAsync();
+            var warnings = await _context.Warnings.Where(s => s.CategoryId == realEstate.CategoryId).AsNoTracking().Select(s => s.DescriptionRows).ToArrayAsync();
+            var facilities = (from r in _context.RealEstates_Facilities
+                              join f in _context.Facilities on r.FacilitiesId equals f.Id
+                              where r.RealEstatesId == id
+                              select f.Name)
+              .ToArray();
+            var agent = new
+            {
+                name = "مهدی",
+                ConnectSocialMedia = "09190870450",
+                Phone = "02144816283",
+                Address = "تهران-جنت آباد ",
+                Image = "blob:https://web.bale.ai/170ebfd3-b81b-4300-8054-7bd93e429f06"
+            };
+            return new RealEstateDetails
+            {
+                Id=realEstate.Id,
+                CategoryType=(int)realEstate.Category.CategoryType,
+                IsHasStoreRoom = realEstate.IsHasStoreRoom,
+                IsHasLoan = realEstate.IsHaLoan,
+                Images = images,
+                Warnings = warnings,
+                Facilities = facilities,
+                Floor = realEstate.Floor,
+                CountFloor = realEstate.CountFloor,
+                Address = realEstate.Address,
+                AdditionalInformation = realEstate.AdditionalInformation,
+                CreatedAt = realEstate.CreatedAt,
+                ConstructionYear = realEstate.ConstructionYear,
+                IsHasElevator = realEstate.IsHasElevator,
+                IsHasParking = realEstate.IsHasParking,
+                lat = realEstate.Latitude,
+                lng = realEstate.Longitude,
+                Price = realEstate.Price,
+                Deposit= realEstate.Deposit,
+                Rent=realEstate.Rent,
+                PriceMeter=realEstate.Price/realEstate.SquareMeter,
+                ShowExactLocation=false,
+                Title = realEstate.Title,
+                IsHasPool = realEstate.IsHasPool,
+                views = 10,
+                Rooms=realEstate.RoomCount,
+                saved =1,
+                RegionName = realEstate.Region.Name,
+                Agents=new Agent
+                {
+                    Name=agent.name,
+                    Address=agent.Address,
+                    Image=agent.Image,
+                    ConnectSocialMedia=agent.ConnectSocialMedia,
+                    Phone=agent.Phone,
+                }
+
+            };
         }
     }
 }

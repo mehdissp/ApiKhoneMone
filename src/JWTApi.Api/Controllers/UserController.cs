@@ -1,7 +1,9 @@
 ﻿using JWTApi.Api.Response;
 using JWTApi.Api.ViewModels;
+using JWTApi.Api.ViewModels.SMS;
 using JWTApi.Application.DTOs;
 using JWTApi.Application.Services;
+using JWTApi.Application.Services.SMS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,17 @@ namespace JWTApi.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly OtpService _otpService;
         
-        public UserController(UserService userService)
+        public UserController(UserService userService, OtpService otpService)
         {
             _userService = userService;
+            _otpService=otpService;
         }
+
+
+
+
         [HttpPost("registerNewUser")]
         public async Task<IActionResult> RegisterNewUser(RegisterNewUserDto dto, CancellationToken cancellationToken)
         {

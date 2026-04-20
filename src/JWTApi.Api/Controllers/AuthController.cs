@@ -1,8 +1,10 @@
 ﻿using JWTApi.Api.Response;
 using JWTApi.Api.ViewModels;
+using JWTApi.Api.ViewModels.SMS;
 using JWTApi.Application.DTOs;
 using JWTApi.Application.Helper;
 using JWTApi.Application.Services;
+using JWTApi.Application.Services.SMS;
 using JWTApi.Domain.Entities;
 using JWTApi.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Authorization;
@@ -21,18 +23,190 @@ namespace JWTApi.API.Controllers
     {
         private readonly AuthService _authService;
         private readonly BaleService _baleService;
+        private readonly OtpService _otpService;
         private readonly IMemoryCache _memoryCache;
+        private readonly OtpSecurityService _otpSecurityService;
+
         private static readonly Random Rand = new();
         private readonly string _modelPath;
         private readonly IWebHostEnvironment _environment; // اضافه کردن این فیلد
-        public AuthController(AuthService authService , IMemoryCache memoryCache, BaleService baleService, IWebHostEnvironment environment)
+        public AuthController(OtpSecurityService otpSecurityService, AuthService authService , IMemoryCache memoryCache, BaleService baleService, IWebHostEnvironment environment, OtpService otpService)
         {
             _memoryCache = memoryCache;
             _authService = authService;
             _baleService = baleService;
             _environment = environment;
+            _otpService=otpService;
+            _otpSecurityService = otpSecurityService;
             _modelPath = Path.Combine(_environment.ContentRootPath, "places365.onnx");
         }
+
+
+        //[HttpPost("send-otp")]
+        //public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request, CancellationToken cancellationToken)
+        //{
+        //    var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
+        //             ?? "unknown";
+
+        //    var (allowed, message, waitSeconds) = await _otpSecurityService
+        //        .CheckRateLimitAsync(request.Mobile, ipAddress);
+
+        //    if (!allowed)
+        //    {
+        //        return BadRequest(new { message, waitSeconds });
+        //    }
+        //    // اعتبارسنجی ورودی
+        //    if (request == null || string.IsNullOrWhiteSpace(request.Mobile))
+        //    {
+        //        return BadRequest(new { success = false, message = "شماره موبایل الزامی است" });
+        //    }
+
+        //    // دریافت کاربر از دیتابیس
+        //    var user = await _authService.GetByMobileNumber(request.Mobile, cancellationToken);
+        //    if (user == null)
+        //    {
+        //        return NotFound(new { success = false, message = "کاربر یافت نشد" });
+        //    }
+
+        //    // ارسال OTP
+        //    var result = await _otpService.SendOtpAsync(request.Mobile);
+
+        //    if (result.success)
+        //    {
+        //        return Ok(new
+        //        {
+        //            success = true,
+        //            message = result.message,
+        //            expiresIn = result.remainingSeconds // زمان انقضا به ثانیه
+        //        });
+        //    }
+
+        //    // برگرداندن خطا با وضعیت مناسب
+        //    if (result.remainingSeconds > 0 && result.remainingSeconds <= 600)
+        //    {
+        //        // خطای محدودیت زمانی
+        //        return BadRequest(new
+        //        {
+        //            success = false,
+        //            message = result.message,
+        //            remainingTime = result.remainingSeconds,
+        //            canRetryAfter = result.remainingSeconds
+        //        });
+        //    }
+
+        //    // سایر خطاها
+        //    return BadRequest(new
+        //    {
+        //        success = false,
+        //        message = result.message
+        //    });
+        //}
+
+
+        [HttpPost("send-otp")]
+        public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request, CancellationToken cancellationToken)
+        {
+            // اعتبارسنجی ورودی
+            if (request == null || string.IsNullOrWhiteSpace(request.Mobile))
+            {
+                return BadRequest(new { success = false, message = "شماره موبایل الزامی است" });
+            }
+
+            // اعتبارسنجی کپچا
+            if (string.IsNullOrWhiteSpace(request.CaptchaId) || string.IsNullOrWhiteSpace(request.CaptchaValue))
+            {
+                return BadRequest(new { success = false, message = "لطفاً کد امنیتی را وارد کنید" });
+            }
+
+            // بررسی کپچا از کش
+            if (!_memoryCache.TryGetValue(request.CaptchaId, out string correctCaptcha))
+            {
+                return BadRequest(new { success = false, message = "کد امنیتی منقضی شده است. لطفاً صفحه را refresh کنید" });
+            }
+
+            // مقایسه کپچا (کیس insensitive)
+            if (!string.Equals(correctCaptcha, request.CaptchaValue, StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { success = false, message = "کد امنیتی اشتباه است" });
+            }
+
+            // حذف کپچا از کش بعد از استفاده موفق (یکبار مصرف)
+            _memoryCache.Remove(request.CaptchaId);
+
+            // محدودیت نرخ ارسال
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var (allowed, message, waitSeconds) = await _otpSecurityService.CheckRateLimitAsync(request.Mobile, ipAddress);
+
+            if (!allowed)
+            {
+                return BadRequest(new { message, waitSeconds });
+            }
+
+            // دریافت کاربر از دیتابیس
+            var user = await _authService.GetByMobileNumber(request.Mobile, cancellationToken);
+            if (user == null)
+            {
+                return NotFound(new { success = false, message = "کاربر یافت نشد" });
+            }
+
+            // ارسال OTP
+            var result = await _otpService.SendOtpAsync(request.Mobile);
+
+            if (result.success)
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message = result.message,
+                    expiresIn = result.remainingSeconds
+                });
+            }
+
+            // برگرداندن خطا با وضعیت مناسب
+            if (result.remainingSeconds > 0 && result.remainingSeconds <= 600)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = result.message,
+                    remainingTime = result.remainingSeconds,
+                    canRetryAfter = result.remainingSeconds
+                });
+            }
+
+            return BadRequest(new
+            {
+                success = false,
+                message = result.message
+            });
+        }
+
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequest request, CancellationToken cancellationToken)
+        {
+            var user = await _authService.GetByMobileNumber(request.Mobile, cancellationToken);
+            if (user == null)
+            {
+                return NotFound("کاربر یافت نشد");
+            }
+
+            var isValid = await _otpService.VerifyOtpAsync(request.Mobile, request.Code);
+
+            if (isValid)
+            {
+                var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+                var (success, token, refresh, expireToken) = await _authService.LoginByOTPAsync(request.Mobile, ip, cancellationToken);
+                var result = new { token, refreshToken = refresh, ExpireToken = expireToken };
+                //  await _userRepository.UpdateAsync(user);
+                return success
+      ? ResponseApi.Ok(result).ToHttpResponse()
+      : Unauthorized();
+            }
+
+            return BadRequest(new { message = "کد تایید نامعتبر است" });
+        }
+
         [HttpPost("check")]
         public async Task<ActionResult<HouseCheckResponse>> CheckHouseImage([FromForm] HouseCheckRequest request)
         {

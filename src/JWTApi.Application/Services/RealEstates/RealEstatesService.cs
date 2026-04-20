@@ -7,6 +7,7 @@ using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.RealEstates;
 using JWTApi.Infrastructure.Repositories.Categories;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,11 @@ namespace JWTApi.Application.Services.RealEstates
         {
                 var result = await _realEstatesRepository.GetRandomLastItemRealEstates(tabId,cancellation);
                 return _mapper.Map<List<DTOs.RealEstates.RealEstateDto>>(result);
+        }
+        public async Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken)
+        {
+            var result = await _realEstatesRepository.GetRealEstateDetails(id, cancellationToken);
+            return result;
         }
         public async Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithCategoryAsync(
             int tabId,

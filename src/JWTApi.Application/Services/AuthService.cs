@@ -23,6 +23,11 @@ namespace JWTApi.Application.Services
             _jwtService = jwtService;
         }
 
+        public async Task<User?> GetByMobileNumber(string mobileNumber,CancellationToken cancellationToken)
+        {
+            return await _userRepo.GetByMobileNumberAsync(mobileNumber, cancellationToken);
+        }
+
         public async Task<(bool Success, string Message)> RegisterAsync(RegisterDto dto, CancellationToken cancellationToken)
         {
             if (await _userRepo.GetByUsernameAsync(dto.Username,cancellationToken) != null)
@@ -135,7 +140,32 @@ namespace JWTApi.Application.Services
         {
             return await _userRepo.GetUserMenuPermissionsForUiAsync(userId, roleId, cancellationToken);
         }
-        
+
+        public async Task<(bool Success, string? Token, string? RefreshToken, DateTime? Expiry)> LoginByOTPAsync(string mobileNumber, string ip, CancellationToken cancellationToken)
+        {
+
+            var user = await _userRepo.GetByMobileNumberAsync(mobileNumber, cancellationToken);
+            // if (user == null) return (false, null, null, null);
+            if (user == null)
+            {
+                // await LogLoginAttempt(dto.Username, ip, false, "User not found",cancellationToken);
+
+                return (false, null, null, null);
+            }
+
+    
+            //await LogLoginAttempt(dto.Username, ip, true, "Login successful", cancellationToken );
+            var roles = await _userRepo.GetUserRolesAsync(user.Id, cancellationToken);
+            var (token, expiry) = _jwtService.GenerateToken(user, roles);
+
+            user.RefreshToken = Guid.NewGuid().ToString();
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _userRepo.UpdateAsync(user);
+
+            return (true, token, user.RefreshToken, expiry);
+        }
+
+
     }
 
 

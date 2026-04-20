@@ -17,5 +17,7 @@ namespace JWTApi.Domain.Interfaces.RealEstates
             int pageSize = 10,
             CancellationToken cancellationToken = default);
 
+        Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken);
+
     }
 }

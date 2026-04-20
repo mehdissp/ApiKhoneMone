@@ -263,22 +263,23 @@ using JWTApi.Application.Services.Categories;
 using JWTApi.Application.Services.Menus;
 using JWTApi.Application.Services.RealEstates;
 using JWTApi.Application.Services.Roles;
-
+using JWTApi.Application.Services.SMS;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.Menus;
 using JWTApi.Domain.Interfaces.RealEstates;
 using JWTApi.Domain.Interfaces.Roles;
-
+using JWTApi.Domain.Interfaces.SMS;
 using JWTApi.Domain.Interfaces.TokenBlacklist;
 using JWTApi.Infrastructure.Data;
+using JWTApi.Infrastructure.Middleware;
 using JWTApi.Infrastructure.Repositories;
 using JWTApi.Infrastructure.Repositories.Categories;
 using JWTApi.Infrastructure.Repositories.Menus;
 using JWTApi.Infrastructure.Repositories.RealEstates;
 using JWTApi.Infrastructure.Repositories.Roles;
-
+using JWTApi.Infrastructure.Repositories.SMS;
 using JWTApi.Infrastructure.Repositories.TokenBlacklist;
 using JWTApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -393,7 +394,8 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     builder.Services.AddScoped<ITokenBlacklistRepository, TokenBlacklistRepository>();
 
     builder.Services.AddScoped<IRealEstatesRepository, RealEstatesRepository>();
-
+    // اگر می‌خواهید به صورت Singleton استفاده کنید (توصیه می‌شود برای کش)
+    builder.Services.AddScoped<OtpSecurityService>();
     builder.Services.AddScoped<RoleService>();
     builder.Services.AddScoped<CategoriesService>();
     builder.Services.AddScoped<MenuService>();
@@ -404,7 +406,11 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     builder.Services.AddScoped<UserService>();
     builder.Services.AddScoped<ProjectService>();
     builder.Services.AddScoped<RealEstatesService>();
-
+    // افزودن سرویس‌ها به DI Container
+    builder.Services.AddMemoryCache();
+    builder.Services.AddScoped<ISmsService, SmsService>();
+    
+    builder.Services.AddScoped<OtpService>();
 
     // Identity
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

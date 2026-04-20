@@ -218,6 +218,30 @@ namespace JWTApi.Infrastructure.Migrations
                     b.ToTable("Images");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.IndependentAgentProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BusinessLicense")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<DateTime?>("RegisteredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("IndependentAgentProfiles");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.IpLock", b =>
                 {
                     b.Property<int>("Id")
@@ -436,6 +460,61 @@ namespace JWTApi.Infrastructure.Migrations
                     b.ToTable("ProjectUsers");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.RealEstateAgentProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AgentCode")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<int>("AgentRank")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CurrentSubAgentsCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LicenseExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LicenseNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("MaxSubAgents")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NationalCartNumber")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("OfficeAddress")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("SuccessFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("RealEstateAgentProfiles");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstates", b =>
                 {
                     b.Property<int>("Id")
@@ -447,6 +526,11 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Property<string>("AdditionalInformation")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -465,6 +549,12 @@ namespace JWTApi.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<long?>("Deposit")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DepositString")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DescriptionRows")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
@@ -473,6 +563,11 @@ namespace JWTApi.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("0");
+
+                    b.Property<bool>("IsHaLoan")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("0");
@@ -525,6 +620,12 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.Property<int>("RegionId")
                         .HasColumnType("int");
+
+                    b.Property<long?>("Rent")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RentString")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RoomCount")
                         .HasColumnType("int");
@@ -999,6 +1100,10 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CodeMoaref")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -1008,6 +1113,9 @@ namespace JWTApi.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("FailedOtpAttempts")
+                        .HasColumnType("int");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -1024,25 +1132,51 @@ namespace JWTApi.Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValueSql("0");
 
+                    b.Property<bool>("IsMobileVerified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("0");
+
+                    b.Property<DateTime?>("LastOtpRequestTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("MobileNumber")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("MobileVerifiedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime?>("OtpLockUntil")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("RealEstateAgentProfileId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("RegisteredByAgentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RegisteredByAgentId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.Property<int>("TokenVersion")
                         .HasColumnType("int");
@@ -1058,6 +1192,10 @@ namespace JWTApi.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RealEstateAgentProfileId");
+
+                    b.HasIndex("RegisteredByAgentId1");
 
                     b.ToTable("Users");
                 });
@@ -1108,6 +1246,34 @@ namespace JWTApi.Infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.Warning", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DescriptionRows")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Warnings");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.BookMark", b =>
                 {
                     b.HasOne("JWTApi.Domain.Entities.RealEstates", "RealEstates")
@@ -1145,6 +1311,17 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.IndependentAgentProfile", b =>
+                {
+                    b.HasOne("JWTApi.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.Menu", b =>
                 {
                     b.HasOne("JWTApi.Domain.Entities.Menu", "Parent")
@@ -1167,6 +1344,17 @@ namespace JWTApi.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("JWTApi.Domain.Entities.RealEstateAgentProfile", b =>
+                {
+                    b.HasOne("JWTApi.Domain.Entities.User", "User")
+                        .WithOne("RealEstateAgentProfile")
+                        .HasForeignKey("JWTApi.Domain.Entities.RealEstateAgentProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstates", b =>
@@ -1333,6 +1521,19 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.User", b =>
+                {
+                    b.HasOne("JWTApi.Domain.Entities.RealEstateAgentProfile", null)
+                        .WithMany("RegisteredAgents")
+                        .HasForeignKey("RealEstateAgentProfileId");
+
+                    b.HasOne("JWTApi.Domain.Entities.User", "RegisteredByAgent")
+                        .WithMany()
+                        .HasForeignKey("RegisteredByAgentId1");
+
+                    b.Navigation("RegisteredByAgent");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.UserPackage", b =>
                 {
                     b.HasOne("JWTApi.Domain.Entities.Package", "Package")
@@ -1371,6 +1572,17 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.Warning", b =>
+                {
+                    b.HasOne("JWTApi.Domain.Entities.Category", "Category")
+                        .WithMany("Warnings")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Facilities");
@@ -1382,6 +1594,8 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("SearchRequests");
 
                     b.Navigation("SpecialFeature");
+
+                    b.Navigation("Warnings");
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Facilities", b =>
@@ -1409,6 +1623,11 @@ namespace JWTApi.Infrastructure.Migrations
             modelBuilder.Entity("JWTApi.Domain.Entities.Project", b =>
                 {
                     b.Navigation("ProjectUsers");
+                });
+
+            modelBuilder.Entity("JWTApi.Domain.Entities.RealEstateAgentProfile", b =>
+                {
+                    b.Navigation("RegisteredAgents");
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstates", b =>
@@ -1454,6 +1673,8 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("ExtraProjects");
 
                     b.Navigation("ProjectUsers");
+
+                    b.Navigation("RealEstateAgentProfile");
 
                     b.Navigation("RealEstates");
 

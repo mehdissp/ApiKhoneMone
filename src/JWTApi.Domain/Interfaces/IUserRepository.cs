@@ -11,6 +11,7 @@ namespace JWTApi.Domain.Interfaces
 {
     public interface IUserRepository
     {
+        Task<User?> GetByMobileNumberAsync(string mobileNumber, CancellationToken cancellationToken);
         Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken);
         Task AddAsync(User user, CancellationToken cancellationToken);
         Task UpdateAsync(User user );

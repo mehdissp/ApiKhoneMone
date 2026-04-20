@@ -22,6 +22,7 @@ namespace JWTApi.Domain.Entities
         public ICollection<RealEstates> RealEstates { get; set; } = new List<RealEstates>();
         public ICollection<RealEstatesRent> RealEstatesRents { get; set; } = new List<RealEstatesRent>();
         public ICollection<SearchRequest> SearchRequests { get; set; } = new List<SearchRequest>();
+        public ICollection<Warning> Warnings { get; set; } = new List<Warning>();
         private Category() { }
         public Category(string name, string icon, string desc , CategoryType categoryType)
         {
