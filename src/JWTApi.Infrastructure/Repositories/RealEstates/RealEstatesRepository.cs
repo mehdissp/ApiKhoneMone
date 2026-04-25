@@ -1,7 +1,12 @@
 ﻿using Dapper;
 using JWTApi.Domain.Dtos;
+using JWTApi.Domain.Dtos.Facilities;
 using JWTApi.Domain.Dtos.RealEstate;
+using JWTApi.Domain.Dtos.Regions;
+using JWTApi.Domain.Entities;
+using JWTApi.Domain.Helper;
 using JWTApi.Domain.Interfaces.RealEstates;
+using JWTApi.Domain.Shared;
 using JWTApi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -296,6 +301,157 @@ SELECT @TotalCount;";
                 }
 
             };
+        }
+
+        //public async Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken)
+        //{
+        //    var query = from realEstate in _context.RealEstates
+        //                where realEstate.UserId.ToString() == userId
+        //                join image in _context.Images on realEstate.Id equals image.RealEstateId into imagesGroup
+        //                select new RealEstatePanel
+        //                {
+        //                    Id = realEstate.Id,
+        //                    Title = realEstate.Title,
+        //                    Region = realEstate.Region != null ? realEstate.Region.Name : null,
+        //                    Address = realEstate.Address,
+        //                    Price = realEstate.Price,
+        //                    Area = realEstate.SquareMeter,
+        //                    CountRooms = realEstate.RoomCount,
+        //                    CountFloor = realEstate.CountFloor,
+        //                    Floor = realEstate.Floor,
+        //                    IsHasParking = realEstate.IsHasParking,
+        //                    IsHasElavator = realEstate.IsHasElevator,
+        //                    IsHasLoan = realEstate.IsHaLoan,
+        //                   // Status = realEstate.Status,
+        //                    Views = "10",
+        //                    CreatedAt = realEstate.CreatedAt,
+        //                    Images = imagesGroup.Select(i => i.FullAddress).ToArray()
+        //                };
+
+        //    return await query.ToListAsync(cancellationToken);
+        //}
+
+
+        private readonly TimeSpan _cacheDuration = TimeSpan.FromSeconds(30); // کش 30 ثانیه
+
+        public async Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken)
+        {
+            var cacheKey = $"RealEstatePanel_{userId}";
+
+            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = _cacheDuration;
+
+                // همان کوئری بهینه بالا
+                var realEstates = await _context.RealEstates
+                    .AsNoTracking()
+                    .Include(x => x.Region)
+                    .Where(x => x.UserId.ToString() == userId)
+                    .Select(x => new
+                    {
+                        x.Id,
+                        x.Title,
+                        RegionName = x.Region != null ? x.Region.Name : null,
+                        x.Address,
+                        x.Price,
+                        x.SquareMeter,
+                        x.RoomCount,
+                        x.CountFloor,
+                        x.Floor,
+                        x.IsHasParking,
+                        x.IsHasElevator,
+                        x.IsHaLoan,
+                        x.CreatedAt,
+                        x.Status
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (!realEstates.Any())
+                    return new List<RealEstatePanel>();
+
+                var realEstateIds = realEstates.Select(x => x.Id).ToList();
+
+                var imagesDictionary = await _context.Images
+                    .AsNoTracking()
+                    .Where(x => realEstateIds.Contains(x.RealEstateId))
+                    .GroupBy(x => x.RealEstateId)
+                    .Select(g => new { RealEstateId = g.Key, Images = g.Select(i => i.FullAddress).ToArray() })
+                    .ToDictionaryAsync(x => x.RealEstateId, x => x.Images, cancellationToken);
+
+                return realEstates.Select(x => new RealEstatePanel
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Region = x.RegionName,
+                    Address = x.Address,
+                    Price = x.Price,
+                    Area = x.SquareMeter,
+                    CountRooms = x.RoomCount,
+                    CountFloor = x.CountFloor,
+                    Floor = x.Floor,
+                    IsHasParking = x.IsHasParking,
+                    IsHasElavator = x.IsHasElevator,
+                    IsHasLoan = x.IsHaLoan,
+                    Views = "10",
+                    CreatedAt = x.CreatedAt,
+                    Status=x.Status.ToPersianString(),
+                    Images = imagesDictionary.GetValueOrDefault(x.Id) ?? Array.Empty<string>()
+                }).ToList();
+            }) ?? new List<RealEstatePanel>();
+        }
+
+        public async Task<List<FacilitiesDtos>> GetFacilitiesDtos(int catId, CancellationToken cancellationToken)
+        {
+            return await _context.Facilities
+      .Where(s => s.CategoryId == catId)
+      .Select(s => new FacilitiesDtos
+      {
+          Id = s.Id,
+          Name = s.Name,
+          
+          // سایر فیلدها...
+      })
+      .ToListAsync(cancellationToken);
+        }
+
+
+        //public async Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id,CancellationToken cancellationToken)
+        //{
+        //    var allRegions = await _context.Regions
+        //        .AsNoTracking()
+        //        .Where(r => r.ParentId == id)
+        //        .Select(r => new Region
+        //        {
+        //            Id = r.Id,
+        //            Name = r.Name,
+        //            Latitude = r.Latitude,
+        //            Longitude = r.Longitude,
+        //            ParentId = r.ParentId
+        //        })
+        //        .ToListAsync();
+
+        //    // اگر دیتایی وجود نداشت، لیست خالی برگردان
+        //    if (!allRegions.Any())
+        //        return new List<RegionDtos>();
+
+        //    // اعمال منطق تبدیل
+        //    return RegionHelper.GetRegionsWithChildFlag(allRegions);
+        //}
+        public async Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id, CancellationToken cancellationToken)
+        {
+            var query = from s in _context.Regions
+                        where s.ParentId == id
+                        select new RegionDtos
+                        {
+                            Id = s.Id,
+                            Name = s.Name,
+                            Latitude = s.Latitude,
+                            Longitude = s.Longitude,
+                            HasRegion=s.HasRegion,
+                            CountChild = _context.Regions.Any(a => a.ParentId == s.Id) ? 1 : 0
+                        };
+
+            return await query.AsNoTracking().ToListAsync(cancellationToken);
         }
     }
 }

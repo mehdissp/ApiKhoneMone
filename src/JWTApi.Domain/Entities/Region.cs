@@ -15,6 +15,7 @@ namespace JWTApi.Domain.Entities
         public int? ParentId { get; set; }
         public Region? Parent { get; set; } // Nullable
         public Guid? UserId { get; set; }
+        public bool HasRegion { get; set; } = false;
         public ICollection<Region> Children { get; set; } = new List<Region>(); // لیست 
         public ICollection<RealEstates> RealEstates { get; set; } = new List<RealEstates>();
 

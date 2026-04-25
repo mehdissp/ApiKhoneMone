@@ -380,6 +380,8 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     // Infrastructure
     builder.Services.AddMemoryCache();
     builder.Services.AddHttpContextAccessor();
+    // ثبت سرویس
+    builder.Services.AddSingleton<ModerationService>();
     // Repositories
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<ICategoryRepository, CategoriesRepository>();

@@ -355,6 +355,7 @@ namespace JWTApi.Infrastructure.Data
                     .HasColumnType("decimal(10,8)");  // یا decimal(11,8) برای Longitude
                 b.Property(p => p.Longitude)
                     .HasColumnType("decimal(11,8)");
+                b.Property(p => p.HasRegion).HasDefaultValueSql("0");
                 b.HasOne(p => p.Parent)
                  .WithMany(p => p.Children)
                  .HasForeignKey(p => p.ParentId)

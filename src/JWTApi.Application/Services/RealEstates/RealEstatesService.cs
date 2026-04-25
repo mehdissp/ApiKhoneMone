@@ -2,7 +2,9 @@
 using JWTApi.Application.DTOs.Categories;
 using JWTApi.Application.DTOs.RealEstates;
 using JWTApi.Domain.Dtos;
+using JWTApi.Domain.Dtos.Facilities;
 using JWTApi.Domain.Dtos.RealEstate;
+using JWTApi.Domain.Dtos.Regions;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.RealEstates;
@@ -39,6 +41,18 @@ namespace JWTApi.Application.Services.RealEstates
             var result = await _realEstatesRepository.GetRealEstateDetails(id, cancellationToken);
             return result;
         }
+        public async Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken)
+        {
+            var result = await _realEstatesRepository.GetRealEstatePanel(userId, cancellationToken);
+            return result;
+        }
+
+        public  async Task<List<FacilitiesDtos>> GetFacilitiesDtos(int catId, CancellationToken cancellationToken)
+        {
+            return await _realEstatesRepository.GetFacilitiesDtos(catId, cancellationToken);
+        }
+
+
         public async Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithCategoryAsync(
             int tabId,
             int pageNumber = 1,
@@ -69,6 +83,14 @@ namespace JWTApi.Application.Services.RealEstates
                 return _mapper.Map<List<CategoryDto>>(result);
          
         }
+
+        public async Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id, CancellationToken cancellationToken)
+        {
+            return await _realEstatesRepository.GetRegionsWithChildFlagAsync(id, cancellationToken);
+        }
+
+
+
     }
 
 }

@@ -24,4 +24,30 @@ namespace JWTApi.Domain.Shared
         Manager=4,
         
     }
+    public enum RealEstateStatusEnum
+    {
+        WaitingForAccept = 0,
+        WaitingForPayment = 1,
+        Accept = 2,  // مشاور املاک (دارای پروفایل تخصصی)
+        Reject = 3, // مشاور مستقل
+        Archive = 4,       // فروشنده/خریدار
+        Sales = 5,
+
+    }
+    public static class RealEstateStatusEnumExtensions
+    {
+        public static string ToPersianString(this RealEstateStatusEnum inputData)
+        {
+            return inputData switch
+            {
+                RealEstateStatusEnum.WaitingForAccept => "انتظار",
+                RealEstateStatusEnum.WaitingForPayment => "در انتظارپرداخت",
+                RealEstateStatusEnum.Accept => "منتشر شد",
+                RealEstateStatusEnum.Reject => "رد شد",
+                RealEstateStatusEnum.Archive => "بایگانی شد",
+                RealEstateStatusEnum.Sales => "فروخته شد",
+                _ => "نامشخص",
+            };
+        }
+    }
 }

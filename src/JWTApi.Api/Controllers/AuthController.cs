@@ -6,7 +6,9 @@ using JWTApi.Application.Helper;
 using JWTApi.Application.Services;
 using JWTApi.Application.Services.SMS;
 using JWTApi.Domain.Entities;
+using JWTApi.Domain.Models;
 using JWTApi.Infrastructure.Middleware;
+using JWTApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -26,11 +28,14 @@ namespace JWTApi.API.Controllers
         private readonly OtpService _otpService;
         private readonly IMemoryCache _memoryCache;
         private readonly OtpSecurityService _otpSecurityService;
+        private readonly ModerationService _moderationService;
 
         private static readonly Random Rand = new();
         private readonly string _modelPath;
         private readonly IWebHostEnvironment _environment; // اضافه کردن این فیلد
-        public AuthController(OtpSecurityService otpSecurityService, AuthService authService , IMemoryCache memoryCache, BaleService baleService, IWebHostEnvironment environment, OtpService otpService)
+        public AuthController(OtpSecurityService otpSecurityService, AuthService authService , IMemoryCache memoryCache, BaleService baleService, IWebHostEnvironment environment, OtpService otpService
+            ,ModerationService moderationService)
+
         {
             _memoryCache = memoryCache;
             _authService = authService;
@@ -39,9 +44,18 @@ namespace JWTApi.API.Controllers
             _otpService=otpService;
             _otpSecurityService = otpSecurityService;
             _modelPath = Path.Combine(_environment.ContentRootPath, "places365.onnx");
+            _moderationService = moderationService;
         }
 
+        [HttpPost("analyze")]
+        public IActionResult Analyze([FromBody] TextRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Text))
+                return BadRequest("متن نمی‌تواند خالی باشد");
 
+            var result = _moderationService.Analyze(request.Text);
+            return Ok(result);
+        }
         //[HttpPost("send-otp")]
         //public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request, CancellationToken cancellationToken)
         //{

@@ -17,6 +17,22 @@
   },
   {
     "ContainingType": "JWTApi.API.Controllers.AuthController",
+    "Method": "Analyze",
+    "RelativePath": "api/Auth/analyze",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "JWTApi.Domain.Models.TextRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.API.Controllers.AuthController",
     "Method": "GetCaptcha",
     "RelativePath": "api/Auth/captcha",
     "HttpMethod": "GET",
@@ -375,6 +391,22 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetFacilitiesDtos",
+    "RelativePath": "api/RealEstatePage/GetFacilities",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetRandomLastItemRealEstates",
     "RelativePath": "api/RealEstatePage/GetRandomLastItemRealEstates",
     "HttpMethod": "GET",
@@ -426,6 +458,32 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRealEstatePanel",
+    "RelativePath": "api/RealEstatePage/GetRealEstatePanel",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRegionsWithChildFlagAsync",
+    "RelativePath": "api/RealEstatePage/GetRegionsWithChildFlagAsync",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],

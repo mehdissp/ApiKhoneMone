@@ -3,6 +3,7 @@ using JWTApi.Application.Services.Categories;
 using JWTApi.Application.Services.RealEstates;
 using JWTApi.Domain.Entities;
 using JWTApi.Infrastructure.Middleware;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,7 +64,37 @@ namespace JWTApi.Api.Controllers
             return ResponseApi.Ok(result).ToHttpResponse();
 
         }
+        [HttpGet("GetRealEstatePanel")]
+        [Authorize]
+        public async Task<IActionResult> GetRealEstatePanel( CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
 
+            var result = await _realEstatesService.GetRealEstatePanel(userId, cancellationToken);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+        [HttpGet("GetFacilities")]
+        public async Task<IActionResult> GetFacilitiesDtos(int id, CancellationToken cancellationToken)
+        {
+
+
+            var result = await _realEstatesService.GetFacilitiesDtos(id, cancellationToken);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+        [HttpGet("GetRegionsWithChildFlagAsync")]
+        public async Task<IActionResult> GetRegionsWithChildFlagAsync(int? id, CancellationToken cancellationToken)
+        {
+
+
+            var result = await _realEstatesService.GetRegionsWithChildFlagAsync(id, cancellationToken);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
         //[HttpGet("GetRealEstateDetails")]
         //public async Task<IActionResult> GetRealEstateDetails(int id, CancellationToken cancellationToken)
         //{

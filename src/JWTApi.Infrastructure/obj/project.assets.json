@@ -4321,7 +4321,8 @@
         "net9.0"
       ],
       "sources": {
-        "C:\\Users\\0017682381.REFAHBANK\\.nuget\\packages": {}
+        "C:\\Users\\0017682381.REFAHBANK\\.nuget\\packages": {},
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {

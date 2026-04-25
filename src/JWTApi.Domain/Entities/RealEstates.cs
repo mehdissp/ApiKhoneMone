@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JWTApi.Domain.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
@@ -43,6 +44,7 @@ namespace JWTApi.Domain.Entities
         public string Address { get; set; }
         public bool IsShowLocation { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
+        public RealEstateStatusEnum  Status { get; set; }
         public Category Category { get; set; } = default!;
         public User User { get; set; } = default!;
         public Region Region { get; set; } = default!;
