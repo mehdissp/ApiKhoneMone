@@ -375,6 +375,22 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "ClearTempImage",
+    "RelativePath": "api/RealEstatePage/ClearTempImage",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "JWTApi.Api.ViewModels.RealEstates.ClearTempImageRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetCategoryDtos",
     "RelativePath": "api/RealEstatePage/GetCategoryDtos",
     "HttpMethod": "GET",
@@ -484,6 +500,38 @@
       {
         "Name": "id",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "InsertRealEstate",
+    "RelativePath": "api/RealEstatePage/InsertRealEstate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "JWTApi.Application.DTOs.RealEstates.RealEstateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "UploadTempImage",
+    "RelativePath": "api/RealEstatePage/UploadTempImage",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
       }
     ],

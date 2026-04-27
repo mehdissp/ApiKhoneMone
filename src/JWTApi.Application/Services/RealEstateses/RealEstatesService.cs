@@ -3,11 +3,13 @@ using JWTApi.Application.DTOs.Categories;
 using JWTApi.Application.DTOs.RealEstates;
 using JWTApi.Domain.Dtos;
 using JWTApi.Domain.Dtos.Facilities;
+using JWTApi.Domain.Dtos.ImageInfos;
 using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Dtos.Regions;
+using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
-using JWTApi.Domain.Interfaces.RealEstates;
+using JWTApi.Domain.Interfaces.RealEstateses;
 using JWTApi.Infrastructure.Repositories.Categories;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
@@ -16,7 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JWTApi.Application.Services.RealEstates
+namespace JWTApi.Application.Services.RealEstateses
 {
     public class RealEstatesService
     {
@@ -89,6 +91,23 @@ namespace JWTApi.Application.Services.RealEstates
             return await _realEstatesRepository.GetRegionsWithChildFlagAsync(id, cancellationToken);
         }
 
+        public async Task InsertRealEstate(RealEstateRequest realEstateRequest,string currnetUser,List<ImagesInfo>? imageInfo ,CancellationToken cancellationToken)
+        {
+           RealEstates realEstates=new RealEstates();
+            realEstates.create(realEstateRequest.Title, realEstateRequest.DescriptionRows, realEstateRequest.CountRoom,
+                realEstateRequest.Floor, realEstateRequest.CountFloor, realEstateRequest.CountInFloor, realEstateRequest.ContractDuration
+                , realEstateRequest.Sqmeter, realEstateRequest.Price, realEstateRequest.DepositPrice, realEstateRequest.RentPrice
+                , realEstateRequest.CategoryTypeId, realEstateRequest.lat, realEstateRequest.lon, false, realEstateRequest.IsHasElevator
+                , realEstateRequest.IsHaLoan, currnetUser, false, realEstateRequest.Region, realEstateRequest.Address,
+                realEstateRequest.ShowExactLocation);
+            // استخراج فقط شناسه‌های امکانات
+            List<int> facilityIds = realEstateRequest.Facilities
+                .Select(f => f.Id) // یا هر property که ID در آن است
+                .ToList();
+
+
+            await _realEstatesRepository.InsertRealEstate(realEstates, facilityIds, imageInfo);
+        }
 
 
     }

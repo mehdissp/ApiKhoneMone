@@ -206,3 +206,4 @@ D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.pdb
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.genruntimeconfig.cache
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\ref\JWTApi.Api.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Data\sensitive_words.json
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\SixLabors.ImageSharp.dll

@@ -73,6 +73,10 @@
               "target": "Package",
               "version": "[13.0.4, )"
             },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.1.12, )"
+            },
             "System.Drawing.Common": {
               "target": "Package",
               "version": "[9.0.9, )"

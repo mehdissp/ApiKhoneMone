@@ -1,11 +1,12 @@
 ﻿using Dapper;
 using JWTApi.Domain.Dtos;
 using JWTApi.Domain.Dtos.Facilities;
+using JWTApi.Domain.Dtos.ImageInfos;
 using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Dtos.Regions;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Helper;
-using JWTApi.Domain.Interfaces.RealEstates;
+using JWTApi.Domain.Interfaces.RealEstateses;
 using JWTApi.Domain.Shared;
 using JWTApi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JWTApi.Infrastructure.Repositories.RealEstates
+namespace JWTApi.Infrastructure.Repositories.RealEstateses
 {
     public class RealEstatesRepository : IRealEstatesRepository
     {
@@ -284,14 +285,15 @@ SELECT @TotalCount;";
                 Deposit= realEstate.Deposit,
                 Rent=realEstate.Rent,
                 PriceMeter=realEstate.Price/realEstate.SquareMeter,
-                ShowExactLocation=false,
+                ShowExactLocation=realEstate.IsShowLocation,
                 Title = realEstate.Title,
                 IsHasPool = realEstate.IsHasPool,
                 views = 10,
                 Rooms=realEstate.RoomCount,
                 saved =1,
                 RegionName = realEstate.Region.Name,
-                Agents=new Agent
+                DescriptionRows=realEstate.DescriptionRows,
+                Agents =new Agent
                 {
                     Name=agent.name,
                     Address=agent.Address,
@@ -452,6 +454,41 @@ SELECT @TotalCount;";
                         };
 
             return await query.AsNoTracking().ToListAsync(cancellationToken);
+        }
+        public async Task InsertRealEstate(RealEstates realEstates, List<int> facilityIds,List<ImagesInfo> images)
+        {
+            try
+            {
+                await _context.RealEstates.AddAsync(realEstates);
+                await _context.SaveChangesAsync();
+
+                // استفاده از AddRange برای یک SaveChanges
+                var facilities = facilityIds.Select(fId => new RealEstates_Facilities
+                {
+                    RealEstatesId = realEstates.Id,
+                    FacilitiesId = fId
+                }).ToList();
+                List<Image> imageList = images.Select((s, index) => new Image
+                {
+                    Name = s.FileName,
+                    Address = s.Url,
+                    FullAddress = s.Url,
+                    IsBanner = index == 0 , // اولین آیتم true، بقیه false
+                    RealEstateId=realEstates.Id,
+
+                }).ToList();
+
+                await _context.Set<RealEstates_Facilities>().AddRangeAsync(facilities);
+                await _context.Set<Image>().AddRangeAsync(imageList);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            // بدون تراکنش صریح، از تراکنش خودکار EF Core استفاده می‌شود
+           
         }
     }
 }

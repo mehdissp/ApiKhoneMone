@@ -261,14 +261,14 @@ using JWTApi.Api.Middleware;
 using JWTApi.Application.Services;
 using JWTApi.Application.Services.Categories;
 using JWTApi.Application.Services.Menus;
-using JWTApi.Application.Services.RealEstates;
+using JWTApi.Application.Services.RealEstateses;
 using JWTApi.Application.Services.Roles;
 using JWTApi.Application.Services.SMS;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.Menus;
-using JWTApi.Domain.Interfaces.RealEstates;
+using JWTApi.Domain.Interfaces.RealEstateses;
 using JWTApi.Domain.Interfaces.Roles;
 using JWTApi.Domain.Interfaces.SMS;
 using JWTApi.Domain.Interfaces.TokenBlacklist;
@@ -277,7 +277,7 @@ using JWTApi.Infrastructure.Middleware;
 using JWTApi.Infrastructure.Repositories;
 using JWTApi.Infrastructure.Repositories.Categories;
 using JWTApi.Infrastructure.Repositories.Menus;
-using JWTApi.Infrastructure.Repositories.RealEstates;
+using JWTApi.Infrastructure.Repositories.RealEstateses;
 using JWTApi.Infrastructure.Repositories.Roles;
 using JWTApi.Infrastructure.Repositories.SMS;
 using JWTApi.Infrastructure.Repositories.TokenBlacklist;
@@ -379,6 +379,7 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     // Infrastructure
     builder.Services.AddMemoryCache();
+    builder.Services.AddSingleton<TempImageCache>(); // ✅ این درست است
     builder.Services.AddHttpContextAccessor();
     // ثبت سرویس
     builder.Services.AddSingleton<ModerationService>();

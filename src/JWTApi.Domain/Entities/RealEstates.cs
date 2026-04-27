@@ -53,6 +53,39 @@ namespace JWTApi.Domain.Entities
         public ICollection<BookMark> BookMark { get; set; } = new List<BookMark>();
         //public ICollection<SearchMatch> Matches { get; set; } = new List<SearchMatch>();
 
+        public void create(string title,string desc,int roomCount,int floor
+            ,int countFloor,int countInFloor,int constructionYear,int squareMeter,long price,long? deposit
+            ,long? rent,int categoryId,decimal? latitude,decimal? longitude,bool isHasPool,
+            bool isHasElevator,bool isHaLoan,string userId,bool isPrivate,int regionId,string address,bool isShowLocation
+            )
+        {
+            Title = title;
+            DescriptionRows= desc;
+            RoomCount= roomCount;
+            RegionId = regionId;
+            IsShowLocation = isShowLocation;
+            Latitude = latitude;
+            Longitude=longitude;
+            Price = price;
+            Floor = floor;
+            CountFloor=countFloor;
+            CountInFloor=countInFloor;
+            ConstructionYear = constructionYear;
+            Rent = rent;
+            CategoryId= categoryId;
+            IsHasPool = isHasPool;
+            IsHasElevator = isHasElevator;
+            IsHaLoan = isHaLoan;
+            UserId = Guid.Parse(userId);
+            IsPrivate = isPrivate;
+            IsShowLocation= isShowLocation;
+            SquareMeter= squareMeter;
+            Deposit = deposit;
+            CreatedAt=DateTime.Now;
+            Address= address;
+            Status = RealEstateStatusEnum.WaitingForPayment;
+
+        }
 
 
     }

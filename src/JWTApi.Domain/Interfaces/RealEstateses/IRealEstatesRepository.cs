@@ -1,5 +1,6 @@
 ﻿using JWTApi.Domain.Dtos;
 using JWTApi.Domain.Dtos.Facilities;
+using JWTApi.Domain.Dtos.ImageInfos;
 using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Dtos.Regions;
 using JWTApi.Domain.Entities;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JWTApi.Domain.Interfaces.RealEstates
+namespace JWTApi.Domain.Interfaces.RealEstateses
 {
     public interface IRealEstatesRepository
     {
@@ -27,6 +28,8 @@ namespace JWTApi.Domain.Interfaces.RealEstates
 
 
         Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id,CancellationToken cancellationToken);
+
+        Task InsertRealEstate(RealEstates realEstates, List<int> facilityIds, List<ImagesInfo> images);
 
     }
 }

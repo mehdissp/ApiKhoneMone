@@ -42,6 +42,7 @@ namespace JWTApi.Domain.Dtos.RealEstate
         public decimal? lat { get; set; }
         public int? saved { get; set; }
         public bool ShowExactLocation { get; set; }
+        public string DescriptionRows { get; set; }
         // پراپرتی جدید برای نمایش تاریخ به فرمت شمسی نسبی
         public string CreatedAtPersianRelative => CreatedAt.ToPersianRelativeDate();
     }
