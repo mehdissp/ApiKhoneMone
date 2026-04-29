@@ -1,4 +1,5 @@
 ﻿using JWTApi.Domain.Entities;
+using JWTApi.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,8 @@ namespace JWTApi.Application.DTOs.RealEstates
         public long DepositPrice { get; set; }
         public bool IsMortgageOnly { get; set; }
         public int ContractDuration { get; set; }
+        public bool IsRenovated { get; set; }
+        public DocumentTypeEnum DocumentType  { get; set; }
         public List<string> TempImageCacheIds { get; set; } = new List<string>();
 
     }

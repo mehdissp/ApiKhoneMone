@@ -380,6 +380,58 @@ namespace JWTApi.Infrastructure.Migrations
                     b.ToTable("Packages");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Authority")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CallbackUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("DescriptionRows")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gateway")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RealEstateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RefId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("VerifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.Permission", b =>
                 {
                     b.Property<Guid>("Id")
@@ -559,6 +611,9 @@ namespace JWTApi.Infrastructure.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("DocumentType")
+                        .HasColumnType("int");
+
                     b.Property<int>("Floor")
                         .HasColumnType("int");
 
@@ -590,7 +645,15 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Property<bool>("IsHasStoreRoom")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsNegotiatedPrice")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsPrivate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("0");
+
+                    b.Property<bool>("IsRenovated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("0");

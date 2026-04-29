@@ -24,6 +24,27 @@ namespace JWTApi.Domain.Shared
         Manager=4,
         
     }
+    public enum DocumentTypeEnum
+    {
+        SingleLeaf=0,
+        Tassel=1,
+        Promise=2
+    }
+    public static class DocumentTypeEnumEnumExtensions
+    {
+        public static string ToPersianString(this DocumentTypeEnum inputData)
+        {
+            return inputData switch
+            {
+                DocumentTypeEnum.SingleLeaf => "تک برگ",
+                DocumentTypeEnum.Tassel => "منقوله دار",
+                DocumentTypeEnum.Promise => "قولنامه ای",
+
+                _ => "نامشخص",
+            };
+        }
+    }
+
     public enum RealEstateStatusEnum
     {
         WaitingForAccept = 0,
@@ -49,5 +70,11 @@ namespace JWTApi.Domain.Shared
                 _ => "نامشخص",
             };
         }
+    }
+    public enum PaymentStatus
+    {
+        Pending = 0,
+        Success = 1,
+        Failed = 2
     }
 }

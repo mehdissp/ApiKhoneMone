@@ -50,10 +50,11 @@ namespace JWTApi.Infrastructure.Data
         public DbSet<Warning> Warnings { get; set; }
 
         public DbSet<Image> Images { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
 
 
-        
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -121,6 +122,13 @@ namespace JWTApi.Infrastructure.Data
 
                 b.HasKey(x => x.Id);
                 b.Property(u => u.BusinessLicense).HasMaxLength(25).IsRequired();
+
+            });
+            //---------------payment -----------------
+            modelBuilder.Entity<Payment>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.Property(u => u.CreatedAt).HasDefaultValueSql("GETDATE()");
 
             });
 
@@ -202,7 +210,7 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(p => p.IsHasElevator).HasDefaultValueSql("0");
                 b.Property(p => p.IsHasParking).HasDefaultValueSql("0");
                 b.Property(p => p.IsHaLoan).HasDefaultValueSql("0");
-                
+                b.Property(p => p.IsRenovated).HasDefaultValueSql("0");
                 b.Property(p => p.IsHasElevator).HasDefaultValueSql("0");
                 b.Property(p => p.IsHasPool).HasDefaultValueSql("0");
                 b.Property(p => p.DescriptionRows).HasMaxLength(450);

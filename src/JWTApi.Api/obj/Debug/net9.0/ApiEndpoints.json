@@ -305,6 +305,64 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "PaymentController",
+    "Method": "GetPaymentStatus",
+    "RelativePath": "api/Payment/{paymentId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "paymentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PaymentController",
+    "Method": "Initialize",
+    "RelativePath": "api/Payment/initialize",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "JWTApi.Domain.Dtos.Payments.InitPaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PaymentController",
+    "Method": "VerifyCallback",
+    "RelativePath": "api/Payment/verify-callback",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "authority",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "paymentId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "JWTApi.Api.Controllers.ProjectController",
     "Method": "DeleteProject",
     "RelativePath": "api/Project/DeleteProject",

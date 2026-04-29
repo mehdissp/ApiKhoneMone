@@ -99,7 +99,7 @@ namespace JWTApi.Application.Services.RealEstateses
                 , realEstateRequest.Sqmeter, realEstateRequest.Price, realEstateRequest.DepositPrice, realEstateRequest.RentPrice
                 , realEstateRequest.CategoryTypeId, realEstateRequest.lat, realEstateRequest.lon, false, realEstateRequest.IsHasElevator
                 , realEstateRequest.IsHaLoan, currnetUser, false, realEstateRequest.Region, realEstateRequest.Address,
-                realEstateRequest.ShowExactLocation);
+                realEstateRequest.ShowExactLocation, realEstateRequest.DocumentType, realEstateRequest.IsRenovated);
             // استخراج فقط شناسه‌های امکانات
             List<int> facilityIds = realEstateRequest.Facilities
                 .Select(f => f.Id) // یا هر property که ID در آن است

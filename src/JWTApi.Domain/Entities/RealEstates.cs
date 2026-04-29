@@ -37,6 +37,8 @@ namespace JWTApi.Domain.Entities
         public bool IsHasStoreRoom { get; set; } = false;
         public bool IsHasParking { get; set; } = false;
         public bool IsHaLoan { get; set; } = false;
+        public bool IsRenovated { get; set; } = false;
+        public bool IsNegotiatedPrice { get; set; }
         public Guid UserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsPrivate { get; set; } = false;
@@ -45,6 +47,7 @@ namespace JWTApi.Domain.Entities
         public bool IsShowLocation { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
         public RealEstateStatusEnum  Status { get; set; }
+        public DocumentTypeEnum DocumentType { get; set; }
         public Category Category { get; set; } = default!;
         public User User { get; set; } = default!;
         public Region Region { get; set; } = default!;
@@ -56,7 +59,8 @@ namespace JWTApi.Domain.Entities
         public void create(string title,string desc,int roomCount,int floor
             ,int countFloor,int countInFloor,int constructionYear,int squareMeter,long price,long? deposit
             ,long? rent,int categoryId,decimal? latitude,decimal? longitude,bool isHasPool,
-            bool isHasElevator,bool isHaLoan,string userId,bool isPrivate,int regionId,string address,bool isShowLocation
+            bool isHasElevator,bool isHaLoan,string userId,bool isPrivate,int regionId,string address,bool isShowLocation,
+           DocumentTypeEnum documentType,  bool isRenovated=false
             )
         {
             Title = title;
@@ -84,6 +88,8 @@ namespace JWTApi.Domain.Entities
             CreatedAt=DateTime.Now;
             Address= address;
             Status = RealEstateStatusEnum.WaitingForPayment;
+            IsRenovated = isRenovated;
+            DocumentType=documentType;
 
         }
 

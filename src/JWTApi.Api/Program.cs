@@ -261,6 +261,7 @@ using JWTApi.Api.Middleware;
 using JWTApi.Application.Services;
 using JWTApi.Application.Services.Categories;
 using JWTApi.Application.Services.Menus;
+using JWTApi.Application.Services.Payments;
 using JWTApi.Application.Services.RealEstateses;
 using JWTApi.Application.Services.Roles;
 using JWTApi.Application.Services.SMS;
@@ -268,6 +269,7 @@ using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.Menus;
+using JWTApi.Domain.Interfaces.Payments;
 using JWTApi.Domain.Interfaces.RealEstateses;
 using JWTApi.Domain.Interfaces.Roles;
 using JWTApi.Domain.Interfaces.SMS;
@@ -277,6 +279,7 @@ using JWTApi.Infrastructure.Middleware;
 using JWTApi.Infrastructure.Repositories;
 using JWTApi.Infrastructure.Repositories.Categories;
 using JWTApi.Infrastructure.Repositories.Menus;
+using JWTApi.Infrastructure.Repositories.Payments;
 using JWTApi.Infrastructure.Repositories.RealEstateses;
 using JWTApi.Infrastructure.Repositories.Roles;
 using JWTApi.Infrastructure.Repositories.SMS;
@@ -397,11 +400,13 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     builder.Services.AddScoped<ITokenBlacklistRepository, TokenBlacklistRepository>();
 
     builder.Services.AddScoped<IRealEstatesRepository, RealEstatesRepository>();
+    builder.Services.AddScoped<IPaymentGateway, ZarinpalGateway>();
     // اگر می‌خواهید به صورت Singleton استفاده کنید (توصیه می‌شود برای کش)
     builder.Services.AddScoped<OtpSecurityService>();
     builder.Services.AddScoped<RoleService>();
     builder.Services.AddScoped<CategoriesService>();
     builder.Services.AddScoped<MenuService>();
+    builder.Services.AddScoped<PaymentService>();
 
     builder.Services.AddScoped<JwtService>();
     builder.Services.AddScoped<BaleService>();

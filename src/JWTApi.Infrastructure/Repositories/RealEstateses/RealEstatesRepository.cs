@@ -338,11 +338,10 @@ SELECT @TotalCount;";
 
         public async Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken)
         {
-            var cacheKey = $"RealEstatePanel_{userId}";
+          
 
-            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = _cacheDuration;
+       
+             
 
                 // همان کوئری بهینه بالا
                 var realEstates = await _context.RealEstates
@@ -399,7 +398,7 @@ SELECT @TotalCount;";
                     Status=x.Status.ToPersianString(),
                     Images = imagesDictionary.GetValueOrDefault(x.Id) ?? Array.Empty<string>()
                 }).ToList();
-            }) ?? new List<RealEstatePanel>();
+           
         }
 
         public async Task<List<FacilitiesDtos>> GetFacilitiesDtos(int catId, CancellationToken cancellationToken)
