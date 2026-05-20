@@ -26,7 +26,8 @@
         ],
         "sources": {
           "C:\\Users\\0017682381.REFAHBANK\\.nuget\\packages": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://rep.rbdev.ir/artifactory/api/nuget/Nuget": {}
         },
         "frameworks": {
           "net9.0": {
@@ -97,7 +98,8 @@
         ],
         "sources": {
           "C:\\Users\\0017682381.REFAHBANK\\.nuget\\packages": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://rep.rbdev.ir/artifactory/api/nuget/Nuget": {}
         },
         "frameworks": {
           "net9.0": {

@@ -70,6 +70,40 @@ namespace JWTApi.Api.Controllers
             return ResponseApi.Ok(result).ToHttpResponse();
 
         }
+        [HttpGet("GetRealEstateDetailsForDemo")]
+        [Authorize]
+        public async Task<IActionResult> GetRealEstateDetailsForDemo(int id, CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var roleName = User.Claims.FirstOrDefault(c => c.Type == "roleName")?.Value;
+            var check = await _realEstatesService.CheckAccessToRealEstate(id, userId, roleName, cancellationToken);
+            if (check)
+            {
+                var result = await _realEstatesService.GetRealEstateDetails(id, cancellationToken);
+
+                return ResponseApi.Ok(result).ToHttpResponse();
+            }
+            return ResponseApi.Error("دسترسی ندارید به این صفحه").ToHttpResponse();
+
+        }
+        [HttpGet("GetRealEstateDetailsForEdit")]
+        [Authorize]
+        public async Task<IActionResult> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var roleName = User.Claims.FirstOrDefault(c => c.Type == "roleName")?.Value;
+            var check = await _realEstatesService.CheckAccessToRealEstate(id, userId, roleName, cancellationToken);
+            if (check)
+            {
+
+                var result = await _realEstatesService.GetRealEstateDetailsForEdit(id, cancellationToken);
+
+                return ResponseApi.Ok(result).ToHttpResponse();
+            }
+            return ResponseApi.Error("دسترسی ندارید به این صفحه").ToHttpResponse();
+        }
+        
+
         [HttpGet("GetRealEstatePanel")]
         [Authorize]
         public async Task<IActionResult> GetRealEstatePanel( CancellationToken cancellationToken)
@@ -124,6 +158,7 @@ namespace JWTApi.Api.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpPost("ClearTempImage")]
         public IActionResult ClearTempImage([FromBody] ClearTempImageRequest request)
@@ -195,6 +230,8 @@ namespace JWTApi.Api.Controllers
         //    public string Data { get; set; }
         //    public string Iv { get; set; }
         //}
+
+    
 
     }
 }

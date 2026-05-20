@@ -31,5 +31,8 @@ namespace JWTApi.Domain.Interfaces.RealEstateses
 
         Task InsertRealEstate(RealEstates realEstates, List<int> facilityIds, List<ImagesInfo> images);
 
+        Task<bool> CheckAccessToRealEstate(int id, string userId, string roleName, CancellationToken cancellationToken);
+        Task<RealEstateDetailsEdit> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken);
+
     }
 }

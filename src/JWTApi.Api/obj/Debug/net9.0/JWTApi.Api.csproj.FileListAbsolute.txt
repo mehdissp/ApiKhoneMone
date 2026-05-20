@@ -1,13 +1,6 @@
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.csproj.AssemblyReference.cache
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.GeneratedMSBuildEditorConfig.editorconfig
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.AssemblyInfoInputs.cache
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.AssemblyInfo.cs
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.csproj.CoreCompileInputs.cache
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.MvcApplicationPartsAssemblyInfo.cs
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.MvcApplicationPartsAssemblyInfo.cache
-D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.sourcelink.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\appsettings.Development.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\appsettings.json
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Data\sensitive_words.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Api.staticwebassets.runtime.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Api.staticwebassets.endpoints.json
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Api.exe
@@ -65,6 +58,9 @@ D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.SqlServer.Server.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Microsoft.Win32.SystemEvents.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Mono.TextTemplating.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Newtonsoft.Json.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\SixLabors.Fonts.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\SixLabors.ImageSharp.dll
+D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\SixLabors.ImageSharp.Drawing.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -193,7 +189,16 @@ D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Infrastructure.dll
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Application.pdb
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Domain.pdb
 D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\JWTApi.Infrastructure.pdb
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.csproj.AssemblyReference.cache
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.GeneratedMSBuildEditorConfig.editorconfig
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.AssemblyInfoInputs.cache
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.AssemblyInfo.cs
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.csproj.CoreCompileInputs.cache
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.MvcApplicationPartsAssemblyInfo.cs
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.MvcApplicationPartsAssemblyInfo.cache
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.sourcelink.json
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\scopedcss\bundle\JWTApi.Api.styles.css
+D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\compressed\0vo3evha6t-uc311sztv4.gz
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\staticwebassets.build.json
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\staticwebassets.build.json.cache
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\staticwebassets.development.json
@@ -205,5 +210,3 @@ D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\refint\JWTApi.Api.dll
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.pdb
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\JWTApi.Api.genruntimeconfig.cache
 D:\api\api-test1\src\JWTApi.Api\obj\Debug\net9.0\ref\JWTApi.Api.dll
-D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\Data\sensitive_words.json
-D:\api\api-test1\src\JWTApi.Api\bin\Debug\net9.0\SixLabors.ImageSharp.dll

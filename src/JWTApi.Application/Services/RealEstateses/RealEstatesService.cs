@@ -43,6 +43,11 @@ namespace JWTApi.Application.Services.RealEstateses
             var result = await _realEstatesRepository.GetRealEstateDetails(id, cancellationToken);
             return result;
         }
+        public async Task<RealEstateDetailsEdit> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken)
+        {
+            var result = await _realEstatesRepository.GetRealEstateDetailsForEdit(id, cancellationToken);
+            return result;
+        }
         public async Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken)
         {
             var result = await _realEstatesRepository.GetRealEstatePanel(userId, cancellationToken);
@@ -107,6 +112,11 @@ namespace JWTApi.Application.Services.RealEstateses
 
 
             await _realEstatesRepository.InsertRealEstate(realEstates, facilityIds, imageInfo);
+        }
+
+        public async Task<bool> CheckAccessToRealEstate(int id, string userId, string roleName, CancellationToken cancellationToken)
+        {
+            return await _realEstatesRepository.CheckAccessToRealEstate(id, userId, roleName, cancellationToken);
         }
 
 

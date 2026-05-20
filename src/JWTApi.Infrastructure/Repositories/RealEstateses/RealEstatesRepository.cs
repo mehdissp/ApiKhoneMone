@@ -77,11 +77,138 @@ ORDER BY s.Id DESC";
         }
 
 
+        //        public async Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithCategoryAsync(
+        //            int tabId,
+        //            int pageNumber = 1,
+        //            int pageSize = 10,
+        //            CancellationToken cancellationToken = default)
+        //        {
+        //            // اعتبارسنجی سریع
+        //            if (tabId <= 0 || pageNumber < 1 || pageSize < 1 || pageSize > 50)
+        //            {
+        //                return new PagedResult<RealEstateWithCategoryDto>
+        //                {
+        //                    Items = new List<RealEstateWithCategoryDto>(),
+        //                    TotalCount = 0,
+        //                    PageNumber = pageNumber,
+        //                    PageSize = pageSize,
+        //                    TotalPages = 0
+        //                };
+        //            }
+
+        //            // تلاش برای دریافت از کش
+        //            var cacheKey = string.Format(LastItemsCacheKey, tabId, pageNumber, pageSize);
+        //            if (_cache.TryGetValue(cacheKey, out PagedResult<RealEstateWithCategoryDto> cachedResult))
+        //            {
+        //                return cachedResult;
+        //            }
+
+        //            try
+        //            {
+        //                // بهینه‌سازی کوئری برای پرفورمنس بالا
+        //                var query = @"
+        //DECLARE @TotalCount INT; 
+
+        //DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+
+        //-- دریافت تعداد کل با بهینه‌سازی
+        //SELECT @TotalCount = COUNT(*)
+        //FROM dbo.RealEstates s
+        //INNER JOIN dbo.Categories c ON c.id = s.CategoryId
+        //WHERE c.CategoryType = @TabId;
+
+        //-- دریافت داده‌های صفحه جاری با ایندکس بهینه
+        //SELECT 
+        //    s.id,
+        //    s.ConstructionYear,
+        //    s.CountFloor,
+        //    s.Title,
+        //    s.AdditionalInformation,
+        //    s.IsHasElevator,
+        //    s.IsHasParking,
+        //    s.IsHasPool,
+        //    s.IsHasStoreRoom,
+        //    r.Name as RegionName,
+        //    q.Name + ' / ' + ra.Name as ParentName,
+        //    i.address,
+        //    ISNULL(img.ImageCount, 0) as ImageCount  -- تعداد کل عکس‌ها
+        //,s.Price,
+        //s.CreatedAt
+        //FROM dbo.RealEstates s WITH (NOLOCK)
+        //INNER JOIN dbo.Categories c WITH (NOLOCK) ON c.id = s.CategoryId
+        //LEFT JOIN dbo.Regions r WITH (NOLOCK) ON r.id = s.RegionId
+        //LEFT JOIN dbo.Regions ra WITH (NOLOCK) ON ra.id = r.ParentId
+        //LEFT JOIN dbo.Regions q WITH (NOLOCK) ON q.id = ra.ParentId
+        //OUTER APPLY (
+        //    SELECT TOP 1 address as Address
+        //    FROM dbo.images i WITH (NOLOCK)
+        //    WHERE i.RealEstateId = s.id 
+        //	and i.isbanner=1
+        //    ORDER BY i.id
+        //) i
+        //LEFT JOIN (
+        //    SELECT RealEstateId, COUNT(*) as ImageCount
+        //    FROM dbo.images WITH (NOLOCK)
+        //    GROUP BY RealEstateId
+        //) img ON img.RealEstateId = s.id
+        //WHERE c.Id = @tabId
+        //ORDER BY s.Id DESC
+        //OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+        //SELECT @TotalCount;";
+
+        //                var parameters = new
+        //                {
+        //                    TabId = tabId,
+        //                    PageNumber = pageNumber,
+        //                    PageSize = pageSize
+        //                };
+
+        //                using (var multi = await _connection.QueryMultipleAsync(
+        //                    query,
+        //                    parameters,
+        //                    commandTimeout: 5, // تایم‌اوت ۵ ثانیه
+        //                    commandType: CommandType.Text))
+        //                {
+        //                    var items = (await multi.ReadAsync<RealEstateWithCategoryDto>()).ToList();
+        //                    var totalCount = await multi.ReadFirstAsync<int>();
+
+        //                    var result = new PagedResult<RealEstateWithCategoryDto>
+        //                    {
+        //                        Items = items,
+        //                        TotalCount = totalCount,
+        //                        PageNumber = pageNumber,
+        //                        PageSize = pageSize,
+        //                        TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+        //                    };
+
+        //                    // کش کردن نتیجه برای ۲ دقیقه
+        //                    _cache.Set(cacheKey, result, TimeSpan.FromMinutes(2));
+
+        //                    return result;
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                _logger.LogError(ex, "خطا در دریافت املاک برای tabId: {TabId}", tabId);
+
+        //                // برگشت نتیجه خالی در صورت خطا
+        //                return new PagedResult<RealEstateWithCategoryDto>
+        //                {
+        //                    Items = new List<RealEstateWithCategoryDto>(),
+        //                    TotalCount = 0,
+        //                    PageNumber = pageNumber,
+        //                    PageSize = pageSize,
+        //                    TotalPages = 0
+        //                };
+        //            }
+        //        }
+
         public async Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithCategoryAsync(
-            int tabId,
-            int pageNumber = 1,
-            int pageSize = 10,
-            CancellationToken cancellationToken = default)
+    int tabId,
+    int pageNumber = 1,
+    int pageSize = 10,
+    CancellationToken cancellationToken = default)
         {
             // اعتبارسنجی سریع
             if (tabId <= 0 || pageNumber < 1 || pageSize < 1 || pageSize > 50)
@@ -94,13 +221,6 @@ ORDER BY s.Id DESC";
                     PageSize = pageSize,
                     TotalPages = 0
                 };
-            }
-
-            // تلاش برای دریافت از کش
-            var cacheKey = string.Format(LastItemsCacheKey, tabId, pageNumber, pageSize);
-            if (_cache.TryGetValue(cacheKey, out PagedResult<RealEstateWithCategoryDto> cachedResult))
-            {
-                return cachedResult;
             }
 
             try
@@ -129,11 +249,11 @@ SELECT
     s.IsHasPool,
     s.IsHasStoreRoom,
     r.Name as RegionName,
-    q.Name + ' / ' + ra.Name as ParentName,
+        isnull(q.Name,'') + ' / ' + ra.Name as ParentName,
     i.address,
-    ISNULL(img.ImageCount, 0) as ImageCount  -- تعداد کل عکس‌ها
-,s.Price,
-s.CreatedAt
+    ISNULL(img.ImageCount, 0) as ImageCount,
+    s.Price,
+    s.CreatedAt
 FROM dbo.RealEstates s WITH (NOLOCK)
 INNER JOIN dbo.Categories c WITH (NOLOCK) ON c.id = s.CategoryId
 LEFT JOIN dbo.Regions r WITH (NOLOCK) ON r.id = s.RegionId
@@ -143,7 +263,7 @@ OUTER APPLY (
     SELECT TOP 1 address as Address
     FROM dbo.images i WITH (NOLOCK)
     WHERE i.RealEstateId = s.id 
-	and i.isbanner=1
+    and i.isbanner=1
     ORDER BY i.id
 ) i
 LEFT JOIN (
@@ -167,13 +287,13 @@ SELECT @TotalCount;";
                 using (var multi = await _connection.QueryMultipleAsync(
                     query,
                     parameters,
-                    commandTimeout: 5, // تایم‌اوت ۵ ثانیه
+                    commandTimeout: 5,
                     commandType: CommandType.Text))
                 {
                     var items = (await multi.ReadAsync<RealEstateWithCategoryDto>()).ToList();
                     var totalCount = await multi.ReadFirstAsync<int>();
 
-                    var result = new PagedResult<RealEstateWithCategoryDto>
+                    return new PagedResult<RealEstateWithCategoryDto>
                     {
                         Items = items,
                         TotalCount = totalCount,
@@ -181,11 +301,6 @@ SELECT @TotalCount;";
                         PageSize = pageSize,
                         TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
                     };
-
-                    // کش کردن نتیجه برای ۲ دقیقه
-                    _cache.Set(cacheKey, result, TimeSpan.FromMinutes(2));
-
-                    return result;
                 }
             }
             catch (Exception ex)
@@ -204,47 +319,10 @@ SELECT @TotalCount;";
             }
         }
 
-
-        //public async Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken)
-        //{
-        //    var realEstate = await _context.RealEstates.Include(s=>s.Region).FirstOrDefaultAsync(s => s.Id == id);
-        //    var query = await _context.RealEstates.FirstOrDefaultAsync(s => s.Id == id);
-        //    var images = await _context.Images.Where(s => s.RealEstateId == id).Select(s => s.FullAddress).ToArrayAsync();
-        //    var warnings = await _context.Warnings.Where(s => s.CategoryId == realEstate.CategoryId).Select(s => s.DescriptionRows).ToArrayAsync();
-        //    var facilities = (from r in _context.RealEstates_Facilities
-        //                      join f in _context.Facilities on r.FacilitiesId equals f.Id
-        //                      where r.RealEstatesId == id
-        //                      select f.Name)
-        //      .ToArray();
-        //    return new RealEstateDetails
-        //    {
-        //        IsHasStoreRoom = realEstate.IsHasStoreRoom,
-        //        IsHasLoan = realEstate.IsHaLoan,
-        //        Images = images,
-        //        Warnings = warnings,
-        //        Facilities = facilities,
-        //        Floor = realEstate.Floor,
-        //        CountFloor = realEstate.CountFloor,
-        //        Address = realEstate.Address,
-        //        AdditionalInformation = realEstate.AdditionalInformation,
-        //        CreatedAt = realEstate.CreatedAt,
-        //        ConstructionYear = realEstate.ConstructionYear,
-        //        IsHasElevator = realEstate.IsHasElevator,
-        //        IsHasParking = realEstate.IsHasParking,
-        //        lat = realEstate.Latitude,
-        //        lng = realEstate.Longitude,
-        //        Price = (long)realEstate.Price,
-        //        Title = realEstate.Title,
-        //        IsHasPool = realEstate.IsHasPool,
-        //        views = 0,
-        //        RegionName=realEstate.Region.Name,
-
-        //    };
-        //}
-
-
-        public async Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken)
+        public async Task<RealEstateDetails> GetRealEstateDetails(int id,CancellationToken cancellationToken)
         {
+
+
            // var realEstate = await _context.RealEstates.Include(s => s.Region).FirstOrDefaultAsync(s => s.Id == id);
             var realEstate = await _context.RealEstates.Include(s=>s.Category).Include(s => s.Region).FirstOrDefaultAsync(s => s.Id == id);
             var images = await _context.Images.Where(s => s.RealEstateId == id).AsNoTracking().Select(s => s.FullAddress).ToArrayAsync();
@@ -304,34 +382,6 @@ SELECT @TotalCount;";
 
             };
         }
-
-        //public async Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken)
-        //{
-        //    var query = from realEstate in _context.RealEstates
-        //                where realEstate.UserId.ToString() == userId
-        //                join image in _context.Images on realEstate.Id equals image.RealEstateId into imagesGroup
-        //                select new RealEstatePanel
-        //                {
-        //                    Id = realEstate.Id,
-        //                    Title = realEstate.Title,
-        //                    Region = realEstate.Region != null ? realEstate.Region.Name : null,
-        //                    Address = realEstate.Address,
-        //                    Price = realEstate.Price,
-        //                    Area = realEstate.SquareMeter,
-        //                    CountRooms = realEstate.RoomCount,
-        //                    CountFloor = realEstate.CountFloor,
-        //                    Floor = realEstate.Floor,
-        //                    IsHasParking = realEstate.IsHasParking,
-        //                    IsHasElavator = realEstate.IsHasElevator,
-        //                    IsHasLoan = realEstate.IsHaLoan,
-        //                   // Status = realEstate.Status,
-        //                    Views = "10",
-        //                    CreatedAt = realEstate.CreatedAt,
-        //                    Images = imagesGroup.Select(i => i.FullAddress).ToArray()
-        //                };
-
-        //    return await query.ToListAsync(cancellationToken);
-        //}
 
 
         private readonly TimeSpan _cacheDuration = TimeSpan.FromSeconds(30); // کش 30 ثانیه
@@ -416,28 +466,6 @@ SELECT @TotalCount;";
         }
 
 
-        //public async Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id,CancellationToken cancellationToken)
-        //{
-        //    var allRegions = await _context.Regions
-        //        .AsNoTracking()
-        //        .Where(r => r.ParentId == id)
-        //        .Select(r => new Region
-        //        {
-        //            Id = r.Id,
-        //            Name = r.Name,
-        //            Latitude = r.Latitude,
-        //            Longitude = r.Longitude,
-        //            ParentId = r.ParentId
-        //        })
-        //        .ToListAsync();
-
-        //    // اگر دیتایی وجود نداشت، لیست خالی برگردان
-        //    if (!allRegions.Any())
-        //        return new List<RegionDtos>();
-
-        //    // اعمال منطق تبدیل
-        //    return RegionHelper.GetRegionsWithChildFlag(allRegions);
-        //}
         public async Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id, CancellationToken cancellationToken)
         {
             var query = from s in _context.Regions
@@ -489,6 +517,68 @@ SELECT @TotalCount;";
             // بدون تراکنش صریح، از تراکنش خودکار EF Core استفاده می‌شود
            
         }
+        public async Task<bool> CheckAccessToRealEstate(int id, string userId, string roleName, CancellationToken cancellationToken)
+        {
+            if (roleName == "Admin")
+            {
+                return true;
+            }
+            else
+            {
+                return await _context.RealEstates
+                    .AnyAsync(r => r.Id == id && r.UserId.ToString() == userId, cancellationToken);
+            }
+        }
+
+
+        public async Task<RealEstateDetailsEdit> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken)
+        {
+
+
+            // var realEstate = await _context.RealEstates.Include(s => s.Region).FirstOrDefaultAsync(s => s.Id == id);
+            var realEstate = await _context.RealEstates.Include(s => s.Category).Include(s => s.Region).FirstOrDefaultAsync(s => s.Id == id);
+            var images = await _context.Images.Where(s => s.RealEstateId == id).AsNoTracking().Select(s => s.FullAddress).ToArrayAsync();
+       
+            var facilities = (from r in _context.RealEstates_Facilities
+                              join f in _context.Facilities on r.FacilitiesId equals f.Id
+                              where r.RealEstatesId == id
+                              select f.Name)
+              .ToArray();
+  
+            return new RealEstateDetailsEdit
+            {
+                Id = realEstate.Id,
+                CategoryType = (int)realEstate.Category.CategoryType,
+                IsHasStoreRoom = realEstate.IsHasStoreRoom,
+                IsHasLoan = realEstate.IsHaLoan,
+                Images = images,
+          
+                Facilities = facilities,
+                Floor = realEstate.Floor,
+                CountFloor = realEstate.CountFloor,
+                Address = realEstate.Address,
+                AdditionalInformation = realEstate.AdditionalInformation,
+                CreatedAt = realEstate.CreatedAt,
+                ConstructionYear = realEstate.ConstructionYear,
+                IsHasElevator = realEstate.IsHasElevator,
+                IsHasParking = realEstate.IsHasParking,
+                lat = realEstate.Latitude,
+                lng = realEstate.Longitude,
+                Price = realEstate.Price,
+                Deposit = realEstate.Deposit,
+                Rent = realEstate.Rent,
+                PriceMeter = realEstate.Price / realEstate.SquareMeter,
+                ShowExactLocation = realEstate.IsShowLocation,
+                Title = realEstate.Title,
+                IsHasPool = realEstate.IsHasPool,
+                Rooms = realEstate.RoomCount,            
+                RegionName = realEstate.Region.Name,
+                DescriptionRows = realEstate.DescriptionRows,
+                RegionId=realEstate.RegionId
+            };
+        }
+
+
     }
 }
 

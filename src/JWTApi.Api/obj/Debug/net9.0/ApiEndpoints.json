@@ -539,6 +539,38 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRealEstateDetailsForDemo",
+    "RelativePath": "api/RealEstatePage/GetRealEstateDetailsForDemo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRealEstateDetailsForEdit",
+    "RelativePath": "api/RealEstatePage/GetRealEstateDetailsForEdit",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetRealEstatePanel",
     "RelativePath": "api/RealEstatePage/GetRealEstatePanel",
     "HttpMethod": "GET",

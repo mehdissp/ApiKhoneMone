@@ -41,7 +41,11 @@ namespace JWTApi.Application.Services.RealEstateses
             {
                 await image.CopyToAsync(stream);
             }
+            // اضافه کردن واترمارک به تصویر
+         //   var watermarkedImageBytes = await WatermarkHelper.AddTextWatermark(image, "ملک چی", 0.6f);
 
+            // ذخیره تصویر واترمارک شده
+         //   await File.WriteAllBytesAsync(filePath, watermarkedImageBytes);
             _cache[cacheId] = new TempImage
             {
                 Id = cacheId,

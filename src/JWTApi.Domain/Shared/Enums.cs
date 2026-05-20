@@ -55,6 +55,7 @@ namespace JWTApi.Domain.Shared
         Sales = 5,
 
     }
+
     public static class RealEstateStatusEnumExtensions
     {
         public static string ToPersianString(this RealEstateStatusEnum inputData)
