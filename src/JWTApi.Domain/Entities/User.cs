@@ -30,6 +30,7 @@ namespace JWTApi.Domain.Entities
         // ارتباط با پروفایل مشاور املاک (  // اضافه کردن نقش کاربر به صورت مستقیم
         public UserRoleType Role { get; set; } = UserRoleType.EndUser; // پیش‌فرض فروشنده/خریداراگر مشاور املاک باشد)
         public string CodeMoaref { get; set; }
+        public string NationalCode { get; set; }
 
 
         // ============== فیلدهای جدید OTP ==============
@@ -40,6 +41,8 @@ namespace JWTApi.Domain.Entities
         public DateTime? OtpLockUntil { get; private set; } // قفل درخواست OTP تا زمان مشخص
 
         public virtual RealEstateAgentProfile? RealEstateAgentProfile { get; set; }
+
+        public virtual Wallet Wallet { get; set; }
 
         // ارتباط با مشاور املاکی که این کاربر را ثبت کرده (برای مشاوران مستقل و خریداران)
         public Guid? RegisteredByAgentId { get; set; }
@@ -55,7 +58,21 @@ namespace JWTApi.Domain.Entities
 
         
 
-        private User() { }
+        public User() { }
+        public void createIndepent(string userName, string name, string fullName, string nationalCode, string mobileNumber, bool isActive,int role
+            ,string codeMoaref
+            )
+        {
+            Username= userName;
+            FullName= fullName;
+            NationalCode= nationalCode;
+            MobileNumber= mobileNumber;
+            IsActive= isActive;
+            Name= name;
+            Role = (UserRoleType)role;
+            CodeMoaref= codeMoaref;
+
+        }
 
         public User(string username, string email)
         {
@@ -116,6 +133,19 @@ namespace JWTApi.Domain.Entities
             Email = email;
             MobileNumber = mobileNumber;
 
+            IsActive = isActive;
+            FullName = fullName;
+            GenerateReferralCode();
+
+        }
+
+        public User(string userId, string username, string email, bool isActive, string mobileNumber, string fullName,string codeMeli)
+        {
+
+            Username = username;
+            Email = email;
+            MobileNumber = mobileNumber;
+            
             IsActive = isActive;
             FullName = fullName;
             GenerateReferralCode();

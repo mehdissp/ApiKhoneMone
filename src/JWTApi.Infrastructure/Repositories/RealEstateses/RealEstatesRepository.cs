@@ -319,6 +319,137 @@ SELECT @TotalCount;";
             }
         }
 
+
+
+        public async Task<PagedResult<RealEstateMap>> GetRealStateMap(
+int regionId,
+int pageNumber = 1,
+int pageSize = 10,
+CancellationToken cancellationToken = default)
+        {
+            // اعتبارسنجی سریع
+            if (regionId <= 0 || pageNumber < 1 || pageSize < 1 || pageSize > 50)
+            {
+                return new PagedResult<RealEstateMap>
+                {
+                    Items = new List<RealEstateMap>(),
+                    TotalCount = 0,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    TotalPages = 0
+                };
+            }
+
+            try
+            {
+                // بهینه‌سازی کوئری برای پرفورمنس بالا
+                var query = @"
+DECLARE @TotalCount INT; 
+
+DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+
+-- دریافت تعداد کل با بهینه‌سازی
+SELECT @TotalCount = COUNT(*)
+FROM dbo.RealEstates s
+INNER JOIN dbo.Categories c ON c.id = s.CategoryId
+LEFT JOIN dbo.Regions r WITH (NOLOCK) ON r.id = s.RegionId
+LEFT JOIN dbo.Regions ra WITH (NOLOCK) ON ra.id = r.ParentId
+LEFT JOIN dbo.Regions q WITH (NOLOCK) ON q.id = ra.ParentId
+WHERE ra.ParentId=@regionId
+AND s.Latitude is not null
+
+;
+
+-- دریافت داده‌های صفحه جاری با ایندکس بهینه
+SELECT 
+    s.id,
+    s.ConstructionYear,
+    s.CountFloor,
+    s.Title,
+    s.AdditionalInformation,
+    s.IsHasElevator,
+    s.IsHasParking,
+    s.IsHasPool,
+    s.IsHasStoreRoom,
+	s.Latitude as lat,
+	s.Longitude as lng,
+	case when c.CategoryType=1 then N'فروش'
+	else N'رهن' end as TypeCate
+	,
+    r.Name as RegionName,
+        isnull(q.Name,'') + ' / ' + ra.Name as ParentName,
+    i.address,
+    ISNULL(img.ImageCount, 0) as ImageCount,
+    s.Price,
+    s.CreatedAt
+FROM dbo.RealEstates s WITH (NOLOCK)
+INNER JOIN dbo.Categories c WITH (NOLOCK) ON c.id = s.CategoryId
+LEFT JOIN dbo.Regions r WITH (NOLOCK) ON r.id = s.RegionId
+LEFT JOIN dbo.Regions ra WITH (NOLOCK) ON ra.id = r.ParentId
+LEFT JOIN dbo.Regions q WITH (NOLOCK) ON q.id = ra.ParentId
+OUTER APPLY (
+    SELECT TOP 1 address as Address
+    FROM dbo.images i WITH (NOLOCK)
+    WHERE i.RealEstateId = s.id 
+    and i.isbanner=1
+    ORDER BY i.id
+) i
+LEFT JOIN (
+    SELECT RealEstateId, COUNT(*) as ImageCount
+    FROM dbo.images WITH (NOLOCK)
+    GROUP BY RealEstateId
+) img ON img.RealEstateId = s.id
+WHERE ra.ParentId=@regionId
+AND s.Latitude is not null
+ORDER BY s.Id DESC
+OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+SELECT @TotalCount;";
+
+                var parameters = new
+                {
+                    regionId = regionId,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+
+                using (var multi = await _connection.QueryMultipleAsync(
+                    query,
+                    parameters,
+                    commandTimeout: 5,
+                    commandType: CommandType.Text))
+                {
+                    var items = (await multi.ReadAsync<RealEstateMap>()).ToList();
+                    var totalCount = await multi.ReadFirstAsync<int>();
+
+                    return new PagedResult<RealEstateMap>
+                    {
+                        Items = items,
+                        TotalCount = totalCount,
+                        PageNumber = pageNumber,
+                        PageSize = pageSize,
+                        TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت املاک برای tabId: {TabId}", regionId);
+
+                // برگشت نتیجه خالی در صورت خطا
+                return new PagedResult<RealEstateMap>
+                {
+                    Items = new List<RealEstateMap>(),
+                    TotalCount = 0,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    TotalPages = 0
+                };
+            }
+        }
+
+
+
         public async Task<RealEstateDetails> GetRealEstateDetails(int id,CancellationToken cancellationToken)
         {
 
@@ -482,6 +613,25 @@ SELECT @TotalCount;";
 
             return await query.AsNoTracking().ToListAsync(cancellationToken);
         }
+
+        public async Task<List<RegionDtos>> GetRegions( CancellationToken cancellationToken)
+        {
+            var query = from s in _context.Regions.Where(s=>s.ParentId==null)
+                
+                        select new RegionDtos
+                        {
+                            Id = s.Id,
+                            Name = s.Name,
+                            Latitude = s.Latitude,
+                            Longitude = s.Longitude,
+                            HasRegion = s.HasRegion,
+                            CountChild = _context.Regions.Any(a => a.ParentId == s.Id) ? 1 : 0
+                        };
+
+            return await query.AsNoTracking().ToListAsync(cancellationToken);
+        }
+
+
         public async Task InsertRealEstate(RealEstates realEstates, List<int> facilityIds,List<ImagesInfo> images)
         {
             try

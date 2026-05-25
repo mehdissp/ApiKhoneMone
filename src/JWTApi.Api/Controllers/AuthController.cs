@@ -29,12 +29,13 @@ namespace JWTApi.API.Controllers
         private readonly IMemoryCache _memoryCache;
         private readonly OtpSecurityService _otpSecurityService;
         private readonly ModerationService _moderationService;
+        private readonly UserService _userService;
 
         private static readonly Random Rand = new();
         private readonly string _modelPath;
         private readonly IWebHostEnvironment _environment; // اضافه کردن این فیلد
         public AuthController(OtpSecurityService otpSecurityService, AuthService authService , IMemoryCache memoryCache, BaleService baleService, IWebHostEnvironment environment, OtpService otpService
-            ,ModerationService moderationService)
+            ,ModerationService moderationService, UserService userService)
 
         {
             _memoryCache = memoryCache;
@@ -45,6 +46,7 @@ namespace JWTApi.API.Controllers
             _otpSecurityService = otpSecurityService;
             _modelPath = Path.Combine(_environment.ContentRootPath, "places365.onnx");
             _moderationService = moderationService;
+            _userService = userService;
         }
 
         [HttpPost("analyze")]
@@ -315,8 +317,8 @@ namespace JWTApi.API.Controllers
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            var (success, token, refresh,expireToken) = await _authService.LoginAsync(dto, ip, cancellationToken);
-            var result = new { token, refreshToken = refresh,ExpireToken= expireToken };
+            var (success, token, refresh,expireToken,role) = await _authService.LoginAsync(dto, ip, cancellationToken);
+            var result = new { token, refreshToken = refresh,ExpireToken= expireToken,role=role };
 
             //await _baleService.SendWelcomeMessage(dto.Username, ip);
             return success
@@ -491,6 +493,47 @@ namespace JWTApi.API.Controllers
             return Ok(new { valid = true });
         }
 
+
+
+
+        //     [HttpPost("registerNewUserIndependent")]
+        //     public async Task<IActionResult> registerNewUserIndependent(RegisterRealEstateAgent dto, CancellationToken cancellationToken)
+        //     {
+        //         var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+        //         var (success, message) = await _userService.RegisterIndependentAsync(dto, cancellationToken);
+
+        //         return success
+        //? ResponseApi.Ok(message).ToHttpResponse()
+        //: BadRequest(message);
+
+        //     }
+
+        // سرویس یا متد ثبت‌نام تغییر یافته
+        [HttpPost("registerNewUserIndependent")]
+        public async Task<IActionResult> registerNewUserIndependent(RegisterRealEstateAgent dto, CancellationToken cancellationToken)
+        {
+            // **چک کپچا اولویت اول**
+            if (!_memoryCache.TryGetValue(dto.CaptchaId, out string correctCode))
+            {
+                return BadRequest(new { error = "captcha_expired", message = "کپچا منقضی شده است" });
+            }
+
+            if (!string.Equals(correctCode, dto.CaptchaInput, StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { error = "captcha_invalid", message = "کد کپچا اشتباه است" });
+            }
+
+            // حذف کپچا از کش بعد از استفاده (مهم!)
+            _memoryCache.Remove(dto.CaptchaId);
+
+            // حالا ثبت‌نام انجام شود
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var (success, message) = await _userService.RegisterIndependentAsync(dto, cancellationToken);
+
+            return success
+                ? ResponseApi.Ok(message).ToHttpResponse()
+                : BadRequest(message);
+        }
 
     }
 }

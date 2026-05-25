@@ -1,16 +1,17 @@
-﻿using JWTApi.Domain.Interfaces;
+﻿using JWTApi.Domain.Dtos;
+using JWTApi.Domain.Dtos.ProjectUsers;
+using JWTApi.Domain.Dtos.Users;
+using JWTApi.Domain.Entities;
+using JWTApi.Domain.Interfaces;
 using JWTApi.Infrastructure.Data;
+using JWTApi.Infrastructure.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using JWTApi.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using JWTApi.Domain.Dtos;
-using JWTApi.Infrastructure.Exceptions;
-using JWTApi.Domain.Dtos.ProjectUsers;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace JWTApi.Infrastructure.Repositories
 {
@@ -159,18 +160,56 @@ namespace JWTApi.Infrastructure.Repositories
         }
 
 
-     //public async Task UpdateUser(string userId,string fullName,string password,string userName,string mobileNumber,bool isActive,bool isChangePasssword,CancellationToken cancellationToken)
-     //   {
-     //       var user = await GetByUserIdAsync(userId, cancellationToken);
-     //       user.FullName = fullName;
-     //       user.Username = userName;
-     //       if (isChangePasssword==false)
-     //       {
-     //           user.PasswordHash = password ?? string.Empty;
-     //       }
-     //       user.IsActive = isActive;
-     //       user.MobileNumber = mobileNumber;
-     //   }
+        public async Task AddUserIndepent(User user, CancellationToken cancellationToken)
+        {
+            // 1. تبدیل شناسه‌ها به Guid
+           
+            var roleGuid = await _context.Roles.Where(s => s.TypeRole == 2).Select(s => s.Id).FirstAsync();
+
+
+            // 3. استفاده از تراکنش برای عملیات اتمیک
+            using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+            try
+            {
+                // 4. افزودن کاربر جدید
+               
+                await _context.Users.AddAsync(user, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                // 5. اختصاص نقش به کاربر
+                var userRole = new UserRole
+                {
+                    UserId = user.Id, // فرض می‌کنیم User.Id خودکار تولید می‌شود
+                    RoleId = roleGuid
+                };
+
+                await _context.UserRoles.AddAsync(userRole, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                // 6. تأیید تراکنش
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+
+
+        //public async Task UpdateUser(string userId,string fullName,string password,string userName,string mobileNumber,bool isActive,bool isChangePasssword,CancellationToken cancellationToken)
+        //   {
+        //       var user = await GetByUserIdAsync(userId, cancellationToken);
+        //       user.FullName = fullName;
+        //       user.Username = userName;
+        //       if (isChangePasssword==false)
+        //       {
+        //           user.PasswordHash = password ?? string.Empty;
+        //       }
+        //       user.IsActive = isActive;
+        //       user.MobileNumber = mobileNumber;
+        //   }
 
 
         public async Task UpdateAsync(User user)
@@ -481,7 +520,32 @@ namespace JWTApi.Infrastructure.Repositories
         }
 
 
+        public async Task<UserDashboard> getUserDashbaordIndependent(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentNullException(nameof(userId));
 
+            var user = await _context.Users
+                .Where(u => u.Id.ToString() == userId)
+                .Include(u => u.Wallet)
+                .Select(u => new UserDashboard
+                {
+                    Id = u.Id.ToString(),
+                    FullName = u.FullName, // فرض بر وجود FirstName و LastName
+                    WalletBalance = u.Wallet != null ? u.Wallet.Balance : 0,
+                    Rating = "4",// اگر Rate از نوع decimal یا int است
+                    Specialty= " کسب و کار و استارتاپ",
+                    Mobile=u.MobileNumber,
+                    IsPhoneVerified=u.IsMobileVerified,
+                    TotalSessions="21",
+                    Experience="2"
+                    
+
+                })
+                .FirstOrDefaultAsync();
+
+            return user ?? new UserDashboard(); // بازگرداندن آبجکت خالی در صورت نبودن کاربر
+        }
 
     }
 }

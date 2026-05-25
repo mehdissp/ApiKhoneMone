@@ -52,6 +52,14 @@ namespace JWTApi.Infrastructure.Data
         public DbSet<Image> Images { get; set; }
         public DbSet<Payment> Payments { get; set; }
 
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+
+        public DbSet<WalletLog> WalletLogs { get; set; }
+
+        
+
+
 
 
 
@@ -67,9 +75,52 @@ namespace JWTApi.Infrastructure.Data
             {
                 b.HasKey(x => x.Id);
                 b.Property(p => p.IsBanner).HasDefaultValueSql("0");
-        
+
+            });
+            //---------------Wallet--------
+            modelBuilder.Entity<Wallet>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.Property(p => p.Currency).HasMaxLength(20);
+                b.Property(p => p.UserId).IsRequired();
+                b.Property(p => p.Balance).IsRequired();
+                b.Property(p => p.PendingBalance).IsRequired();
+                b.Property(p => p.IsActive).HasDefaultValueSql("1");
+                b.Property(p => p.IsLocked).HasDefaultValueSql("0");
+                b.Property(u => u.CreatedAt).HasDefaultValueSql("GETDATE()");
+                b.HasOne(r => r.User).WithOne(s => s.Wallet);
             });
 
+            //---------------Transaction--------
+            modelBuilder.Entity<Transaction>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.Property(p => p.WalletId).IsRequired();
+                b.Property(p => p.TransactionCode).IsRequired().HasMaxLength(50); ;
+                b.Property(p => p.Type).IsRequired();
+                b.Property(p => p.Amount).IsRequired();
+                b.Property(p => p.ReferenceId).IsRequired();
+                b.Property(p => p.Description).HasMaxLength(500);
+                b.Property(p => p.Status).IsRequired().HasDefaultValueSql("0");
+                b.Property(p => p.PaymentMethod).HasMaxLength(200);
+                b.Property(p => p.IpAddress).HasMaxLength(200);
+                b.Property(u => u.CreatedAt).HasDefaultValueSql("GETDATE()");
+                b.HasOne(p => p.Wallet)
+                .WithMany(t => t.Transactions)
+                .HasForeignKey(p => p.WalletId);
+            });
+            //-------------WalletLog------
+            modelBuilder.Entity<WalletLog>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.Property(p => p.WalletId).IsRequired();
+                b.Property(p => p.Action).IsRequired().HasMaxLength(500); 
+                b.Property(p => p.IpAddress).IsRequired().HasMaxLength(250);
+                b.Property(u => u.CreatedAt).HasDefaultValueSql("GETDATE()");
+                b.HasOne(p => p.Wallet)
+                .WithMany(t => t.Logs)
+                .HasForeignKey(p => p.WalletId);
+            });
             modelBuilder.Entity<Warning>(b =>
             {
                 b.HasKey(x => x.Id);
@@ -80,6 +131,7 @@ namespace JWTApi.Infrastructure.Data
    .HasForeignKey(p => p.CategoryId);
 
             });
+            //------------
 
             modelBuilder.Entity<UserRole>().HasKey(x => new { x.UserId, x.RoleId });
             modelBuilder.Entity<RolePermission>().HasKey(x => new { x.RoleId, x.PermissionId });
@@ -105,7 +157,7 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(x => x.Name).HasMaxLength(250).IsRequired();
 
             });
-          //*------------  RealEstateAgentProfile
+            //*------------  RealEstateAgentProfile
             modelBuilder.Entity<RealEstateAgentProfile>(b =>
             {
 
@@ -145,7 +197,9 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(r => r.IsActive).HasDefaultValue(true);
                 b.Property(p => p.IsDeleted).HasDefaultValueSql("0");
                 b.Property(p => p.IsMobileVerified).HasDefaultValueSql("0");
-                
+                b.Property(u => u.NationalCode).HasMaxLength(10);
+
+
                 b.HasMany(u => u.ExtraProjects)
                  .WithOne(p => p.User)
                  .HasForeignKey(p => p.UserId);
@@ -217,16 +271,16 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(p => p.Address).HasMaxLength(450);
                 b.Property(p => p.AdditionalInformation).HasMaxLength(250);
                 b.Property(p => p.Latitude)
-                    .HasColumnType("decimal(10,8)"); 
+                    .HasColumnType("decimal(10,8)");
                 b.Property(p => p.Longitude)
                     .HasColumnType("decimal(11,8)");
                 b.HasOne(p => p.Category)
               .WithMany(t => t.RealEstates)
               .HasForeignKey(p => p.CategoryId);
 
-    //            b.HasMany(p => p.Matches)
-    //.WithOne(t => t.RealEstates)
-    //.HasForeignKey(t => t.RealEstateId);
+                //            b.HasMany(p => p.Matches)
+                //.WithOne(t => t.RealEstates)
+                //.HasForeignKey(t => t.RealEstateId);
 
 
             });
@@ -254,9 +308,9 @@ namespace JWTApi.Infrastructure.Data
               .HasForeignKey(p => p.CategoryId);
 
 
-        //                b.HasMany(p => p.Matches)
-        //.WithOne(t => t.RealEstatesRent)
-        //.HasForeignKey(t => t.RealEstateRentId);
+                //                b.HasMany(p => p.Matches)
+                //.WithOne(t => t.RealEstatesRent)
+                //.HasForeignKey(t => t.RealEstateRentId);
 
 
             });
@@ -285,21 +339,21 @@ namespace JWTApi.Infrastructure.Data
             modelBuilder.Entity<SearchMatch>(b =>
             {
                 b.HasKey(p => p.Id);
-            
+
                 b.Property(p => p.MatchedAt).HasDefaultValueSql("GETDATE()");
                 b.Property(p => p.IsNotified).HasDefaultValueSql("0");
                 b.Property(p => p.IsRejected).HasDefaultValueSql("0");
                 b.Property(p => p.IsSeenByUser).HasDefaultValueSql("0");
 
 
-            //    b.HasOne(p => p.RealEstates)
-            //  .WithMany(t => t.Matches)
-            //  .HasForeignKey(p => p.RealEstateId);
+                //    b.HasOne(p => p.RealEstates)
+                //  .WithMany(t => t.Matches)
+                //  .HasForeignKey(p => p.RealEstateId);
 
 
-            //    b.HasOne(p => p.RealEstatesRent)
-            //.WithMany(t => t.Matches)
-            //.HasForeignKey(p => p.RealEstateRentId);
+                //    b.HasOne(p => p.RealEstatesRent)
+                //.WithMany(t => t.Matches)
+                //.HasForeignKey(p => p.RealEstateRentId);
 
 
             });
@@ -309,7 +363,7 @@ namespace JWTApi.Infrastructure.Data
                 b.HasKey(p => p.Id);
                 b.Property(p => p.DescriptionRows).HasMaxLength(550);
                 b.Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
-     
+
                 b.HasOne(p => p.RealEstates)
               .WithMany(t => t.BookMark)
               .HasForeignKey(p => p.RealEstatesId);
@@ -377,7 +431,7 @@ namespace JWTApi.Infrastructure.Data
             {
                 b.HasKey(rm => new { rm.RealEstatesId, rm.SpecialFeatureId });
             });
-     
+
 
             //------------------RealEstatesRent_SpecialFeature
             modelBuilder.Entity<RealEstatesRent_SpecialFeature>(b =>

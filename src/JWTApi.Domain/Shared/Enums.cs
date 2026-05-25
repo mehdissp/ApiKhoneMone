@@ -9,26 +9,26 @@ namespace JWTApi.Domain.Shared
     public enum CategoryType : byte
     {
         MortgageAndRent = 0,
-         
-        Procurement=1
+
+        Procurement = 1
 
     }
 
     // نقش‌ها (فقط برای تعیین نوع کاربر)
     public enum UserRoleType
     {
-        Admin=0,
+        Admin = 0,
         RealEstateAgent = 1,  // مشاور املاک (دارای پروفایل تخصصی)
         IndependentAgent = 2, // مشاور مستقل
-        EndUser = 3   ,       // فروشنده/خریدار
-        Manager=4,
-        
+        EndUser = 3,       // فروشنده/خریدار
+        Manager = 4,
+
     }
     public enum DocumentTypeEnum
     {
-        SingleLeaf=0,
-        Tassel=1,
-        Promise=2
+        SingleLeaf = 0,
+        Tassel = 1,
+        Promise = 2
     }
     public static class DocumentTypeEnumEnumExtensions
     {
@@ -77,5 +77,24 @@ namespace JWTApi.Domain.Shared
         Pending = 0,
         Success = 1,
         Failed = 2
+    }
+
+
+    // Enums
+    public enum TransactionType
+    {
+        Deposit = 1,    // واریز
+        Withdraw = 2,   // برداشت
+        Transfer = 3,   // انتقال به کاربر دیگر
+        Bonus = 4,      // جایزه
+        Refund = 5      // برگشت وجه
+    }
+
+    public enum TransactionStatus
+    {
+        Pending = 0,
+        Completed = 1,
+        Failed = 2,
+
     }
 }

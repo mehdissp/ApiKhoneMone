@@ -274,6 +274,7 @@ using JWTApi.Domain.Interfaces.RealEstateses;
 using JWTApi.Domain.Interfaces.Roles;
 using JWTApi.Domain.Interfaces.SMS;
 using JWTApi.Domain.Interfaces.TokenBlacklist;
+using JWTApi.Domain.Interfaces.Wallets;
 using JWTApi.Infrastructure.Data;
 using JWTApi.Infrastructure.Middleware;
 using JWTApi.Infrastructure.Repositories;
@@ -284,6 +285,7 @@ using JWTApi.Infrastructure.Repositories.RealEstateses;
 using JWTApi.Infrastructure.Repositories.Roles;
 using JWTApi.Infrastructure.Repositories.SMS;
 using JWTApi.Infrastructure.Repositories.TokenBlacklist;
+using JWTApi.Infrastructure.Repositories.Wallets;
 using JWTApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
@@ -398,6 +400,7 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     builder.Services.AddScoped<IRoleRespository, RoleRepository>();
     builder.Services.AddScoped<IMenuRepository, MenuRepository>();
     builder.Services.AddScoped<ITokenBlacklistRepository, TokenBlacklistRepository>();
+    builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 
     builder.Services.AddScoped<IRealEstatesRepository, RealEstatesRepository>();
     builder.Services.AddScoped<IPaymentGateway, ZarinpalGateway>();

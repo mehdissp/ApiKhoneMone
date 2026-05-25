@@ -147,6 +147,22 @@
   },
   {
     "ContainingType": "JWTApi.API.Controllers.AuthController",
+    "Method": "registerNewUserIndependent",
+    "RelativePath": "api/Auth/registerNewUserIndependent",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "JWTApi.Application.DTOs.RegisterRealEstateAgent",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.API.Controllers.AuthController",
     "Method": "SendOtp",
     "RelativePath": "api/Auth/send-otp",
     "HttpMethod": "POST",
@@ -581,6 +597,42 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRealStateMap",
+    "RelativePath": "api/RealEstatePage/GetRealStateMap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tabId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRegions",
+    "RelativePath": "api/RealEstatePage/GetRegions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetRegionsWithChildFlagAsync",
     "RelativePath": "api/RealEstatePage/GetRegionsWithChildFlagAsync",
     "HttpMethod": "GET",
@@ -663,6 +715,16 @@
     "ContainingType": "JWTApi.Api.Controllers.UserController",
     "Method": "GetRoleCombo",
     "RelativePath": "api/User/GetRoleCombo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.UserController",
+    "Method": "getUserDashbaordIndependent",
+    "RelativePath": "api/User/getUserDashbaordIndependent",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

@@ -29,7 +29,7 @@ public class PaymentController : ControllerBase
         var payment = new Payment
         {
             Id = Guid.NewGuid(),
-            Amount = request.Amount,
+            Amount =5000,
             Gateway = "Zarinpal",
             Status = PaymentStatus.Pending,
             CallbackUrl = request.CallbackUrl,
@@ -47,7 +47,7 @@ public class PaymentController : ControllerBase
 
         var gatewayRequest = new PaymentRequest
         {
-            Amount = request.Amount,
+            Amount =5000,
             CallbackUrl = $"{request.CallbackUrl}?paymentId={payment.Id}",
             Description = request.Description
         };

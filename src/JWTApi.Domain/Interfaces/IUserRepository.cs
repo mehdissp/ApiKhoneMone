@@ -1,5 +1,6 @@
 ﻿using JWTApi.Domain.Dtos;
 using JWTApi.Domain.Dtos.ProjectUsers;
+using JWTApi.Domain.Dtos.Users;
 using JWTApi.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,9 @@ namespace JWTApi.Domain.Interfaces
         Task<User?> GetByUserIdAsyncForToken(string userId);
 
         Task<PagedResult<User>> GetUsersForComboAsync(string userId, int pageNumber, int pageSize, CancellationToken cancellationToken);
+        Task AddUserIndepent(User user, CancellationToken cancellationToken);
 
+        Task<UserDashboard> getUserDashbaordIndependent(string userId);
 
     }
 }

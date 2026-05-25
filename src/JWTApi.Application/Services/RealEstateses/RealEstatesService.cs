@@ -84,6 +84,33 @@ namespace JWTApi.Application.Services.RealEstateses
                 TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize)
             };
         }
+
+        public async Task<PagedResult<RealEstateMap>> GetRealStateMap(
+      int tabId,
+      int pageNumber = 1,
+      int pageSize = 10,
+      CancellationToken cancellationToken = default)
+        {
+            var result = await _realEstatesRepository
+          .GetRealStateMap(
+              tabId,
+              pageNumber,
+              pageSize,
+              cancellationToken);
+
+            var mappedItems = _mapper.Map<List<RealEstateMap>>(result.Items);
+
+            return new PagedResult<RealEstateMap>
+            {
+                Items = mappedItems,
+                TotalCount = result.TotalCount,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize)
+            };
+        }
+
+        
         public async Task<List<CategoryDto>> GetCategoryDtos(int tabId, CancellationToken cancellation)
         {
                 var result = await _categoryRepository.GetCategoryDtos(tabId, cancellation);
@@ -95,7 +122,11 @@ namespace JWTApi.Application.Services.RealEstateses
         {
             return await _realEstatesRepository.GetRegionsWithChildFlagAsync(id, cancellationToken);
         }
-
+        public async Task<List<RegionDtos>> GetRegions( CancellationToken cancellationToken)
+        {
+            return await _realEstatesRepository.GetRegions( cancellationToken);
+        }
+        
         public async Task InsertRealEstate(RealEstateRequest realEstateRequest,string currnetUser,List<ImagesInfo>? imageInfo ,CancellationToken cancellationToken)
         {
            RealEstates realEstates=new RealEstates();

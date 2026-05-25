@@ -33,6 +33,11 @@ namespace JWTApi.Domain.Interfaces.RealEstateses
 
         Task<bool> CheckAccessToRealEstate(int id, string userId, string roleName, CancellationToken cancellationToken);
         Task<RealEstateDetailsEdit> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken);
-
+        Task<List<RegionDtos>> GetRegions(CancellationToken cancellationToken);
+        Task<PagedResult<RealEstateMap>> GetRealStateMap(
+int regionId,
+int pageNumber = 1,
+int pageSize = 10,
+CancellationToken cancellationToken = default);
     }
 }

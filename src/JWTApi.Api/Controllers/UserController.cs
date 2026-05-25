@@ -107,5 +107,16 @@ namespace JWTApi.Api.Controllers
 
         }
 
+
+        [HttpGet("getUserDashbaordIndependent")]
+        public async Task<IActionResult> getUserDashbaordIndependent( CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var result = await _userService.getUserDashbaordIndependent(userId);
+         
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+
     }
 }

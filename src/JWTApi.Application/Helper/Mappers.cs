@@ -40,4 +40,15 @@ namespace JWTApi.Application.Helper
          
         }
     }
+
+    public class RealEstateMapProfile : Profile
+    {
+        public RealEstateMapProfile()
+        {
+            CreateMap<RealEstateMap, RealEstateMap>()
+                .ForMember(dest => dest.ImageCount,
+                          opt => opt.MapFrom(src => src.ImageCount));
+
+        }
+    }
 }

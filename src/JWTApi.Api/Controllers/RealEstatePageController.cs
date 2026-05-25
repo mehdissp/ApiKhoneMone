@@ -60,6 +60,21 @@ namespace JWTApi.Api.Controllers
 
             return ResponseApi.Ok(result).ToHttpResponse();
         }
+        [HttpGet("GetRealStateMap")]
+        public async Task<IActionResult> GetRealStateMap(
+int tabId,
+int pageNumber = 1,
+int pageSize = 10)
+        {
+            var result = await _realEstatesService.GetRealStateMap(
+                tabId,
+                pageNumber,
+                pageSize);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+        }
+
+        
         [HttpGet("GetRealEstateDetails")]
         public async Task<IActionResult> GetRealEstateDetails(int id, CancellationToken cancellationToken)
         {
@@ -135,6 +150,18 @@ namespace JWTApi.Api.Controllers
             return ResponseApi.Ok(result).ToHttpResponse();
 
         }
+
+        [HttpGet("GetRegions")]
+        public async Task<IActionResult> GetRegions( CancellationToken cancellationToken)
+        {
+
+
+            var result = await _realEstatesService.GetRegions( cancellationToken);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+
         [HttpPost("UploadTempImage")]
         public async Task<IActionResult> UploadTempImage(IFormFile image)
         {

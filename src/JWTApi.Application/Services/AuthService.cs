@@ -55,7 +55,7 @@ namespace JWTApi.Application.Services
 
         //    return (true, token, user.RefreshToken, expiresAt);
         //}
-        public async Task<(bool Success, string? Token, string? RefreshToken, DateTime? Expiry)> LoginAsync(LoginDto dto,string ip, CancellationToken cancellationToken)
+        public async Task<(bool Success, string? Token, string? RefreshToken, DateTime? Expiry,string role)> LoginAsync(LoginDto dto,string ip, CancellationToken cancellationToken)
         {
 
             var user = await _userRepo.GetByUsernameAsync(dto.Username,cancellationToken);
@@ -64,14 +64,14 @@ namespace JWTApi.Application.Services
             {
                // await LogLoginAttempt(dto.Username, ip, false, "User not found",cancellationToken);
            
-                return (false, null, null, null);
+                return (false, null, null, null,null);
             }
 
             var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
             if (result == PasswordVerificationResult.Failed)
             {
                 //await LogLoginAttempt(dto.Username, ip, false, "Wrong password", cancellationToken);
-                return (false, null, null, null);
+                return (false, null, null, null, null);
             }
 
             //await LogLoginAttempt(dto.Username, ip, true, "Login successful", cancellationToken );
@@ -82,7 +82,7 @@ namespace JWTApi.Application.Services
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _userRepo.UpdateAsync(user);
 
-            return (true, token, user.RefreshToken, expiry);
+            return (true, token, user.RefreshToken, expiry,user.Role.ToString());
         }
 
         private async Task LogLoginAttempt(string? username, string? ip, bool isSuccess, string? reason,CancellationToken cancellationToken)
