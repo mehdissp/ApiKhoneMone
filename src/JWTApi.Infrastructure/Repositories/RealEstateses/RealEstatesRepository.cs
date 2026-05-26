@@ -461,9 +461,11 @@ SELECT @TotalCount;";
             var facilities = (from r in _context.RealEstates_Facilities
                               join f in _context.Facilities on r.FacilitiesId equals f.Id
                               where r.RealEstatesId == id
-                              select f.Name)
-              .ToArray();
-            var agent = new
+                              select f.Name).ToArray();
+
+            var agents = await _context.Users.FirstOrDefaultAsync(s => s.Id == realEstate.UserId);
+
+        var agent = new
             {
                 name = "مهدی",
                 ConnectSocialMedia = "09190870450",
@@ -504,11 +506,11 @@ SELECT @TotalCount;";
                 DescriptionRows=realEstate.DescriptionRows,
                 Agents =new Agent
                 {
-                    Name=agent.name,
-                    Address=agent.Address,
+                    Name= agents.FullName,
+                    Address= agent.Address,
                     Image=agent.Image,
                     ConnectSocialMedia=agent.ConnectSocialMedia,
-                    Phone=agent.Phone,
+                    Phone=agents.MobileNumber,
                 }
 
             };
@@ -632,7 +634,7 @@ SELECT @TotalCount;";
         }
 
 
-        public async Task InsertRealEstate(RealEstates realEstates, List<int> facilityIds,List<ImagesInfo> images)
+        public async Task<int> InsertRealEstate(RealEstates realEstates, List<int> facilityIds,List<ImagesInfo> images)
         {
             try
             {
@@ -658,6 +660,7 @@ SELECT @TotalCount;";
                 await _context.Set<RealEstates_Facilities>().AddRangeAsync(facilities);
                 await _context.Set<Image>().AddRangeAsync(imageList);
                 await _context.SaveChangesAsync();
+                return realEstates.Id;
             }
             catch (Exception ex)
             {
@@ -728,7 +731,10 @@ SELECT @TotalCount;";
             };
         }
 
-
+        public async Task<RealEstates> GetRealEstates(int id ,CancellationToken cancellationToken)
+        {
+            return await _context.RealEstates.FindAsync(id, cancellationToken);
+        }
     }
 }
 

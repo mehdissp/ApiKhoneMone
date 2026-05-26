@@ -64,7 +64,7 @@ namespace JWTApi.Infrastructure.Repositories.Wallets
         }
 
         public async Task<TransactionResult> DepositAsync(Guid userId, decimal amount,
-            string paymentMethod, string ipAddress)
+            string paymentMethod, string ipAddress,string refId)
         {
             if (amount <= 0)
                 return TransactionResult.Error("مبلغ باید بیشتر از صفر باشد");
@@ -87,7 +87,7 @@ namespace JWTApi.Infrastructure.Repositories.Wallets
 
                 // استفاده از Row Lock برای امنیت
                 wallet = await _context.Wallets
-                    .FromSqlRaw("SELECT * FROM Wallets WHERE WalletId = {0} FOR UPDATE", wallet.Id)
+                    .FromSqlRaw("SELECT * FROM Wallets WHERE Id = {0} ", wallet.Id)
                     .FirstOrDefaultAsync();
 
                 var oldBalance = wallet.Balance;
@@ -104,6 +104,7 @@ namespace JWTApi.Infrastructure.Repositories.Wallets
                     Amount = amount,
                     BalanceAfter = wallet.Balance,
                     ReferenceId = GenerateReferenceId(),
+                    RefIPG=refId,
                     Description = $"واریز به مبلغ {amount:N0} ریال",
                     Status = TransactionStatus.Completed,
                     PaymentMethod = paymentMethod,
@@ -163,7 +164,7 @@ namespace JWTApi.Infrastructure.Repositories.Wallets
 
                 // قفل رکورد
                 wallet = await _context.Wallets
-                    .FromSqlRaw("SELECT * FROM Wallets WHERE WalletId = {0} FOR UPDATE", wallet.Id)
+                    .FromSqlRaw("SELECT * FROM Wallets WHERE Id = {0}", wallet.Id)
                     .FirstOrDefaultAsync();
 
                 var oldBalance = wallet.Balance;
@@ -180,6 +181,7 @@ namespace JWTApi.Infrastructure.Repositories.Wallets
                     BalanceAfter = wallet.Balance,
                     ReferenceId = GenerateReferenceId(),
                     Description = $"برداشت به مبلغ {amount:N0} ریال",
+                    RefIPG="",
                     Status = TransactionStatus.Completed,
                     IpAddress = ipAddress,
                     CompletedAt = DateTime.UtcNow
@@ -311,21 +313,41 @@ namespace JWTApi.Infrastructure.Repositories.Wallets
             return WalletResult.Success(wallet);
         }
 
-        public async Task<List<Transaction>> GetTransactionHistoryAsync(Guid userId,
+        public async Task<List<TransactionDtos>> GetTransactionHistoryAsync(Guid userId, CancellationToken cancellationToken,
             int page = 1, int pageSize = 20)
         {
             var wallet = await _context.Wallets
                 .FirstOrDefaultAsync(w => w.UserId == userId);
 
             if (wallet == null)
-                return new List<Transaction>();
+                return new List<TransactionDtos>();
 
             return await _context.Transactions
                 .Where(t => t.WalletId == wallet.Id)
                 .OrderByDescending(t => t.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                .Skip((page - 1) * 20)
+                .Take(20)
+                        .Select(t => new TransactionDtos
+                        {
+                            Id = t.Id,
+                            TransactionCode = t.TransactionCode,
+                            Type = t.Type,
+                            Amount = t.Amount,
+                            Fee = t.Fee,
+                            BalanceAfter = t.BalanceAfter,
+                            ReferenceId = t.ReferenceId,
+                            Description = t.Description,
+                            Status = t.Status,
+                            PaymentMethod = t.PaymentMethod,
+                            IpAddress = t.IpAddress,
+                            RefIPG = t.RefIPG,
+                            CreatedAt = t.CreatedAt,
+                            CompletedAt = t.CompletedAt,
+                            // اگر نیاز به اطلاعات کیف پول دارید
+                            // WalletName = t.Wallet.Name,
+                            // UserFullName = t.Wallet.User.FullName
+                        })
+        .ToListAsync(cancellationToken);
         }
 
         // متدهای کمکی

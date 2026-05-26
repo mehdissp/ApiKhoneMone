@@ -3,10 +3,12 @@ using JWTApi.Application.Helper;
 using JWTApi.Domain.Dtos;
 using JWTApi.Domain.Dtos.ProjectUsers;
 using JWTApi.Domain.Dtos.Users;
+using JWTApi.Domain.Dtos.Wallets;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.TokenBlacklist;
 using JWTApi.Domain.Interfaces.Wallets;
+using JWTApi.Infrastructure.Repositories.Wallets;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -225,6 +227,15 @@ public class UserService
     public async Task<UserDashboard> getUserDashbaordIndependent(string userId)
     {
         return await _userRepo.getUserDashbaordIndependent(userId);
+    }
+
+    public async Task<List<TransactionDtos>> GetTransactionHistoryAsync(Guid userId,int pageSize,int pageNumber,CancellationToken cancellationToken)
+    {
+        return await _WalletRepository.GetTransactionHistoryAsync(userId, cancellationToken, pageNumber,pageSize);
+    }
+    public async Task<WalletResult> GetBalanceAsync(Guid userId)
+    {
+        return await _WalletRepository.GetBalanceAsync(userId);
     }
 
 

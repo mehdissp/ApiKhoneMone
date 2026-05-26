@@ -38,7 +38,7 @@ namespace JWTApi.Infrastructure.Repositories.Payments
             var payload = new
             {
                 merchant_id = _merchantId,
-                amount = 50000,
+                amount = request.Amount,
                 callback_url = request.CallbackUrl,
                 description = request.Description ?? "پرداخت کاربر"
             };

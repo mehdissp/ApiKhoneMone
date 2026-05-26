@@ -12,9 +12,10 @@ namespace JWTApi.Domain.Interfaces.Wallets
     {
         Task<WalletResult> CreateWalletIndepentAsync(Guid userId);
         Task<WalletResult> GetBalanceAsync(Guid userId);
-        Task<TransactionResult> DepositAsync(Guid userId, decimal amount, string paymentMethod, string ipAddress);
+        Task<TransactionResult> DepositAsync(Guid userId, decimal amount, string paymentMethod, string ipAddress, string refId);
         Task<TransactionResult> WithdrawAsync(Guid userId, decimal amount, string ipAddress);
         Task<TransactionResult> TransferAsync(Guid fromUserId, Guid toUserId, decimal amount, string ipAddress);
-        Task<List<Transaction>> GetTransactionHistoryAsync(Guid userId, int page = 1, int pageSize = 20);
+        Task<List<TransactionDtos>> GetTransactionHistoryAsync(Guid userId, CancellationToken cancellationToken,
+            int page = 1, int pageSize = 20);
     }
 }

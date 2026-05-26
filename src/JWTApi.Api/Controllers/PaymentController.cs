@@ -29,7 +29,7 @@ public class PaymentController : ControllerBase
         var payment = new Payment
         {
             Id = Guid.NewGuid(),
-            Amount =5000,
+            Amount = request.Amount,
             Gateway = "Zarinpal",
             Status = PaymentStatus.Pending,
             CallbackUrl = request.CallbackUrl,
@@ -38,7 +38,7 @@ public class PaymentController : ControllerBase
             Authority="00",
             RefId="0",
             UserId= userId,
-            RealEstateId=request.RealEstateId
+            
     
         };
 
@@ -47,7 +47,7 @@ public class PaymentController : ControllerBase
 
         var gatewayRequest = new PaymentRequest
         {
-            Amount =5000,
+            Amount =payment.Amount,
             CallbackUrl = $"{request.CallbackUrl}?paymentId={payment.Id}",
             Description = request.Description
         };
@@ -72,6 +72,7 @@ public class PaymentController : ControllerBase
     [HttpGet("verify-callback")]
     public async Task<IActionResult> VerifyCallback([FromQuery] string authority, [FromQuery] string status, [FromQuery] Guid paymentId)
     {
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
         var payment = await _context.Payments.FindAsync(paymentId);
         if (payment == null)
         {
@@ -94,11 +95,16 @@ public class PaymentController : ControllerBase
 
             if (verification.IsSuccess)
             {
-                var realEstate=await  _context.RealEstates.FindAsync(payment.RealEstateId);
-                realEstate.Status= RealEstateStatusEnum.Accept;
+                
+                //var realEstate=await  _context.RealEstates.FindAsync(payment.RealEstateId);
+                //realEstate.Status= RealEstateStatusEnum.Accept;
+                var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+                var wallet = await _paymentGateway.GetBalanceAsync(Guid.Parse(userId));
+                await _paymentGateway.DepostiWallet(Guid.Parse(userId), payment.Amount, "شارژ کیف پول", "", verification.RefId);
                 payment.Status = PaymentStatus.Success;
                 payment.RefId = verification.RefId;
                 payment.VerifiedAt = DateTime.UtcNow;
+                payment.WalletId = wallet.Data.Id;
                 await _context.SaveChangesAsync();
 
                 //                return Redirect($"{payment.CallbackUrl}?status=success&refId={verification.RefId}");

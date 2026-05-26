@@ -93,6 +93,11 @@ namespace JWTApi.Domain.Entities
 
         }
 
+        public void UpdateStatus(int statusEnum)
+        {
+            Status = (RealEstateStatusEnum)statusEnum;
+        }
+
 
     }
 }

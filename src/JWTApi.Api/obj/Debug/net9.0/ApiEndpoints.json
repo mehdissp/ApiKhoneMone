@@ -723,8 +723,29 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.UserController",
+    "Method": "GetTransactionHistoryAsync",
+    "RelativePath": "api/User/GetTransactionHistoryAsync",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.UserController",
     "Method": "getUserDashbaordIndependent",
-    "RelativePath": "api/User/getUserDashbaordIndependent",
+    "RelativePath": "api/User/GetUserDashbaordIndependent",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

@@ -289,6 +289,7 @@ using JWTApi.Infrastructure.Repositories.Wallets;
 using JWTApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -552,7 +553,11 @@ static void ConfigureMiddlewarePipeline(WebApplication app)
             Console.WriteLine($"Serving static file: {path}");
         }
     });
-
+    // در Program.cs یا Startup.cs
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    });
     // Security Middleware
     app.UseCors("AllowReactApp");
     app.UseMiddleware<TokenValidationMiddleware>();

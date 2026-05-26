@@ -4,6 +4,7 @@ using JWTApi.Api.ViewModels.SMS;
 using JWTApi.Application.DTOs;
 using JWTApi.Application.Services;
 using JWTApi.Application.Services.SMS;
+using JWTApi.Domain.Dtos.Wallets;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -108,7 +109,7 @@ namespace JWTApi.Api.Controllers
         }
 
 
-        [HttpGet("getUserDashbaordIndependent")]
+        [HttpGet("GetUserDashbaordIndependent")]
         public async Task<IActionResult> getUserDashbaordIndependent( CancellationToken cancellationToken)
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
@@ -117,6 +118,22 @@ namespace JWTApi.Api.Controllers
             return ResponseApi.Ok(result).ToHttpResponse();
 
         }
+        [HttpGet("GetTransactionHistoryAsync")]
+        public async Task<IActionResult> GetTransactionHistoryAsync(int page,int pageNumber,CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var result = await _userService.GetTransactionHistoryAsync(Guid.Parse(userId), page,pageNumber, cancellationToken);
+            var wallet = await _userService.GetBalanceAsync(Guid.Parse(userId));
+
+            var respons = new
+            {
+                walletAmount = wallet.Data.Balance,
+                data = result ,
+            };
+            return ResponseApi.Ok(respons).ToHttpResponse();
+
+        }
+        
 
     }
 }

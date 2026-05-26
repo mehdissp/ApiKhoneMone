@@ -21,5 +21,6 @@ namespace JWTApi.Domain.Entities
         public DateTime? VerifiedAt { get; set; }
         public string DescriptionRows { get; set; }
         public int? RealEstateId { get; set; }
+        public Guid? WalletId { get; set; }
     }
 }

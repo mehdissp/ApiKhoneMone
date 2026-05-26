@@ -4,6 +4,7 @@ using JWTApi.Application.DTOs.RealEstates;
 using JWTApi.Application.Services.Categories;
 using JWTApi.Application.Services.RealEstateses;
 using JWTApi.Domain.Entities;
+using JWTApi.Domain.Interfaces.Wallets;
 using JWTApi.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,12 +21,17 @@ namespace JWTApi.Api.Controllers
         private RealEstatesService _realEstatesService;
         private readonly string _encryptionKey;
         private readonly TempImageCache _cache;
-        public RealEstatePageController(RealEstatesService realEstatesService, IConfiguration configuration, TempImageCache cache)
+
+        public RealEstatePageController(RealEstatesService realEstatesService, 
+            IConfiguration configuration, TempImageCache cache
+
+            )
         {
             _realEstatesService = realEstatesService;
             _encryptionKey = configuration["Encryption:Key"] ??
                    throw new Exception("Encryption key not found");
             _cache = cache;
+
         }
         [HttpGet("GetRandomLastItemRealEstates")]
         public async Task<IActionResult> GetRandomLastItemRealEstates(int tabId,CancellationToken cancellationToken)
@@ -214,7 +220,7 @@ int pageSize = 10)
                     return BadRequest(new { message = "خطا در انتقال تصاویر" });
        
                 await _realEstatesService.InsertRealEstate(model, userId, imageUrls, cancellationToken);
-
+               
 
                 return Ok(new
                 {

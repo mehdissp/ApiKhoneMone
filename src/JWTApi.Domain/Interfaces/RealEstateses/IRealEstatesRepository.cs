@@ -29,7 +29,7 @@ namespace JWTApi.Domain.Interfaces.RealEstateses
 
         Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id,CancellationToken cancellationToken);
 
-        Task InsertRealEstate(RealEstates realEstates, List<int> facilityIds, List<ImagesInfo> images);
+        Task<int> InsertRealEstate(RealEstates realEstates, List<int> facilityIds, List<ImagesInfo> images);
 
         Task<bool> CheckAccessToRealEstate(int id, string userId, string roleName, CancellationToken cancellationToken);
         Task<RealEstateDetailsEdit> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken);
@@ -39,5 +39,6 @@ int regionId,
 int pageNumber = 1,
 int pageSize = 10,
 CancellationToken cancellationToken = default);
+        Task<RealEstates> GetRealEstates(int id, CancellationToken cancellationToken);
     }
 }

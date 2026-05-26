@@ -10,6 +10,7 @@ using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.RealEstateses;
+using JWTApi.Domain.Interfaces.Wallets;
 using JWTApi.Infrastructure.Repositories.Categories;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
@@ -26,12 +27,17 @@ namespace JWTApi.Application.Services.RealEstateses
         private readonly IRealEstatesRepository _realEstatesRepository;
         private readonly IMapper _mapper;
         private readonly ICategoryRepository _categoryRepository;
-        public RealEstatesService(IRealEstatesRepository realEstatesRepository, IUnitOfWork unit, IMapper mapper, ICategoryRepository categoryRepository)
+        private readonly IWalletRepository _walletRepository;
+        public RealEstatesService(IRealEstatesRepository realEstatesRepository,
+            IUnitOfWork unit, IMapper mapper, 
+            ICategoryRepository categoryRepository
+            , IWalletRepository walletRepository            )
         {
             _realEstatesRepository = realEstatesRepository;
             _mapper = mapper;
             _unit = unit;
             _categoryRepository = categoryRepository;
+            _walletRepository= walletRepository;
         }
         public async Task<List<DTOs.RealEstates.RealEstateDto>> GetRandomLastItemRealEstates(int tabId, CancellationToken cancellation)
         {
@@ -142,7 +148,14 @@ namespace JWTApi.Application.Services.RealEstateses
                 .ToList();
 
 
-            await _realEstatesRepository.InsertRealEstate(realEstates, facilityIds, imageInfo);
+          int id=  await _realEstatesRepository.InsertRealEstate(realEstates, facilityIds, imageInfo);
+          var resultWallet=  await _walletRepository.WithdrawAsync(Guid.Parse(currnetUser), 30000, "");
+            if (resultWallet.IsSuccess)
+            {
+                RealEstates real = await _realEstatesRepository.GetRealEstates(id, cancellationToken);
+                real.UpdateStatus(0);
+                await _unit.SaveChanges(cancellationToken);
+            }
         }
 
         public async Task<bool> CheckAccessToRealEstate(int id, string userId, string roleName, CancellationToken cancellationToken)
