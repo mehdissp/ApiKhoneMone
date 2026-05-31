@@ -6,6 +6,7 @@ using JWTApi.Domain.Dtos.Facilities;
 using JWTApi.Domain.Dtos.ImageInfos;
 using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Dtos.Regions;
+using JWTApi.Domain.Dtos.Wallets;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
@@ -17,153 +18,166 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace JWTApi.Application.Services.RealEstateses
+namespace JWTApi.Application.Services.RealEstateses;
+public class RealEstatesService
 {
-    public class RealEstatesService
+    private readonly IUnitOfWork _unit;
+    private readonly IRealEstatesRepository _realEstatesRepository;
+    private readonly IMapper _mapper;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IWalletRepository _walletRepository;
+    public RealEstatesService(IRealEstatesRepository realEstatesRepository,
+        IUnitOfWork unit, IMapper mapper,
+        ICategoryRepository categoryRepository
+        , IWalletRepository walletRepository)
     {
-        private readonly IUnitOfWork _unit;
-        private readonly IRealEstatesRepository _realEstatesRepository;
-        private readonly IMapper _mapper;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IWalletRepository _walletRepository;
-        public RealEstatesService(IRealEstatesRepository realEstatesRepository,
-            IUnitOfWork unit, IMapper mapper, 
-            ICategoryRepository categoryRepository
-            , IWalletRepository walletRepository            )
+        _realEstatesRepository = realEstatesRepository;
+        _mapper = mapper;
+        _unit = unit;
+        _categoryRepository = categoryRepository;
+        _walletRepository = walletRepository;
+    }
+    public async Task<List<DTOs.RealEstates.RealEstateDto>> GetRandomLastItemRealEstates(int tabId, CancellationToken cancellation)
+    {
+        var result = await _realEstatesRepository.GetRandomLastItemRealEstates(tabId, cancellation);
+        return _mapper.Map<List<DTOs.RealEstates.RealEstateDto>>(result);
+    }
+    public async Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken)
+    {
+        var result = await _realEstatesRepository.GetRealEstateDetails(id, cancellationToken);
+        return result;
+    }
+    public async Task<RealEstateDetailsEdit> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken)
+    {
+        var result = await _realEstatesRepository.GetRealEstateDetailsForEdit(id, cancellationToken);
+        return result;
+    }
+    public async Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken)
+    {
+        var result = await _realEstatesRepository.GetRealEstatePanel(userId, cancellationToken);
+        return result;
+    }
+
+    public async Task<List<FacilitiesDtos>> GetFacilitiesDtos(int catId, CancellationToken cancellationToken)
+    {
+        return await _realEstatesRepository.GetFacilitiesDtos(catId, cancellationToken);
+    }
+
+
+    public async Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithCategoryAsync(
+        int tabId,
+        int pageNumber = 1,
+        int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _realEstatesRepository
+      .GetRandomLastItemRealEstatesWithCategoryAsync(
+          tabId,
+          pageNumber,
+          pageSize,
+          cancellationToken);
+
+        var mappedItems = _mapper.Map<List<RealEstateWithCategoryDto>>(result.Items);
+
+        return new PagedResult<RealEstateWithCategoryDto>
         {
-            _realEstatesRepository = realEstatesRepository;
-            _mapper = mapper;
-            _unit = unit;
-            _categoryRepository = categoryRepository;
-            _walletRepository= walletRepository;
-        }
-        public async Task<List<DTOs.RealEstates.RealEstateDto>> GetRandomLastItemRealEstates(int tabId, CancellationToken cancellation)
+            Items = mappedItems,
+            TotalCount = result.TotalCount,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize,
+            TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize)
+        };
+    }
+
+    public async Task<PagedResult<RealEstateMap>> GetRealStateMap(
+  int tabId,
+  int pageNumber = 1,
+  int pageSize = 10,
+  CancellationToken cancellationToken = default)
+    {
+        var result = await _realEstatesRepository
+      .GetRealStateMap(
+          tabId,
+          pageNumber,
+          pageSize,
+          cancellationToken);
+
+        var mappedItems = _mapper.Map<List<RealEstateMap>>(result.Items);
+
+        return new PagedResult<RealEstateMap>
         {
-                var result = await _realEstatesRepository.GetRandomLastItemRealEstates(tabId,cancellation);
-                return _mapper.Map<List<DTOs.RealEstates.RealEstateDto>>(result);
-        }
-        public async Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken)
-        {
-            var result = await _realEstatesRepository.GetRealEstateDetails(id, cancellationToken);
-            return result;
-        }
-        public async Task<RealEstateDetailsEdit> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken)
-        {
-            var result = await _realEstatesRepository.GetRealEstateDetailsForEdit(id, cancellationToken);
-            return result;
-        }
-        public async Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken)
-        {
-            var result = await _realEstatesRepository.GetRealEstatePanel(userId, cancellationToken);
-            return result;
-        }
-
-        public  async Task<List<FacilitiesDtos>> GetFacilitiesDtos(int catId, CancellationToken cancellationToken)
-        {
-            return await _realEstatesRepository.GetFacilitiesDtos(catId, cancellationToken);
-        }
+            Items = mappedItems,
+            TotalCount = result.TotalCount,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize,
+            TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize)
+        };
+    }
 
 
-        public async Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithCategoryAsync(
-            int tabId,
-            int pageNumber = 1,
-            int pageSize = 10,
-            CancellationToken cancellationToken = default)
-        {
-            var result = await _realEstatesRepository
-          .GetRandomLastItemRealEstatesWithCategoryAsync(
-              tabId,
-              pageNumber,
-              pageSize,
-              cancellationToken);
-
-            var mappedItems = _mapper.Map<List<RealEstateWithCategoryDto>>(result.Items);
-
-            return new PagedResult<RealEstateWithCategoryDto>
-            {
-                Items = mappedItems,
-                TotalCount = result.TotalCount,
-                PageNumber = result.PageNumber,
-                PageSize = result.PageSize,
-                TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize)
-            };
-        }
-
-        public async Task<PagedResult<RealEstateMap>> GetRealStateMap(
-      int tabId,
-      int pageNumber = 1,
-      int pageSize = 10,
-      CancellationToken cancellationToken = default)
-        {
-            var result = await _realEstatesRepository
-          .GetRealStateMap(
-              tabId,
-              pageNumber,
-              pageSize,
-              cancellationToken);
-
-            var mappedItems = _mapper.Map<List<RealEstateMap>>(result.Items);
-
-            return new PagedResult<RealEstateMap>
-            {
-                Items = mappedItems,
-                TotalCount = result.TotalCount,
-                PageNumber = result.PageNumber,
-                PageSize = result.PageSize,
-                TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize)
-            };
-        }
-
-        
-        public async Task<List<CategoryDto>> GetCategoryDtos(int tabId, CancellationToken cancellation)
-        {
-                var result = await _categoryRepository.GetCategoryDtos(tabId, cancellation);
-                return _mapper.Map<List<CategoryDto>>(result);
-         
-        }
-
-        public async Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id, CancellationToken cancellationToken)
-        {
-            return await _realEstatesRepository.GetRegionsWithChildFlagAsync(id, cancellationToken);
-        }
-        public async Task<List<RegionDtos>> GetRegions( CancellationToken cancellationToken)
-        {
-            return await _realEstatesRepository.GetRegions( cancellationToken);
-        }
-        
-        public async Task InsertRealEstate(RealEstateRequest realEstateRequest,string currnetUser,List<ImagesInfo>? imageInfo ,CancellationToken cancellationToken)
-        {
-           RealEstates realEstates=new RealEstates();
-            realEstates.create(realEstateRequest.Title, realEstateRequest.DescriptionRows, realEstateRequest.CountRoom,
-                realEstateRequest.Floor, realEstateRequest.CountFloor, realEstateRequest.CountInFloor, realEstateRequest.ContractDuration
-                , realEstateRequest.Sqmeter, realEstateRequest.Price, realEstateRequest.DepositPrice, realEstateRequest.RentPrice
-                , realEstateRequest.CategoryTypeId, realEstateRequest.lat, realEstateRequest.lon, false, realEstateRequest.IsHasElevator
-                , realEstateRequest.IsHaLoan, currnetUser, false, realEstateRequest.Region, realEstateRequest.Address,
-                realEstateRequest.ShowExactLocation, realEstateRequest.DocumentType, realEstateRequest.IsRenovated);
-            // استخراج فقط شناسه‌های امکانات
-            List<int> facilityIds = realEstateRequest.Facilities
-                .Select(f => f.Id) // یا هر property که ID در آن است
-                .ToList();
-
-
-          int id=  await _realEstatesRepository.InsertRealEstate(realEstates, facilityIds, imageInfo);
-          var resultWallet=  await _walletRepository.WithdrawAsync(Guid.Parse(currnetUser), 30000, "");
-            if (resultWallet.IsSuccess)
-            {
-                RealEstates real = await _realEstatesRepository.GetRealEstates(id, cancellationToken);
-                real.UpdateStatus(0);
-                await _unit.SaveChanges(cancellationToken);
-            }
-        }
-
-        public async Task<bool> CheckAccessToRealEstate(int id, string userId, string roleName, CancellationToken cancellationToken)
-        {
-            return await _realEstatesRepository.CheckAccessToRealEstate(id, userId, roleName, cancellationToken);
-        }
-
+    public async Task<List<CategoryDto>> GetCategoryDtos(int tabId, CancellationToken cancellation)
+    {
+        var result = await _categoryRepository.GetCategoryDtos(tabId, cancellation);
+        return _mapper.Map<List<CategoryDto>>(result);
 
     }
 
+    public async Task<List<RegionDtos>> GetRegionsWithChildFlagAsync(int? id, CancellationToken cancellationToken)
+    {
+        return await _realEstatesRepository.GetRegionsWithChildFlagAsync(id, cancellationToken);
+    }
+    public async Task<List<RegionDtos>> GetRegions(CancellationToken cancellationToken)
+    {
+        return await _realEstatesRepository.GetRegions(cancellationToken);
+    }
+
+    public async Task InsertRealEstate(RealEstateRequest realEstateRequest, string currnetUser, string roleId, List<ImagesInfo>? imageInfo, CancellationToken cancellationToken)
+    {
+        RealEstates realEstates = new RealEstates();
+        realEstates.create(realEstateRequest.Title, realEstateRequest.DescriptionRows, realEstateRequest.CountRoom,
+            realEstateRequest.Floor, realEstateRequest.CountFloor, realEstateRequest.CountInFloor, realEstateRequest.ContractDuration
+            , realEstateRequest.Sqmeter, realEstateRequest.Price, realEstateRequest.DepositPrice, realEstateRequest.RentPrice
+            , realEstateRequest.CategoryTypeId, realEstateRequest.lat, realEstateRequest.lon, false, realEstateRequest.IsHasElevator
+            , realEstateRequest.IsHaLoan, currnetUser, false, realEstateRequest.Region, realEstateRequest.Address,
+            realEstateRequest.ShowExactLocation, realEstateRequest.DocumentType, realEstateRequest.IsRenovated);
+        // استخراج فقط شناسه‌های امکانات
+        List<int> facilityIds = realEstateRequest.Facilities
+            .Select(f => f.Id) // یا هر property که ID در آن است
+            .ToList();
+
+
+        int id = await _realEstatesRepository.InsertRealEstate(realEstates, facilityIds, imageInfo);
+        var getAdPrice = await _realEstatesRepository.getAdPriceRange(Guid.Parse(roleId), realEstateRequest.CategoryTypeId);
+        var resultWallet = await _walletRepository.WithdrawAsync(Guid.Parse(currnetUser), getAdPrice.AdPostingCost, "");
+        if (resultWallet.IsSuccess)
+        {
+            //RealEstates real = await _realEstatesRepository.GetRealEstates(id, cancellationToken);
+            //real.UpdateStatus(0);
+            //await _unit.SaveChanges(cancellationToken);
+            await UpdateStatusRealEstate(id, cancellationToken);
+        }
+    }
+
+    public async Task<bool> CheckAccessToRealEstate(int id, string userId, string roleName, CancellationToken cancellationToken)
+    {
+        return await _realEstatesRepository.CheckAccessToRealEstate(id, userId, roleName, cancellationToken);
+    }
+
+    public async Task<PaymentStatusDtos> GetPaymentStatus(int realEstateId, string roleId, string userId)
+    {
+        return await _realEstatesRepository.GetPaymentStatus(realEstateId, Guid.Parse(roleId), Guid.Parse(userId));
+    }
+
+    public async Task UpdateStatusRealEstate(int id,CancellationToken cancellationToken)
+    {
+        RealEstates real = await _realEstatesRepository.GetRealEstates(id, cancellationToken);
+        real.UpdateStatus(0);
+        await _unit.SaveChanges(cancellationToken);
+    }
+
 }
+
+

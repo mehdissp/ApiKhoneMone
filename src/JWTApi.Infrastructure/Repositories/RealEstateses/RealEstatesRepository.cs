@@ -4,6 +4,7 @@ using JWTApi.Domain.Dtos.Facilities;
 using JWTApi.Domain.Dtos.ImageInfos;
 using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Dtos.Regions;
+using JWTApi.Domain.Dtos.Wallets;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Helper;
 using JWTApi.Domain.Interfaces.RealEstateses;
@@ -734,6 +735,124 @@ SELECT @TotalCount;";
         public async Task<RealEstates> GetRealEstates(int id ,CancellationToken cancellationToken)
         {
             return await _context.RealEstates.FindAsync(id, cancellationToken);
+        }
+
+        public async Task<AdPriceRanges> getAdPriceRange(Guid roleId, int categoryId)
+        {
+            return await _context.AdPriceRanges
+                .FirstOrDefaultAsync(s => s.RoleId == roleId
+                && s.IsActive == true
+            && s.CategoryId == categoryId 
+            && s.StartDate <= DateTime.Now 
+            &&s.EndDate>= DateTime.Now
+            );
+        }
+
+        //public async Task<PaymentStatusDtos> GetPaymentStatus(int realEstateId,Guid roleId,Guid userId)
+        //{
+        //    var realEstate = await _context.RealEstates.FindAsync(realEstateId);
+        //    var wallet=await _context.Wallets.FirstOrDefaultAsync(s=>s.UserId==userId);
+        //    var getAdPrice = await _context.AdPriceRanges
+        //        .FirstOrDefaultAsync(s => s.RoleId == roleId
+        //        && s.IsActive == true
+        //        && s.CategoryId == realEstate.CategoryId
+        //        && s.StartDate <= DateTime.Now
+        //        && s.EndDate >= DateTime.Now
+        //        );
+        //    if (getAdPrice.AdPostingCost <= wallet.Balance)
+        //    {
+        //        return new PaymentStatusDtos
+        //        {
+        //            IsWalletPay = true,
+        //            AdPrice = getAdPrice.AdPostingCost,
+        //            WalletBalance = wallet.Balance,
+        //            Debtor = 0
+
+        //        };
+        //    }
+        //    return new PaymentStatusDtos
+        //    {
+        //        IsWalletPay = false,
+        //        AdPrice = getAdPrice.AdPostingCost,
+        //        WalletBalance = wallet.Balance,
+        //        Debtor = getAdPrice.AdPostingCost - wallet.Balance
+
+        //    };
+
+
+
+        //}
+
+        public async Task<PaymentStatusDtos> GetPaymentStatus(int realEstateId, Guid roleId, Guid userId)
+        {
+            // 1. دریافت اطلاعات ملک
+            var realEstate = await _context.RealEstates
+                .FirstOrDefaultAsync(s=>s.Id==realEstateId 
+            && s.IsDeleted==false && s.Status== RealEstateStatusEnum.WaitingForPayment);
+            if (realEstate == null)
+            {
+             
+                    return new PaymentStatusDtos
+                    {
+                        IsWalletPay = false,
+                        AdPrice = 0,
+                        WalletBalance = 0,
+                        Debtor = 0,
+                        ErrorMessage = "ملک یافت نشد"
+                    };
+                
+            }
+
+            // 2. دریافت کیف پول کاربر
+            var wallet = await _context.Wallets.FirstOrDefaultAsync(s => s.UserId == userId);
+            if (wallet == null)
+            {
+                return new PaymentStatusDtos
+                {
+                    IsWalletPay = false,
+                    AdPrice = 0,
+                    WalletBalance = 0,
+                    Debtor = 0,
+                    ErrorMessage = "کیف پول کاربر یافت نشد"
+                };
+           
+            }
+
+            // 3. دریافت قیمت درج آگهی بر اساس نقش و دسته‌بندی ملک
+            var getAdPrice = await _context.AdPriceRanges
+                .FirstOrDefaultAsync(s => s.RoleId == roleId
+                    && s.IsActive == true
+                    && s.CategoryId == realEstate.CategoryId
+                    && s.StartDate <= DateTime.Now
+                    && s.EndDate >= DateTime.Now
+                );
+
+            if (getAdPrice == null)
+            {
+                return new PaymentStatusDtos
+                {
+                    IsWalletPay = false,
+                    AdPrice = 0,
+                    WalletBalance = 0,
+                    Debtor = 0,
+                    ErrorMessage = "تعرفه درج آگهی برای این دسته‌بندی و نقش فعال یافت نشد"
+                };
+                
+            }
+
+            // 4. محاسبه وضعیت پرداخت
+            decimal adPrice = getAdPrice.AdPostingCost;
+            decimal walletBalance = wallet.Balance;
+            bool isWalletPay = adPrice <= walletBalance;
+            decimal debtor = isWalletPay ? 0 : adPrice - walletBalance;
+
+            return new PaymentStatusDtos
+            {
+                IsWalletPay = isWalletPay,
+                AdPrice = adPrice,
+                WalletBalance = walletBalance,
+                Debtor = debtor
+            };
         }
     }
 }

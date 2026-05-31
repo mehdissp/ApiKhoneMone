@@ -3,6 +3,7 @@ using JWTApi.Domain.Dtos.Facilities;
 using JWTApi.Domain.Dtos.ImageInfos;
 using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Dtos.Regions;
+using JWTApi.Domain.Dtos.Wallets;
 using JWTApi.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -40,5 +41,8 @@ int pageNumber = 1,
 int pageSize = 10,
 CancellationToken cancellationToken = default);
         Task<RealEstates> GetRealEstates(int id, CancellationToken cancellationToken);
+        Task<AdPriceRanges> getAdPriceRange(Guid roleId,int categoryId);
+
+        Task<PaymentStatusDtos> GetPaymentStatus(int realEstateId, Guid roleId, Guid userId);
     }
 }

@@ -57,8 +57,10 @@ namespace JWTApi.Infrastructure.Data
 
         public DbSet<WalletLog> WalletLogs { get; set; }
 
-        
+        public DbSet<AdPriceRanges> AdPriceRanges { get; set; }
+        public DbSet<Story> Stories { get; set; }
 
+        
 
 
 
@@ -90,6 +92,17 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(u => u.CreatedAt).HasDefaultValueSql("GETDATE()");
                 b.HasOne(r => r.User).WithOne(s => s.Wallet);
             });
+            //--------------AdPriceRanges--
+            modelBuilder.Entity<AdPriceRanges>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.Property(p => p.Description).HasMaxLength(500);
+                b.Property(p => p.RoleId).IsRequired();
+                b.Property(p => p.CategoryId).IsRequired();
+                b.Property(p => p.Title).HasMaxLength(100);
+                b.Property(p => p.IsActive).HasDefaultValueSql("1");
+            });
+            
 
             //---------------Transaction--------
             modelBuilder.Entity<Transaction>(b =>
@@ -277,6 +290,48 @@ namespace JWTApi.Infrastructure.Data
                 b.HasOne(p => p.Category)
               .WithMany(t => t.RealEstates)
               .HasForeignKey(p => p.CategoryId);
+
+                //            b.HasMany(p => p.Matches)
+                //.WithOne(t => t.RealEstates)
+                //.HasForeignKey(t => t.RealEstateId);
+
+
+            });
+
+            //******Story
+            modelBuilder.Entity<Story>(b =>
+            {
+                b.HasKey(p => p.Id);
+  
+                b.Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
+                b.Property(p => p.ImagePath)
+     .HasMaxLength(500);
+                b.Property(p => p.Content)
+    .HasMaxLength(500);
+
+                b.HasOne(p => p.RealEstates)
+            .WithMany(t => t.Stories)
+            .HasForeignKey(p => p.RealEstatesId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+                b.HasOne(p => p.User)
+.WithMany(t => t.Stories)
+.HasForeignKey(p => p.UserId);
+//.OnDelete(DeleteBehavior.Cascade);
+
+                b.Property(p => p.ExpiresAt)
+    .HasComputedColumnSql("DATEADD(HOUR, 24, CreatedAt)")
+    .ValueGeneratedOnAddOrUpdate();
+
+    //            b.Property(p => p.IsExpired)
+    //.HasComputedColumnSql("CAST(CASE WHEN GETUTCDATE() >= DATEADD(HOUR, 24, CreatedAt) THEN 1 ELSE 0 END AS BIT)")
+    //.ValueGeneratedOnAddOrUpdate();
+                // ایندکس‌ها برای بهبود عملکرد
+                // ایندکس روی ExpiresAt برای حذف سریع استوری‌های منقضی شده
+                b.HasIndex(p => p.ExpiresAt);
+
+                // ایندکس ترکیبی برای جستجوی استوری‌های فعال یک ملک
+                b.HasIndex(p => new { p.RealEstatesId, p.ExpiresAt });
 
                 //            b.HasMany(p => p.Matches)
                 //.WithOne(t => t.RealEstates)

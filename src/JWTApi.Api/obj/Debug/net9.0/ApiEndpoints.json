@@ -354,6 +354,38 @@
   },
   {
     "ContainingType": "PaymentController",
+    "Method": "InitializeDepositAds",
+    "RelativePath": "api/Payment/InitializeDepositAds",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "JWTApi.Domain.Dtos.Payments.InitPaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PaymentController",
+    "Method": "PaymentWithWallet",
+    "RelativePath": "api/Payment/PaymentWithWallet",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PaymentController",
     "Method": "VerifyCallback",
     "RelativePath": "api/Payment/verify-callback",
     "HttpMethod": "GET",
@@ -373,6 +405,37 @@
       {
         "Name": "paymentId",
         "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PaymentController",
+    "Method": "VerifyCallbackWithDraw",
+    "RelativePath": "api/Payment/verify-callback-WithDraw",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "authority",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "paymentId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -483,6 +546,22 @@
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetFacilitiesDtos",
     "RelativePath": "api/RealEstatePage/GetFacilities",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetPaymentStatus",
+    "RelativePath": "api/RealEstatePage/GetPaymentStatus",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

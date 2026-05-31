@@ -22,6 +22,47 @@ namespace JWTApi.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.AdPriceRanges", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AdPostingCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdPriceRanges", (string)null);
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.Attachment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -38,7 +79,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Attachments");
+                    b.ToTable("Attachments", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.BookMark", b =>
@@ -73,7 +114,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("RealEstatesRentId");
 
-                    b.ToTable("BookMarks");
+                    b.ToTable("BookMarks", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Category", b =>
@@ -112,7 +153,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.ExtraProject", b =>
@@ -144,7 +185,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ExtraProjects");
+                    b.ToTable("ExtraProjects", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Facilities", b =>
@@ -183,7 +224,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Facilities");
+                    b.ToTable("Facilities", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Image", b =>
@@ -215,7 +256,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.IndependentAgentProfile", b =>
@@ -239,7 +280,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("IndependentAgentProfiles");
+                    b.ToTable("IndependentAgentProfiles", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.IpLock", b =>
@@ -269,7 +310,7 @@ namespace JWTApi.Infrastructure.Migrations
                     b.HasIndex("IPAddress")
                         .IsUnique();
 
-                    b.ToTable("IpLocks");
+                    b.ToTable("IpLocks", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.LoginAttempt", b =>
@@ -308,7 +349,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("UserId", "AttemptTime");
 
-                    b.ToTable("LoginAttempts");
+                    b.ToTable("LoginAttempts", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Menu", b =>
@@ -348,7 +389,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Package", b =>
@@ -377,7 +418,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Packages");
+                    b.ToTable("Packages", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Payment", b =>
@@ -432,7 +473,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Permission", b =>
@@ -454,7 +495,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permission");
+                    b.ToTable("Permission", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Project", b =>
@@ -483,7 +524,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.ProjectUser", b =>
@@ -512,7 +553,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectUsers");
+                    b.ToTable("ProjectUsers", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstateAgentProfile", b =>
@@ -567,7 +608,7 @@ namespace JWTApi.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("RealEstateAgentProfiles");
+                    b.ToTable("RealEstateAgentProfiles", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstates", b =>
@@ -718,7 +759,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RealEstates");
+                    b.ToTable("RealEstates", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstatesRent", b =>
@@ -836,7 +877,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RealEstatesRents");
+                    b.ToTable("RealEstatesRents", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstatesRent_Facilities", b =>
@@ -849,7 +890,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("RealEstatesRentId", "FacilitiesId");
 
-                    b.ToTable("RealEstatesRent_Facilities");
+                    b.ToTable("RealEstatesRent_Facilities", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstatesRent_SpecialFeature", b =>
@@ -862,7 +903,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("RealEstatesRentId", "SpecialFeatureId");
 
-                    b.ToTable("RealEstatesRent_SpecialFeatures");
+                    b.ToTable("RealEstatesRent_SpecialFeatures", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstates_Facilities", b =>
@@ -877,7 +918,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("FacilitiesId");
 
-                    b.ToTable("RealEstates_Facilities");
+                    b.ToTable("RealEstates_Facilities", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstates_SpecialFeature", b =>
@@ -892,7 +933,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("SpecialFeatureId");
 
-                    b.ToTable("RealEstates_SpecialFeatures");
+                    b.ToTable("RealEstates_SpecialFeatures", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Region", b =>
@@ -930,7 +971,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Regions");
+                    b.ToTable("Regions", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Role", b =>
@@ -955,7 +996,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RoleMenu", b =>
@@ -975,7 +1016,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("RoleMenus");
+                    b.ToTable("RoleMenus", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RolePermission", b =>
@@ -990,7 +1031,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("RolePermission");
+                    b.ToTable("RolePermission", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.SearchMatch", b =>
@@ -1047,7 +1088,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("SearchRequestId");
 
-                    b.ToTable("SearchMatches");
+                    b.ToTable("SearchMatches", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.SearchRequest", b =>
@@ -1118,7 +1159,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("SearchRequests");
+                    b.ToTable("SearchRequests", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.SpecialFeature", b =>
@@ -1162,7 +1203,49 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("SpecialFeature");
+                    b.ToTable("SpecialFeature", (string)null);
+                });
+
+            modelBuilder.Entity("JWTApi.Domain.Entities.Story", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("DATEADD(HOUR, 24, CreatedAt)");
+
+                    b.Property<string>("ImagePath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("RealEstatesId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.HasIndex("RealEstatesId", "ExpiresAt");
+
+                    b.ToTable("Stories", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Transaction", b =>
@@ -1239,7 +1322,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.User", b =>
@@ -1353,7 +1436,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("RegisteredByAgentId1");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.UserPackage", b =>
@@ -1384,7 +1467,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserPackages");
+                    b.ToTable("UserPackages", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.UserRole", b =>
@@ -1399,7 +1482,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Wallet", b =>
@@ -1454,7 +1537,7 @@ namespace JWTApi.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wallets");
+                    b.ToTable("Wallets", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.WalletLog", b =>
@@ -1496,7 +1579,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("WalletLogs");
+                    b.ToTable("WalletLogs", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Warning", b =>
@@ -1524,7 +1607,7 @@ namespace JWTApi.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Warnings");
+                    b.ToTable("Warnings", (string)null);
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.BookMark", b =>
@@ -1774,6 +1857,17 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.Story", b =>
+                {
+                    b.HasOne("JWTApi.Domain.Entities.RealEstates", "RealEstates")
+                        .WithMany("Stories")
+                        .HasForeignKey("RealEstatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RealEstates");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.Transaction", b =>
                 {
                     b.HasOne("JWTApi.Domain.Entities.User", "DestinationUser")
@@ -1931,6 +2025,8 @@ namespace JWTApi.Infrastructure.Migrations
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstates", b =>
                 {
                     b.Navigation("BookMark");
+
+                    b.Navigation("Stories");
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.RealEstatesRent", b =>

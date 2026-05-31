@@ -54,6 +54,7 @@ namespace JWTApi.Domain.Entities
         //public ICollection<RealEstates_Facilities> RealEstates_Facilities { get; set; } = new List<RealEstates_Facilities>();
         //public ICollection<RealEstates_SpecialFeature> RealEstates_SpecialFeatures { get; set; } = new List<RealEstates_SpecialFeature>();
         public ICollection<BookMark> BookMark { get; set; } = new List<BookMark>();
+        public ICollection<Story> Stories { get; set; } = new List<Story>();
         //public ICollection<SearchMatch> Matches { get; set; } = new List<SearchMatch>();
 
         public void create(string title,string desc,int roomCount,int floor

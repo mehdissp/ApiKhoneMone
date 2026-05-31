@@ -206,6 +206,7 @@ int pageSize = 10)
             try
             {
                 var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+                var roleId = User.Claims.FirstOrDefault(c => c.Type == "roleId")?.Value;
                 // 1. بررسی تعداد عکس‌ها
                 if (model.TempImageCacheIds == null || model.TempImageCacheIds.Count == 0)
                     return BadRequest(new { message = "حداقل یک عکس انتخاب کنید" });
@@ -219,7 +220,7 @@ int pageSize = 10)
                 if (imageUrls.Count == 0)
                     return BadRequest(new { message = "خطا در انتقال تصاویر" });
        
-                await _realEstatesService.InsertRealEstate(model, userId, imageUrls, cancellationToken);
+                await _realEstatesService.InsertRealEstate(model, userId, roleId, imageUrls, cancellationToken);
                
 
                 return Ok(new
@@ -235,6 +236,20 @@ int pageSize = 10)
                 return BadRequest(new { message = $"خطا در ثبت ملک: {ex.Message}" });
             }
         }
+
+        [HttpGet("GetPaymentStatus")]
+        public async Task<IActionResult> GetPaymentStatus(int id,CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var roleId = User.Claims.FirstOrDefault(c => c.Type == "roleId")?.Value;
+
+            var result = await _realEstatesService.GetPaymentStatus(id, roleId, userId);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+
+        
 
         //[HttpGet("GetRealEstateDetails")]
         //public async Task<IActionResult> GetRealEstateDetails(int id, CancellationToken cancellationToken)
@@ -264,7 +279,7 @@ int pageSize = 10)
         //    public string Iv { get; set; }
         //}
 
-    
+
 
     }
 }

@@ -3,6 +3,7 @@ using JWTApi.Domain.Dtos.Wallets;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Menus;
 using JWTApi.Domain.Interfaces.Payments;
+using JWTApi.Domain.Interfaces.RealEstateses;
 using JWTApi.Domain.Interfaces.Wallets;
 using JWTApi.Infrastructure.Repositories.Wallets;
 using System;
@@ -19,11 +20,16 @@ namespace JWTApi.Application.Services.Payments
         private IPaymentGateway _paymentGateway;
         private IUnitOfWork _unitOfWork;
         private IWalletRepository _walletRepository;
-        public PaymentService(IPaymentGateway paymentGateway, IUnitOfWork unitOfWork, IWalletRepository walletRepository)
+        private readonly IRealEstatesRepository _realEstatesRepository;
+        public PaymentService(IPaymentGateway paymentGateway, IUnitOfWork unitOfWork, 
+            IWalletRepository walletRepository,
+            IRealEstatesRepository realEstatesRepository
+            )
         {
             _paymentGateway = paymentGateway;
             _unitOfWork = unitOfWork;
             _walletRepository=walletRepository;
+            _realEstatesRepository=realEstatesRepository;
         }
         public async Task<PaymentVerificationResult> VerifyPaymentAsync(VerificationRequest request)
         {
@@ -43,6 +49,13 @@ namespace JWTApi.Application.Services.Payments
         public async Task<WalletResult> GetBalanceAsync(Guid userId)
         {
             return await _walletRepository.GetBalanceAsync(userId);
+        }
+
+        public async Task<TransactionResult> WithdrawWalletForAd(string userId,int id, string roleId
+    , string ipAddress )
+        {
+            var balance = await _realEstatesRepository.GetPaymentStatus(id, Guid.Parse(roleId), Guid.Parse(userId));
+            return await _walletRepository.WithdrawAsync(Guid.Parse(userId), (decimal)balance.AdPrice, ipAddress);
         }
 
 
