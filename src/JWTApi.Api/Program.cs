@@ -265,6 +265,7 @@ using JWTApi.Application.Services.Payments;
 using JWTApi.Application.Services.RealEstateses;
 using JWTApi.Application.Services.Roles;
 using JWTApi.Application.Services.SMS;
+using JWTApi.Application.Services.Stories;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
@@ -273,6 +274,7 @@ using JWTApi.Domain.Interfaces.Payments;
 using JWTApi.Domain.Interfaces.RealEstateses;
 using JWTApi.Domain.Interfaces.Roles;
 using JWTApi.Domain.Interfaces.SMS;
+using JWTApi.Domain.Interfaces.Stories;
 using JWTApi.Domain.Interfaces.TokenBlacklist;
 using JWTApi.Domain.Interfaces.Wallets;
 using JWTApi.Infrastructure.Data;
@@ -284,6 +286,7 @@ using JWTApi.Infrastructure.Repositories.Payments;
 using JWTApi.Infrastructure.Repositories.RealEstateses;
 using JWTApi.Infrastructure.Repositories.Roles;
 using JWTApi.Infrastructure.Repositories.SMS;
+using JWTApi.Infrastructure.Repositories.Stories;
 using JWTApi.Infrastructure.Repositories.TokenBlacklist;
 using JWTApi.Infrastructure.Repositories.Wallets;
 using JWTApi.Infrastructure.Services;
@@ -405,6 +408,8 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
 
     builder.Services.AddScoped<IRealEstatesRepository, RealEstatesRepository>();
     builder.Services.AddScoped<IPaymentGateway, ZarinpalGateway>();
+    builder.Services.AddScoped<IStoryRepository, StoryRepository>();
+    builder.Services.AddScoped<StoryService>();
     // اگر می‌خواهید به صورت Singleton استفاده کنید (توصیه می‌شود برای کش)
     builder.Services.AddScoped<OtpSecurityService>();
     builder.Services.AddScoped<RoleService>();

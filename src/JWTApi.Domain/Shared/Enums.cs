@@ -55,6 +55,18 @@ namespace JWTApi.Domain.Shared
         Sales = 5,
 
     }
+    public enum StoryStatusEnum
+    {
+        
+        WaitingForPayment = 1,
+        WaitingForAccept = 2,
+        Accept = 3,  // مشاور املاک (دارای پروفایل تخصصی)
+        Reject = 4, // مشاور مستقل
+
+
+    }
+
+
 
     public static class RealEstateStatusEnumExtensions
     {

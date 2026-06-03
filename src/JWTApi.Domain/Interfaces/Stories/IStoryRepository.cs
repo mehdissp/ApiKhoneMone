@@ -27,11 +27,12 @@ namespace JWTApi.Domain.Interfaces.Stories
         Task AddRangeAsync(IEnumerable<Story> stories);
 
         // Delete
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id, string userId, string roleName);
         Task<int> DeleteExpiredStoriesAsync();
         Task<int> DeleteByPropertyAsync(int propertyId);
 
         // Save
         Task<int> SaveChangesAsync();
+        Task<List<StoryProfileDto>> StoryProfileDtos(string userId, CancellationToken cancellationToken);
     }
 }

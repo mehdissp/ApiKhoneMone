@@ -775,6 +775,48 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "JWTApi.Api.Controllers.StoryController",
+    "Method": "DeleteStory",
+    "RelativePath": "api/Story/DeleteStory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.StoryController",
+    "Method": "InsertStory",
+    "RelativePath": "api/Story/InsertStory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "JWTApi.Application.DTOs.Stoires.StoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.StoryController",
+    "Method": "StoryProfile",
+    "RelativePath": "api/Story/StoryProfile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "JWTApi.Api.Controllers.UserController",
     "Method": "GetProjectUsers",
     "RelativePath": "api/User/GetProjectUsers",

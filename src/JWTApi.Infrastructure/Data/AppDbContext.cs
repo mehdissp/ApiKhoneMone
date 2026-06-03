@@ -306,7 +306,7 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
                 b.Property(p => p.ImagePath)
      .HasMaxLength(500);
-                b.Property(p => p.Content)
+                b.Property(p => p.Desc)
     .HasMaxLength(500);
 
                 b.HasOne(p => p.RealEstates)
@@ -314,10 +314,8 @@ namespace JWTApi.Infrastructure.Data
             .HasForeignKey(p => p.RealEstatesId)
             .OnDelete(DeleteBehavior.Cascade);
 
-                b.HasOne(p => p.User)
-.WithMany(t => t.Stories)
-.HasForeignKey(p => p.UserId);
-//.OnDelete(DeleteBehavior.Cascade);
+
+
 
                 b.Property(p => p.ExpiresAt)
     .HasComputedColumnSql("DATEADD(HOUR, 24, CreatedAt)")

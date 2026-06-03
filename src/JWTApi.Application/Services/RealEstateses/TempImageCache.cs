@@ -179,6 +179,49 @@ namespace JWTApi.Application.Services.RealEstateses
             return permanentImages;
         }
 
+
+        public async Task<List<ImagesInfo>> MoveToPermanentStory(List<string> cacheIds, string currentUserId)
+        {
+            var permanentImages = new List<ImagesInfo>();
+
+            foreach (var cacheId in cacheIds)
+            {
+                if (!_cache.ContainsKey(cacheId)) continue;
+
+                var temp = _cache[cacheId];
+
+                // ساختار پوشه سئو پسند
+                var seoFolderName = CleanForUrl("story");
+                var userFolder = Path.Combine(_env.WebRootPath, "uploads", "properties", seoFolderName, currentUserId);
+                Directory.CreateDirectory(userFolder);
+
+                // نام فایل سئو پسند
+                var originalName = Path.GetFileNameWithoutExtension(temp.OriginalName);
+                var cleanName = CleanForUrl(originalName);
+                var extension = Path.GetExtension(temp.Path).ToLower();
+
+                // تولید نام فایل بهینه برای سئو
+                var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+                var newFileName = $"{cleanName}-{timestamp}-{"story"}.webp"; // استفاده از WebP
+                var newPath = Path.Combine(userFolder, newFileName);
+
+                // فشرده سازی و بهینه سازی عکس
+                var imageInfo = await OptimizeImageForSEO(temp.Path, newPath, temp.OriginalName);
+
+                // حذف فایل موقت
+                File.Delete(temp.Path);
+                var dir = Path.GetDirectoryName(temp.Path);
+                if (Directory.Exists(dir) && !Directory.EnumerateFileSystemEntries(dir).Any())
+                    Directory.Delete(dir);
+
+                _cache.Remove(cacheId);
+
+                imageInfo.Url = $"/uploads/properties/{seoFolderName}/{currentUserId}/{newFileName}";
+                permanentImages.Add(imageInfo);
+            }
+
+            return permanentImages;
+        }
         private async Task<ImagesInfo> OptimizeImageForSEO(string inputPath, string outputPath, string originalName)
         {
             using var image = await Image.LoadAsync(inputPath);

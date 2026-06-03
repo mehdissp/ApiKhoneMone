@@ -4,6 +4,7 @@ using JWTApi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTApi.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260601051255_editstories")]
+    partial class editstories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1233,9 +1236,6 @@ namespace JWTApi.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("RealEstatesId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
