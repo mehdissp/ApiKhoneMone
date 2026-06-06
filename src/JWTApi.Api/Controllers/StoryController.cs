@@ -64,6 +64,18 @@ public class StoryController : ControllerBase
 
         return ResponseApi.Ok(result).ToHttpResponse();
     }
+    [HttpGet("StoryForSite")]
+    public async Task<IActionResult> StoryForSite(CancellationToken cancellationToken)
+    {
+        
+
+
+        var result = await _storyService.StoryForSite( cancellationToken);
+
+        return ResponseApi.Ok(result).ToHttpResponse();
+    }
+
+    
 
 }
 

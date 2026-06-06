@@ -34,5 +34,7 @@ namespace JWTApi.Domain.Interfaces.Stories
         // Save
         Task<int> SaveChangesAsync();
         Task<List<StoryProfileDto>> StoryProfileDtos(string userId, CancellationToken cancellationToken);
+
+        Task<List<StoryForSite>> GetStoriesDtos(CancellationToken cancellationToken);
     }
 }

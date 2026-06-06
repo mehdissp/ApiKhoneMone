@@ -35,6 +35,11 @@ namespace JWTApi.Application.Services.Stories
             return await _storyRepository.StoryProfileDtos(userId, cancellationToken);
         }
 
+        public async Task<List<StoryForSite>> StoryForSite( CancellationToken cancellationToken)
+        {
+            return await _storyRepository.GetStoriesDtos(cancellationToken);
+        }
+
 
     }
 }

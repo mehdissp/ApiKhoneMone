@@ -808,6 +808,16 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.StoryController",
+    "Method": "StoryForSite",
+    "RelativePath": "api/Story/StoryForSite",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.StoryController",
     "Method": "StoryProfile",
     "RelativePath": "api/Story/StoryProfile",
     "HttpMethod": "GET",

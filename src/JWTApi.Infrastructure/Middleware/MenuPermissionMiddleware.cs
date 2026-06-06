@@ -19,7 +19,7 @@ public class MenuPermissionMiddleware
     {
         // مسیرهای عمومی (public) رو بدون چک کردن اجازه عبور بده
         var path = context.Request.Path.Value?.ToLower() ?? "";
-        var publicPaths = new[] { "/api/Auth/registerNewUserIndependent", "/api/realestatepage/getrealstatemap", 
+        var publicPaths = new[] { "/api/story/storyforsite","/api/Auth/registerNewUserIndependent", "/api/realestatepage/getrealstatemap", 
             "/api/realestatepage/getregions",
             "/api/payment/verify-callback","/api/realestate/getrealestatepanel", 
             "/api/auth/verify-otp", "/api/auth/send-otp", "/api/realestatepage/getrealestatedetails",
