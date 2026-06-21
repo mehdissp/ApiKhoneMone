@@ -1,4 +1,5 @@
-﻿using JWTApi.Api.Response;
+﻿using Azure.Core;
+using JWTApi.Api.Response;
 using JWTApi.Api.ViewModels;
 using JWTApi.Api.ViewModels.SMS;
 using JWTApi.Application.DTOs;
@@ -118,6 +119,43 @@ namespace JWTApi.API.Controllers
         //    });
         //}
 
+        [HttpPost("CheckUser")]
+        public async Task<IActionResult> CheckUserInSys([FromBody] SendOtpRequest request, CancellationToken cancellationToken)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.Mobile))
+            {
+                return BadRequest(new { success = false, message = "شماره موبایل الزامی است" });
+            }
+            // اعتبارسنجی کپچا
+            if (string.IsNullOrWhiteSpace(request.CaptchaId) || string.IsNullOrWhiteSpace(request.CaptchaValue))
+            {
+                return BadRequest(new { success = false, message = "لطفاً کد امنیتی را وارد کنید" });
+            }
+            // بررسی کپچا از کش
+            if (!_memoryCache.TryGetValue(request.CaptchaId, out string correctCaptcha))
+            {
+                return BadRequest(new { success = false, message = "کد امنیتی منقضی شده است. لطفاً صفحه را refresh کنید" });
+            }
+            // مقایسه کپچا (کیس insensitive)
+            if (!string.Equals(correctCaptcha, request.CaptchaValue, StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { success = false, message = "کد امنیتی اشتباه است" });
+            }
+
+            // حذف کپچا از کش بعد از استفاده موفق (یکبار مصرف)
+            _memoryCache.Remove(request.CaptchaId);
+            // دریافت کاربر از دیتابیس
+            var user = await _authService.GetByMobileNumber(request.Mobile, cancellationToken);
+            if (user == null)
+            {
+                return NotFound(new { success = false, message = "کاربر یافت نشد" });
+            }
+            return Ok(new
+            {
+                success = true,
+    
+            });
+        }
 
         [HttpPost("send-otp")]
         public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request, CancellationToken cancellationToken)

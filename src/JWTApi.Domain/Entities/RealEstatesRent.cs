@@ -41,7 +41,7 @@ namespace JWTApi.Domain.Entities
         public Region Region { get; set; } = default!;
         //public ICollection<RealEstates_Facilities> RealEstates_Facilities { get; set; } = new List<RealEstates_Facilities>();
         //public ICollection<RealEstates_SpecialFeature> RealEstates_SpecialFeatures { get; set; } = new List<RealEstates_SpecialFeature>();
-        public ICollection<BookMark> BookMark { get; set; } = new List<BookMark>();
+        //public ICollection<BookMark> BookMark { get; set; } = new List<BookMark>();
         //public ICollection<SearchMatch> Matches { get; set; } = new List<SearchMatch>();
     }
 }

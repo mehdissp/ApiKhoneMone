@@ -26,17 +26,21 @@ public class StoryController : ControllerBase
         var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
         var roleId = User.Claims.FirstOrDefault(c => c.Type == "roleId")?.Value;
         // 1. بررسی تعداد عکس‌ها
-        if (model.TempImageCacheIds == null || model.TempImageCacheIds.Count == 0)
+        if (model.RealEstatedId == null &( model.TempImageCacheIds == null || model.TempImageCacheIds.Count == 0))
             return BadRequest(new { message = "حداقل یک عکس انتخاب کنید" });
 
-        if (model.TempImageCacheIds.Count > 12)
-            return BadRequest(new { message = "حداکثر 12 عکس مجاز است" });
-        // 2. انتقال عکس‌ها از کش به پوشه اصلی
-        var imageUrls = await _cache.MoveToPermanentStory(model.TempImageCacheIds, userId);
+        if (model.RealEstatedId ==null)
+        {
+            if (model.TempImageCacheIds.Count > 12)
+                return BadRequest(new { message = "حداکثر 12 عکس مجاز است" });
+            // 2. انتقال عکس‌ها از کش به پوشه اصلی
+            var imageUrls = await _cache.MoveToPermanentStory(model.TempImageCacheIds, userId);
 
-        if (imageUrls.Count == 0)
-            return BadRequest(new { message = "خطا در انتقال تصاویر" });
-        model.UrlAddress = imageUrls.First().Url;
+            if (imageUrls.Count == 0)
+                return BadRequest(new { message = "خطا در انتقال تصاویر" });
+            model.UrlAddress = imageUrls.First().Url;
+        }
+  
         var result = await _storyService.CreateStory(model,userId);
 
 
@@ -75,7 +79,20 @@ public class StoryController : ControllerBase
         return ResponseApi.Ok(result).ToHttpResponse();
     }
 
-    
+    [HttpGet("StoryForSiteForUser")]
+    public async Task<IActionResult> StoryForSiteForUser(string userId,CancellationToken cancellationToken)
+    {
+
+
+
+        var result = await _storyService.StoryForSiteForUser(userId, cancellationToken);
+
+        return ResponseApi.Ok(result).ToHttpResponse();
+    }
+
+
+
+
 
 }
 

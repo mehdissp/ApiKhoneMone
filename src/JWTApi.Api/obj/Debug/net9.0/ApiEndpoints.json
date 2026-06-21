@@ -69,6 +69,22 @@
   },
   {
     "ContainingType": "JWTApi.API.Controllers.AuthController",
+    "Method": "CheckUserInSys",
+    "RelativePath": "api/Auth/CheckUser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "JWTApi.Api.ViewModels.SMS.SendOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.API.Controllers.AuthController",
     "Method": "GetMenus",
     "RelativePath": "api/Auth/GetMenus",
     "HttpMethod": "GET",
@@ -744,6 +760,22 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "ToggleBookMark",
+    "RelativePath": "api/RealEstatePage/ToggleBookMark",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "realEstateId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "UploadTempImage",
     "RelativePath": "api/RealEstatePage/UploadTempImage",
     "HttpMethod": "POST",
@@ -814,6 +846,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.StoryController",
+    "Method": "StoryForSiteForUser",
+    "RelativePath": "api/Story/StoryForSiteForUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -945,6 +993,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.UserProfileController",
+    "Method": "GetAvatar",
+    "RelativePath": "api/UserProfile/GetAvatar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

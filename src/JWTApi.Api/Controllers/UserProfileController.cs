@@ -1,4 +1,7 @@
-﻿using JWTApi.Application.Services;
+﻿using JWTApi.Api.Response;
+using JWTApi.Application.Services;
+using JWTApi.Application.Services.Stories;
+using JWTApi.Domain.Entities;
 using JWTApi.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +60,21 @@ namespace JWTApi.Api.Controllers
 
 
         }
+
+        [HttpGet("GetAvatar")]
+  
+        public async Task<IActionResult> GetAvatar( CancellationToken cancellation)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+
+            var result = await _userService.getAvatar( userId,cancellation);
+
+
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+        }
+
+            
 
 
         // در کنترلر UserProfile این متد را اضافه یا اصلاح کنید

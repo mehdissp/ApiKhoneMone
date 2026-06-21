@@ -15,5 +15,19 @@ namespace JWTApi.Domain.Entities
         public string? DescriptionRows { get; set; }
 
         public RealEstates RealEstates { get; set; } = default!;
+
+        public void Create(string userId,int realEstatesId)
+        {
+            // تبدیل string به Guid
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
+            {
+                throw new ArgumentException("Invalid userId format", nameof(userId));
+            }
+
+            UserId = parsedUserId;
+
+            RealEstatesId = realEstatesId;
+            CreatedAt = DateTime.Now;
+        }
     }
 }

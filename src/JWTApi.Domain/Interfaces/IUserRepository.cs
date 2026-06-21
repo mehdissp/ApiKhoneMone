@@ -40,5 +40,7 @@ namespace JWTApi.Domain.Interfaces
 
         Task<UserDashboard> getUserDashbaordIndependent(string userId);
 
+        Task<string> getAvatar(string userId, CancellationToken cancellationToken);
+
     }
 }

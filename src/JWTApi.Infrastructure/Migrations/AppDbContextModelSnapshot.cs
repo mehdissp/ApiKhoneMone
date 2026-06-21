@@ -102,17 +102,12 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Property<int>("RealEstatesId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RealEstatesRentId")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RealEstatesId");
-
-                    b.HasIndex("RealEstatesRentId");
 
                     b.ToTable("BookMarks");
                 });
@@ -1620,10 +1615,6 @@ namespace JWTApi.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JWTApi.Domain.Entities.RealEstatesRent", null)
-                        .WithMany("BookMark")
-                        .HasForeignKey("RealEstatesRentId");
-
                     b.Navigation("RealEstates");
                 });
 
@@ -2028,11 +2019,6 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("BookMark");
 
                     b.Navigation("Stories");
-                });
-
-            modelBuilder.Entity("JWTApi.Domain.Entities.RealEstatesRent", b =>
-                {
-                    b.Navigation("BookMark");
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Region", b =>

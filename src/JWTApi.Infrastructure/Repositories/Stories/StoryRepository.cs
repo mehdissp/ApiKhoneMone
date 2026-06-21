@@ -179,7 +179,7 @@ namespace JWTApi.Infrastructure.Repositories.Stories
                     Id = s.Id,
                     Title = s.Desc,
                     IsRealEstate = s.RealEstates != null,
-                    UrlImage = s.RealEstates !=null ? await _context.Images.Where(s=>s.RealEstateId==s.RealEstateId).Select(s=>s.FullAddress).FirstAsync() : s.ImagePath ,
+                    UrlImage = s.RealEstates !=null ? await _context.Images.Where(w=>w.RealEstateId==s.RealEstatesId).Select(s=>s.FullAddress).FirstAsync() : s.ImagePath ,
                     RealEstateId = s.RealEstates != null ? s.RealEstates.Id : null,
                     TitleReal = s.RealEstates != null ? s.RealEstates.Title : null,
                     LinkReal = s.RealEstates != null ? $"property/{s.RealEstates.Id}/{s.RealEstates.Title}" : null
@@ -242,6 +242,50 @@ namespace JWTApi.Infrastructure.Repositories.Stories
             return result;
         }
 
+
+        public async Task<List<StoryForSite>> GetStoriesDtosForUser(string userId,CancellationToken cancellationToken)
+        {
+            // کوئری اول: گرفتن استوری‌های فعال
+            var stories = await _context.Stories.Include(s => s.RealEstates)
+                .Where(s => s.Status == StoryStatusEnum.Accept && s.ExpiresAt >= DateTime.Now && s.UserId.ToString()== userId)
+                .ToListAsync(cancellationToken);
+
+            if (!stories.Any())
+                return new List<StoryForSite>();
+
+            // گرفتن UserId های منحصر به فرد از استوری‌ها
+            var userIds = stories.Select(s => s.UserId).Distinct().ToList();
+
+            // کوئری دوم: گرفتن یوزرهای مربوطه
+            var users = await _context.Users
+                .Where(u => userIds.Contains(u.Id))
+                .ToDictionaryAsync(u => u.Id, u => u, cancellationToken);
+
+            // ترکیب دوتا دیتا در مموری
+            var result = stories
+                .GroupBy(s => s.UserId)
+                .Select(g => new StoryForSite
+                {
+                    Id = g.Key.ToString(),
+                    Name = users.ContainsKey(g.Key) ? users[g.Key].Name : null,
+                    Avatar = users.ContainsKey(g.Key) ? users[g.Key].Avatar : null,
+                    StoryUser = g.Select(s => new StoryUser
+                    {
+                        Id = s.Id,
+                        Name = users.ContainsKey(s.UserId) ? users[s.UserId].Name : null,
+                        Url = s.RealEstates != null ? _context.Images.Where(w => w.RealEstateId == s.RealEstates.Id && w.IsBanner == true).Select(s => s.FullAddress).First() : s.ImagePath,
+
+                        Caption = s.Desc,
+                        Link = s.RealEstates != null ? $"property/{s.RealEstates.Id}/{EncodeUrlPart(s.RealEstates.Title)}"
+        : null,
+                        LinkText = s.RealEstates != null ? "مشاهده آگهی"
+        : null
+                    }).ToList()
+                })
+                .ToList();
+
+            return result;
+        }
         private string EncodeUrlPart(string text)
         {
             if (string.IsNullOrEmpty(text)) return "";

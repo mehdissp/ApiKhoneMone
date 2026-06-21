@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace JWTApi.Api.Controllers
@@ -85,8 +86,8 @@ int pageSize = 10)
         public async Task<IActionResult> GetRealEstateDetails(int id, CancellationToken cancellationToken)
         {
 
-
-            var result = await _realEstatesService.GetRealEstateDetails(id, cancellationToken);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var result = await _realEstatesService.GetRealEstateDetails(id, userId, cancellationToken);
 
             return ResponseApi.Ok(result).ToHttpResponse();
 
@@ -100,7 +101,7 @@ int pageSize = 10)
             var check = await _realEstatesService.CheckAccessToRealEstate(id, userId, roleName, cancellationToken);
             if (check)
             {
-                var result = await _realEstatesService.GetRealEstateDetails(id, cancellationToken);
+                var result = await _realEstatesService.GetRealEstateDetails(id, userId, cancellationToken);
 
                 return ResponseApi.Ok(result).ToHttpResponse();
             }
@@ -249,7 +250,13 @@ int pageSize = 10)
 
         }
 
-        
+        [HttpPost("ToggleBookMark")]
+        public async Task<IActionResult> ToggleBookMark([FromBody] int realEstateId,CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            await _realEstatesService.ToggleBookMark(userId, realEstateId, cancellationToken);
+            return Ok();
+        }
 
         //[HttpGet("GetRealEstateDetails")]
         //public async Task<IActionResult> GetRealEstateDetails(int id, CancellationToken cancellationToken)

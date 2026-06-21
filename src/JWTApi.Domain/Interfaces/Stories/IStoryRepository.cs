@@ -36,5 +36,6 @@ namespace JWTApi.Domain.Interfaces.Stories
         Task<List<StoryProfileDto>> StoryProfileDtos(string userId, CancellationToken cancellationToken);
 
         Task<List<StoryForSite>> GetStoriesDtos(CancellationToken cancellationToken);
+        Task<List<StoryForSite>> GetStoriesDtosForUser(string userId, CancellationToken cancellationToken);
     }
 }

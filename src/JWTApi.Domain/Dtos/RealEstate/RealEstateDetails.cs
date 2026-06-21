@@ -43,6 +43,7 @@ namespace JWTApi.Domain.Dtos.RealEstate
         public int? saved { get; set; }
         public bool ShowExactLocation { get; set; }
         public string DescriptionRows { get; set; }
+        public bool? InBookMark { get; set; }
         // پراپرتی جدید برای نمایش تاریخ به فرمت شمسی نسبی
         public string CreatedAtPersianRelative => CreatedAt.ToPersianRelativeDate();
     }
@@ -53,5 +54,7 @@ namespace JWTApi.Domain.Dtos.RealEstate
         public string ConnectSocialMedia { get; set; }
         public string Address { get; set; }
         public string Image { get; set; }
+        public bool HasStory { get; set; }
+        public string UserId { get; set; }
     }
 }

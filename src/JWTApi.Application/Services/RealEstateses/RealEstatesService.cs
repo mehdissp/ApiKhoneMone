@@ -45,9 +45,9 @@ public class RealEstatesService
         var result = await _realEstatesRepository.GetRandomLastItemRealEstates(tabId, cancellation);
         return _mapper.Map<List<DTOs.RealEstates.RealEstateDto>>(result);
     }
-    public async Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken)
+    public async Task<RealEstateDetails> GetRealEstateDetails(int id,string? userId, CancellationToken cancellationToken)
     {
-        var result = await _realEstatesRepository.GetRealEstateDetails(id, cancellationToken);
+        var result = await _realEstatesRepository.GetRealEstateDetails(id, userId, cancellationToken);
         return result;
     }
     public async Task<RealEstateDetailsEdit> GetRealEstateDetailsForEdit(int id, CancellationToken cancellationToken)
@@ -175,6 +175,21 @@ public class RealEstatesService
     {
         RealEstates real = await _realEstatesRepository.GetRealEstates(id, cancellationToken);
         real.UpdateStatus(0);
+        await _unit.SaveChanges(cancellationToken);
+    }
+
+    public async Task ToggleBookMark(string userId, int realEstateId, CancellationToken cancellationToken)
+    {
+        var bookMark = new BookMark();
+        bookMark.Create(userId, realEstateId);
+
+        var exists = await _realEstatesRepository.DeleteBookMark(bookMark, cancellationToken);
+
+        if (!exists)
+        {
+            await _realEstatesRepository.InsertBookMark(bookMark, cancellationToken);
+        
+        }
         await _unit.SaveChanges(cancellationToken);
     }
 

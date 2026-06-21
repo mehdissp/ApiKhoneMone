@@ -215,7 +215,7 @@ public class UserService
 
         // ساخت لینک کامل
         var baseUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
-        var fullUrl = $"{baseUrl}/uploads/users/{fileName}";
+        var fullUrl = $"/uploads/users/{fileName}";
 
         user.UpdateUserProfile(fullUrl); // ذخیره لینک کامل
         await _unit.SaveChanges(cancellation);
@@ -237,6 +237,13 @@ public class UserService
     {
         return await _WalletRepository.GetBalanceAsync(userId);
     }
+
+    
+    public async Task<string> getAvatar(string userId, CancellationToken cancellationToken)
+    {
+        return await _userRepo.getAvatar(userId, cancellationToken);
+    }
+
 
 
 }

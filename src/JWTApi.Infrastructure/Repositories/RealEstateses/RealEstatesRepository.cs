@@ -451,7 +451,7 @@ SELECT @TotalCount;";
 
 
 
-        public async Task<RealEstateDetails> GetRealEstateDetails(int id,CancellationToken cancellationToken)
+        public async Task<RealEstateDetails> GetRealEstateDetails(int id,string? userId,CancellationToken cancellationToken)
         {
 
 
@@ -468,12 +468,13 @@ SELECT @TotalCount;";
 
         var agent = new
             {
-                name = "مهدی",
-                ConnectSocialMedia = "09190870450",
-                Phone = "02144816283",
-                Address = "تهران-جنت آباد ",
-                Image = "blob:https://web.bale.ai/170ebfd3-b81b-4300-8054-7bd93e429f06"
-            };
+                name = agents.FullName,
+                ConnectSocialMedia = agents.MobileNumber,
+                Phone = agents.MobileNumber,
+            Address = "تهران-جنت آباد ",
+                Image = agents.Avatar,
+                IsHasStory=await _context.Stories.AnyAsync(s=>s.UserId ==agents.Id && s.ExpiresAt >=DateTime.Now && s.Status== StoryStatusEnum.Accept)
+        };
             return new RealEstateDetails
             {
                 Id=realEstate.Id,
@@ -505,13 +506,17 @@ SELECT @TotalCount;";
                 saved =1,
                 RegionName = realEstate.Region.Name,
                 DescriptionRows=realEstate.DescriptionRows,
+                InBookMark = !string.IsNullOrEmpty(userId) &&
+             await _context.BookMarks.AnyAsync(s => s.UserId.ToString() == userId && s.RealEstatesId==id),
                 Agents =new Agent
                 {
                     Name= agents.FullName,
                     Address= agent.Address,
-                    Image=agent.Image,
+                    Image= agents.Avatar,
                     ConnectSocialMedia=agent.ConnectSocialMedia,
                     Phone=agents.MobileNumber,
+                    HasStory=agent.IsHasStory,
+                    UserId=agents.Id.ToString()
                 }
 
             };
@@ -853,6 +858,25 @@ SELECT @TotalCount;";
                 WalletBalance = walletBalance,
                 Debtor = debtor
             };
+        }
+
+        public async Task InsertBookMark(BookMark bookMark ,CancellationToken cancellationToken)
+        {
+            await _context.BookMarks.AddAsync(bookMark,cancellationToken);
+        }
+
+        public async Task<bool> DeleteBookMark(BookMark bookMark, CancellationToken cancellationToken)
+        {
+            var bookmarksToDelete = await _context.BookMarks
+                .Where(s => s.UserId == bookMark.UserId && s.RealEstatesId == bookMark.RealEstatesId)
+                .ToListAsync(cancellationToken);
+
+            if (!bookmarksToDelete.Any())
+                return false;
+
+            _context.BookMarks.RemoveRange(bookmarksToDelete);
+            await _context.SaveChangesAsync(cancellationToken);
+            return true;
         }
     }
 }

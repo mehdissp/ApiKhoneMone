@@ -22,7 +22,7 @@ namespace JWTApi.Domain.Interfaces.RealEstateses
             int pageSize = 10,
             CancellationToken cancellationToken = default);
 
-        Task<RealEstateDetails> GetRealEstateDetails(int id, CancellationToken cancellationToken);
+        Task<RealEstateDetails> GetRealEstateDetails(int id,string? userId, CancellationToken cancellationToken);
         Task<List<RealEstatePanel>> GetRealEstatePanel(string userId, CancellationToken cancellationToken);
 
         Task<List<FacilitiesDtos>> GetFacilitiesDtos(int catId, CancellationToken cancellationToken);
@@ -44,5 +44,7 @@ CancellationToken cancellationToken = default);
         Task<AdPriceRanges> getAdPriceRange(Guid roleId,int categoryId);
 
         Task<PaymentStatusDtos> GetPaymentStatus(int realEstateId, Guid roleId, Guid userId);
+        Task InsertBookMark(BookMark bookMark, CancellationToken cancellationToken);
+        Task<bool> DeleteBookMark(BookMark bookMark, CancellationToken cancellationToken);
     }
 }

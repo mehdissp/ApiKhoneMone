@@ -20,9 +20,19 @@ namespace JWTApi.Application.Services.Stories
 
         public async Task<Story> CreateStory(StoryRequest storyRequest,string userId)
         {
-            Story story = new Story();
-            story.Create(storyRequest.Title, storyRequest.UrlAddress, null, userId, Domain.Shared.StoryStatusEnum.WaitingForAccept);
-           return await _storyRepository.AddAsync(story);
+            try
+            {
+                Story story = new Story();
+                story.Create(storyRequest.Title, storyRequest.UrlAddress, storyRequest.RealEstatedId, userId, Domain.Shared.StoryStatusEnum.WaitingForAccept);
+                return await _storyRepository.AddAsync(story);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+ 
         }
         public async Task<bool> DeleteStory(int id,string userId,string roleId)
         {
@@ -38,6 +48,11 @@ namespace JWTApi.Application.Services.Stories
         public async Task<List<StoryForSite>> StoryForSite( CancellationToken cancellationToken)
         {
             return await _storyRepository.GetStoriesDtos(cancellationToken);
+        }
+
+        public async Task<List<StoryForSite>> StoryForSiteForUser(string userId,CancellationToken cancellationToken)
+        {
+            return await _storyRepository.GetStoriesDtosForUser(userId, cancellationToken);
         }
 
 

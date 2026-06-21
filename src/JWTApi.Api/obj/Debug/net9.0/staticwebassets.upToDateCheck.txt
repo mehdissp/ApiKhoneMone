@@ -7,6 +7,7 @@ wwwroot\temp\044e2a79-99c9-4b42-af5c-9f3fca506aca\8d565334-de45-4938-8eee-ec68c3
 wwwroot\temp\1fd0451e-a826-42ed-9b6b-f29aff666499\508b5c43-1372-4476-827f-3ede7d9a2743.jpg
 wwwroot\temp\244d0295-7fad-4a7f-81ce-2ff395a4251c\1f8a6f85-6917-4bdd-9d3c-ce3d2632b894.png
 wwwroot\temp\2a8a0c61-4813-4a1d-892a-d28a761bb1a8\769ecca7-7fa1-4f21-8d02-9f2f4f28f35e.jpg
+wwwroot\temp\5ebfd5f8-259a-4779-bdeb-3fd37696a946\c4a78ce5-22a1-4c8f-92b9-8c1bdf398793.png
 wwwroot\temp\66c72f59-d0ed-40f8-8161-61ce12b6f36c\ebe3013a-31cb-4def-9993-ee82500fad85.jpg
 wwwroot\temp\6708b2c2-49cd-46d5-a8f2-8f55badebef3\85e60448-5421-41c2-ab82-f6e748e226bf.jpeg
 wwwroot\temp\72499519-e346-44d0-beb1-0aecddb8a9d1\a801b997-e1f0-4413-9a96-b9fa88c0210b.png
@@ -54,6 +55,10 @@ wwwroot\uploads\properties\1\aeb9dc46-1b5a-46c6-6000-08deba1ee8ce\nohome-2026052
 wwwroot\uploads\properties\1\be977a32-4400-4d67-f657-08deb986e2eb\nohome-20260524-153657-1.webp
 wwwroot\uploads\properties\2\0b0fff66-d17e-4958-bb1c-ae38a9eb7272\_-20260519-103001-2.webp
 wwwroot\uploads\properties\2\449a122e-6b5e-4de6-2fe7-08debb0c03e6\_-20260526-135603-2.webp
+wwwroot\uploads\properties\story\449a122e-6b5e-4de6-2fe7-08debb0c03e6\1-20260620-081743-story.webp
+wwwroot\uploads\properties\story\449a122e-6b5e-4de6-2fe7-08debb0c03e6\b54fc421-8a01-4b22-a5be-9995d089ceea-20260620-081728-story.webp
+wwwroot\uploads\properties\story\449a122e-6b5e-4de6-2fe7-08debb0c03e6\capture-20260620-081217-story.webp
+wwwroot\uploads\properties\story\449a122e-6b5e-4de6-2fe7-08debb0c03e6\error-20260620-081345-story.webp
 wwwroot\uploads\test_170a17ac-9555-488e-a57f-add6ac2be9ed.PNG
 wwwroot\uploads\users\_07d34215-24ad-40a4-bf4e-ae707e4141a5.PNG
 wwwroot\uploads\users\24673aaa-8720-40c6-b46d-99815a2ac6ed_asasd.PNG
@@ -62,6 +67,8 @@ wwwroot\uploads\users\363b3fec-2fe6-4d3f-a001-247739fa1ae8_asasd.PNG
 wwwroot\uploads\users\427834ee-98a6-4894-a374-66e8f0ef41cd_asasd.PNG
 wwwroot\uploads\users\45851f61-ac94-4fa5-af67-4fe4c6b04dbf_775b9ddb-77a9-4c29-8f7c-86460a92da37.png
 wwwroot\uploads\users\4a7b0d2c-6c48-4a19-a3e4-b774cb34f627_asasd.PNG
+wwwroot\uploads\users\4e04aeaa-b723-4b6a-a82f-2d2e3bcf0b19_b54fc421-8a01-4b22-a5be-9995d089ceea.jpg
+wwwroot\uploads\users\51165251-8727-43eb-b14e-6a619970e19a_2.png
 wwwroot\uploads\users\670855ff-a098-4487-a9cf-33868baa9c1a_asasd.PNG
 wwwroot\uploads\users\84f0b9dd-8f83-4f36-80c1-7df12fb639f7_20251013_080304_1215213267.jpg
 wwwroot\uploads\users\a58f1a8e-5655-4f1e-ac7d-679962915ec5_asasd.PNG

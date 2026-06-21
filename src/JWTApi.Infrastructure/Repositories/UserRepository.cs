@@ -547,5 +547,20 @@ namespace JWTApi.Infrastructure.Repositories
             return user ?? new UserDashboard(); // بازگرداندن آبجکت خالی در صورت نبودن کاربر
         }
 
+
+        public async Task<string> getAvatar(string userId, CancellationToken cancellationToken)
+        {
+            // Parse userId to Guid (assuming Id is Guid)
+            if (!Guid.TryParse(userId, out Guid userGuid))
+                return null; // or throw ArgumentException
+
+            var user = await _context.Users
+                .Where(s => s.Id == userGuid)
+                .Select(s => s.Avatar)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return user; // Returns null if user not found or avatar is null
+        }
+
     }
 }
