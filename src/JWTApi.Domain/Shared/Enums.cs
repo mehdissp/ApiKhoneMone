@@ -109,4 +109,37 @@ namespace JWTApi.Domain.Shared
         Failed = 2,
 
     }
+
+
+    public enum ViolationTypeEnum
+    {
+        Price = 0,
+        Content = 1,
+        Photo = 2,
+        ContactInformation=3,
+        Unreal=4,
+        Address=5,
+        NonExistent=6,
+        OtherReasons =7
+    }
+    public static class ViolationypeEnumExtensions
+    {
+        public static string ToPersianString(this ViolationTypeEnum inputData)
+        {
+            return inputData switch
+            {
+                ViolationTypeEnum.Price => "قیمت",
+                ViolationTypeEnum.Content => "محتوا",
+                ViolationTypeEnum.Photo => "عکس",
+                ViolationTypeEnum.ContactInformation => " اطلاعات تماس",
+                ViolationTypeEnum.Unreal => "غیرواقعی",
+                ViolationTypeEnum.Address => "ادرس",
+                ViolationTypeEnum.NonExistent => "قولنامه ای",
+                ViolationTypeEnum.OtherReasons => "قولنامه ای",
+
+                _ => "نامشخص",
+            };
+        }
+    }
+
 }

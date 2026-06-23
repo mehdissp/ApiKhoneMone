@@ -46,5 +46,18 @@ CancellationToken cancellationToken = default);
         Task<PaymentStatusDtos> GetPaymentStatus(int realEstateId, Guid roleId, Guid userId);
         Task InsertBookMark(BookMark bookMark, CancellationToken cancellationToken);
         Task<bool> DeleteBookMark(BookMark bookMark, CancellationToken cancellationToken);
+        Task InsertViolations(Violation violation, CancellationToken cancellationToken);
+        Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithUser(
+string userId,
+int pageNumber = 1,
+int pageSize = 10,
+CancellationToken cancellationToken = default);
+
+
+        Task<PagedResult<RealEstatePanel>> GetRealEstateBookMark(
+    string userId,
+    int pageNumber = 1,
+    int pageSize = 10,
+    CancellationToken cancellationToken = default);
     }
 }

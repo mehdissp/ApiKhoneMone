@@ -1,13 +1,16 @@
 ﻿using JWTApi.Api.Response;
 using JWTApi.Api.ViewModels.RealEstates;
+using JWTApi.Api.ViewModels.Violations;
 using JWTApi.Application.DTOs.RealEstates;
 using JWTApi.Application.Services.Categories;
 using JWTApi.Application.Services.RealEstateses;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces.Wallets;
+using JWTApi.Domain.Shared;
 using JWTApi.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -98,14 +101,14 @@ int pageSize = 10)
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
             var roleName = User.Claims.FirstOrDefault(c => c.Type == "roleName")?.Value;
-            var check = await _realEstatesService.CheckAccessToRealEstate(id, userId, roleName, cancellationToken);
-            if (check)
-            {
+            //var check = await _realEstatesService.CheckAccessToRealEstate(id, userId, roleName, cancellationToken);
+            //if (check)
+            //{
                 var result = await _realEstatesService.GetRealEstateDetails(id, userId, cancellationToken);
 
                 return ResponseApi.Ok(result).ToHttpResponse();
-            }
-            return ResponseApi.Error("دسترسی ندارید به این صفحه").ToHttpResponse();
+            //}
+            //return ResponseApi.Error("دسترسی ندارید به این صفحه").ToHttpResponse();
 
         }
         [HttpGet("GetRealEstateDetailsForEdit")]
@@ -168,6 +171,8 @@ int pageSize = 10)
             return ResponseApi.Ok(result).ToHttpResponse();
 
         }
+
+
 
         [HttpPost("UploadTempImage")]
         public async Task<IActionResult> UploadTempImage(IFormFile image)
@@ -257,6 +262,79 @@ int pageSize = 10)
             await _realEstatesService.ToggleBookMark(userId, realEstateId, cancellationToken);
             return Ok();
         }
+        [HttpPost("InsertViolations")]
+        public async Task<IActionResult> InsertViolations([FromBody] ViolationRequest violationRequest, CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            await _realEstatesService.InsertViolations(userId, violationRequest.Id, violationRequest.Desc, violationRequest.ErrorType, cancellationToken);
+            return ResponseApi.Ok().ToHttpResponse();
+        }
+
+        [HttpGet("violation-types")]
+        public async Task<IActionResult> GetAllViolationTypes()
+        {
+            var result = Enum.GetValues(typeof(ViolationTypeEnum))
+                             .Cast<ViolationTypeEnum>()
+                             .Select(e => new
+                             {
+                                 Id = (int)e,
+                                 Name = e.ToPersianString().ToString()
+                             })
+                             .ToList();
+            return ResponseApi.Ok(result).ToHttpResponse();
+           
+        }
+
+        [HttpGet("GetUserForSite")]
+        public async Task<IActionResult> GetUserForSite(string userId,CancellationToken cancellationToken)
+        {
+
+
+            var result = await _realEstatesService.GetUserForSite(userId, cancellationToken);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+
+        [HttpGet("GetRandomLastItemRealEstatesWithUser")]
+        public async Task<IActionResult> GetRandomLastItemRealEstatesWithUser(
+ string userId,
+ int pageNumber = 1,
+ int pageSize = 10)
+        {
+            var result = await _realEstatesService.GetRandomLastItemRealEstatesWithUser(
+                userId,
+                pageNumber,
+                pageSize);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+        }
+        [HttpGet("GetRealEstateBookMark")]
+        public async Task<IActionResult> GetRealEstateBookMark(
+int pageNumber = 1,
+int pageSize = 10)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var result = await _realEstatesService.GetRealEstateBookMark(
+                userId,
+                pageNumber,
+                pageSize);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+        }
+
+
+        [HttpGet("GetIndependentAgent")]
+        public async Task<IActionResult> GetIndependentAgent( CancellationToken cancellationToken)
+        {
+
+
+            var result = await _realEstatesService.GetIndependentAgent( cancellationToken);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+
 
         //[HttpGet("GetRealEstateDetails")]
         //public async Task<IActionResult> GetRealEstateDetails(int id, CancellationToken cancellationToken)

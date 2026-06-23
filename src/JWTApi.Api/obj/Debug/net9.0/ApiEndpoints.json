@@ -576,6 +576,16 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetIndependentAgent",
+    "RelativePath": "api/RealEstatePage/GetIndependentAgent",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetPaymentStatus",
     "RelativePath": "api/RealEstatePage/GetPaymentStatus",
     "HttpMethod": "GET",
@@ -619,6 +629,53 @@
         "Type": "System.Int32",
         "IsRequired": false
       },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRandomLastItemRealEstatesWithUser",
+    "RelativePath": "api/RealEstatePage/GetRandomLastItemRealEstatesWithUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRealEstateBookMark",
+    "RelativePath": "api/RealEstatePage/GetRealEstateBookMark",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
         "Name": "pageNumber",
         "Type": "System.Int32",
@@ -744,6 +801,22 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetUserForSite",
+    "RelativePath": "api/RealEstatePage/GetUserForSite",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "InsertRealEstate",
     "RelativePath": "api/RealEstatePage/InsertRealEstate",
     "HttpMethod": "POST",
@@ -753,6 +826,22 @@
       {
         "Name": "model",
         "Type": "JWTApi.Application.DTOs.RealEstates.RealEstateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "InsertViolations",
+    "RelativePath": "api/RealEstatePage/InsertViolations",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "violationRequest",
+        "Type": "JWTApi.Api.ViewModels.Violations.ViolationRequest",
         "IsRequired": true
       }
     ],
@@ -788,6 +877,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetAllViolationTypes",
+    "RelativePath": "api/RealEstatePage/violation-types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

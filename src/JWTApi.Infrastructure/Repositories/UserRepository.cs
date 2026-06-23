@@ -3,9 +3,11 @@ using JWTApi.Domain.Dtos.ProjectUsers;
 using JWTApi.Domain.Dtos.Users;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
+using JWTApi.Domain.Shared;
 using JWTApi.Infrastructure.Data;
 using JWTApi.Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +20,11 @@ namespace JWTApi.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
-        public UserRepository(AppDbContext context)
+        private readonly IMemoryCache _cache;
+        public UserRepository(AppDbContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _cache= memoryCache;
         }
 
         public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
@@ -560,6 +564,82 @@ namespace JWTApi.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
 
             return user; // Returns null if user not found or avatar is null
+        }
+
+
+        //public async Task<UserForSite> GetUserForSite(string userId)
+        //{
+        //    var real = await _context.RealEstates.Where(s => s.UserId.ToString() == userId && s.IsDeleted ==false).ToListAsync();
+        //    var users = await _context.Users.Where(s => s.Id.ToString() == userId).Select(u => new UserForSite
+        //    {
+        //        CountOfRealEtates = real.Where(s => s.CategoryId == 1).Count(),
+        //        FullName = u.FullName, // فرض بر وجود FirstName و LastName
+        //        CountOfRent = real.Where(s => s.CategoryId == 2).Count(),
+        //        Score = "4",// اگر Rate از نوع decimal یا int است
+        //        DateTimeOfSite = u.CreatedAt.ToPersianRelativeDate(),
+        //        MobileNumber = u.MobileNumber,
+        //        RegionOfWork=real.Select(s=>s.Region.Name)
+
+
+        //    }).FirstOrDefaultAsync();
+        //    return users;
+        //}
+
+        public async Task<UserForSite> GetUserForSite(string userId,CancellationToken cancellationToken)
+        {
+            // تبدیل userId به Guid برای مقایسه بهتر
+            if (!Guid.TryParse(userId, out var userGuid))
+                return null;
+
+            var user = await _context.Users
+                .Where(u => u.Id == userGuid)
+                .Select(u => new UserForSite
+                {
+                    FullName = u.FullName,
+                    MobileNumber = u.MobileNumber,
+                    Score = "40",
+                    DateTimeOfSite = u.CreatedAt.ToPersianRelativeDate(),
+                    CountOfRealEtates = u.RealEstates.Count(r => r.CategoryId == 1 && !r.IsDeleted),
+                    CountOfRent = u.RealEstates.Count(r => r.CategoryId == 2 && !r.IsDeleted),
+                    Avatar=u.Avatar,
+                    RegionOfWork = u.RealEstates
+                        .Where(r => !r.IsDeleted)
+                        .Select(r => r.Region.Name)
+                        .Distinct()
+                        .ToArray()
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return user;
+        }
+
+
+
+        public async Task<List<IndependentAgentDtos>> GetIndependentAgent(CancellationToken cancellationToken)
+        {
+            const string cacheKey = "IndependentAgents";
+
+            // چک کردن کش
+            if (_cache.TryGetValue(cacheKey, out List<IndependentAgentDtos> cachedAgents))
+                return cachedAgents;
+
+            // اگر در کش نبود، از دیتابیس بگیر
+            var agents = await _context.Users
+                .Where(u => u.Role== UserRoleType.IndependentAgent)
+                .Select(u => new IndependentAgentDtos
+                {
+                    FullName = u.FullName,
+                    UserId = u.Id.ToString(),
+                    TotalRealEstate = u.RealEstates.Count(),
+                    Score = "50",
+                    Avatar = u.Avatar
+                }).Take(10)
+                .ToListAsync(cancellationToken);
+
+            // ذخیره در کش به مدت ۵ دقیقه
+            _cache.Set(cacheKey, agents, TimeSpan.FromMinutes(15));
+
+            return agents;
         }
 
     }

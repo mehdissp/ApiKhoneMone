@@ -6,6 +6,7 @@ using JWTApi.Domain.Dtos.Facilities;
 using JWTApi.Domain.Dtos.ImageInfos;
 using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Dtos.Regions;
+using JWTApi.Domain.Dtos.Users;
 using JWTApi.Domain.Dtos.Wallets;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
@@ -29,16 +30,18 @@ public class RealEstatesService
     private readonly IMapper _mapper;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IWalletRepository _walletRepository;
+    private readonly IUserRepository _userRepository;
     public RealEstatesService(IRealEstatesRepository realEstatesRepository,
         IUnitOfWork unit, IMapper mapper,
         ICategoryRepository categoryRepository
-        , IWalletRepository walletRepository)
+        , IWalletRepository walletRepository, IUserRepository userRepository)
     {
         _realEstatesRepository = realEstatesRepository;
         _mapper = mapper;
         _unit = unit;
         _categoryRepository = categoryRepository;
         _walletRepository = walletRepository;
+        _userRepository = userRepository;
     }
     public async Task<List<DTOs.RealEstates.RealEstateDto>> GetRandomLastItemRealEstates(int tabId, CancellationToken cancellation)
     {
@@ -192,7 +195,59 @@ public class RealEstatesService
         }
         await _unit.SaveChanges(cancellationToken);
     }
+    public async Task InsertViolations(string userId,int id,string? desc,int errorType, CancellationToken cancellationToken)
+    {
+            Violation violation = new Violation();
+            violation.Create(userId, id, desc, errorType);
+            await _realEstatesRepository.InsertViolations(violation, cancellationToken);
+            await _unit.SaveChanges(cancellationToken);
+    }
 
+
+  public async  Task<UserForSite> GetUserForSite(string userId,CancellationToken cancellationToken)
+    {
+        return await _userRepository.GetUserForSite(userId, cancellationToken);
+    }
+
+    public async Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithUser(
+        string userId,
+        int pageNumber = 1,
+        int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _realEstatesRepository
+      .GetRandomLastItemRealEstatesWithUser(
+          userId,
+          pageNumber,
+          pageSize,
+          cancellationToken);
+
+        var mappedItems = _mapper.Map<List<RealEstateWithCategoryDto>>(result.Items);
+
+        return new PagedResult<RealEstateWithCategoryDto>
+        {
+            Items = mappedItems,
+            TotalCount = result.TotalCount,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize,
+            TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize)
+        };
+    }
+
+
+   public async Task<PagedResult<RealEstatePanel>> GetRealEstateBookMark(
+string userId,
+int pageNumber = 1,
+int pageSize = 10,
+CancellationToken cancellationToken = default)
+    {
+        return await _realEstatesRepository.GetRealEstateBookMark(userId, pageNumber, pageSize, cancellationToken);
+    }
+
+    public async Task<List<IndependentAgentDtos>> GetIndependentAgent(CancellationToken cancellationToken)
+    {
+        return await _userRepository.GetIndependentAgent(cancellationToken);
+    }
 }
 
 

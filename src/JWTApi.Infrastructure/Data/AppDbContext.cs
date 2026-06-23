@@ -60,7 +60,9 @@ namespace JWTApi.Infrastructure.Data
         public DbSet<AdPriceRanges> AdPriceRanges { get; set; }
         public DbSet<Story> Stories { get; set; }
 
-        
+        public DbSet<Violation> Violations { get; set; }
+
+
 
 
 
@@ -294,7 +296,26 @@ namespace JWTApi.Infrastructure.Data
                 //            b.HasMany(p => p.Matches)
                 //.WithOne(t => t.RealEstates)
                 //.HasForeignKey(t => t.RealEstateId);
+                // مهمترین ایندکس - برای بیشتر کوئری‌ها
+                b.HasIndex(p => new {
+                    p.Status,
+                    p.IsDeleted,
+                    p.CategoryId
+                }).HasDatabaseName("IX_RealEstates_Main");
 
+                // برای جستجوی منطقه
+                b.HasIndex(p => new {
+                    p.RegionId,
+                    p.Status,
+                    p.IsDeleted
+                }).HasDatabaseName("IX_RealEstates_Region");
+
+                // برای املاک کاربر
+                b.HasIndex(p => new {
+                    p.UserId,
+                    p.Status,
+                    p.IsDeleted
+                }).HasDatabaseName("IX_RealEstates_User");
 
             });
 
@@ -419,6 +440,21 @@ namespace JWTApi.Infrastructure.Data
 
                 b.HasOne(p => p.RealEstates)
               .WithMany(t => t.BookMark)
+              .HasForeignKey(p => p.RealEstatesId);
+
+
+            });
+
+            //--------------Violation
+            modelBuilder.Entity<Violation>(b =>
+            {
+                b.HasKey(p => p.Id);
+                b.Property(p => p.DescriptionRows).HasMaxLength(550);
+                b.Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
+                b.Property(p => p.IsDeleted).HasDefaultValueSql("0");
+
+                b.HasOne(p => p.RealEstates)
+              .WithMany(t => t.Violations)
               .HasForeignKey(p => p.RealEstatesId);
 
 

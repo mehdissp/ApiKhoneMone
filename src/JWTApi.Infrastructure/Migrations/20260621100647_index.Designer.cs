@@ -4,6 +4,7 @@ using JWTApi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTApi.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260621100647_index")]
+    partial class index
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1487,44 +1490,6 @@ namespace JWTApi.Infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("JWTApi.Domain.Entities.Violation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("DescriptionRows")
-                        .HasMaxLength(550)
-                        .HasColumnType("nvarchar(550)");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("0");
-
-                    b.Property<int>("RealEstatesId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ViolationType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RealEstatesId");
-
-                    b.ToTable("Violations");
-                });
-
             modelBuilder.Entity("JWTApi.Domain.Entities.Wallet", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1977,17 +1942,6 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("JWTApi.Domain.Entities.Violation", b =>
-                {
-                    b.HasOne("JWTApi.Domain.Entities.RealEstates", "RealEstates")
-                        .WithMany("Violations")
-                        .HasForeignKey("RealEstatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RealEstates");
-                });
-
             modelBuilder.Entity("JWTApi.Domain.Entities.Wallet", b =>
                 {
                     b.HasOne("JWTApi.Domain.Entities.User", "User")
@@ -2073,8 +2027,6 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("BookMark");
 
                     b.Navigation("Stories");
-
-                    b.Navigation("Violations");
                 });
 
             modelBuilder.Entity("JWTApi.Domain.Entities.Region", b =>

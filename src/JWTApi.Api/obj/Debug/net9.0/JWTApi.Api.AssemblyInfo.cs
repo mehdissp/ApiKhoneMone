@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JWTApi.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f713154d50a50cda9b456c63ef59a3abf4951c07")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3eed74bb4ce1b33c2706605c9081fd4d0e491e98")]
 [assembly: System.Reflection.AssemblyProductAttribute("JWTApi.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JWTApi.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

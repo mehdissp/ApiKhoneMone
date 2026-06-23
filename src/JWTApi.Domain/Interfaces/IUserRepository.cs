@@ -42,5 +42,8 @@ namespace JWTApi.Domain.Interfaces
 
         Task<string> getAvatar(string userId, CancellationToken cancellationToken);
 
+        Task<UserForSite> GetUserForSite(string userId, CancellationToken cancellationToken);
+        Task<List<IndependentAgentDtos>> GetIndependentAgent(CancellationToken cancellationToken);
+
     }
 }
