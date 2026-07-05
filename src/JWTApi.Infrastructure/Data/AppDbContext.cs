@@ -62,7 +62,8 @@ namespace JWTApi.Infrastructure.Data
 
         public DbSet<Violation> Violations { get; set; }
 
-
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<TrainingData> TrainingData { get; set; }
 
 
 
@@ -166,6 +167,19 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(x => x.IPAddress).HasMaxLength(50).IsRequired();
                 b.HasIndex(x => x.IPAddress).IsUnique();
             });
+
+            modelBuilder.Entity<ChatMessage>(b =>
+            {
+                b.HasKey(x => x.Id);
+           
+            });
+            modelBuilder.Entity<TrainingData>().HasData(GetTrainingData());
+            modelBuilder.Entity<TrainingData>(b =>
+            {
+                b.HasKey(x => x.Id);
+
+            });
+
             modelBuilder.Entity<Role>(b =>
             {
 
@@ -604,6 +618,24 @@ namespace JWTApi.Infrastructure.Data
 
             // ---------------- Menu ----------------
 
+        }
+
+        private List<TrainingData> GetTrainingData()
+        {
+            var data = new List<TrainingData>();
+            // 1000 نمونه داده مشاوره املاک
+            for (int i = 0; i < 1000; i++)
+            {
+                data.Add(new TrainingData
+                {
+                    Id = i + 1,
+                    Question = $"سوال نمونه {i + 1} درباره ملک",
+                    Answer = $"پاسخ نمونه {i + 1} برای مشاوره",
+                    Category = i % 3 == 0 ? "قیمت" : i % 3 == 1 ? "منطقه" : "متراژ",
+                    Confidence = 0.9f
+                });
+            }
+            return data;
         }
     }
 }

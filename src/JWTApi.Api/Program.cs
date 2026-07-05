@@ -260,6 +260,7 @@ using JwtApi.Api.Middleware;
 using JWTApi.Api.Middleware;
 using JWTApi.Application.Services;
 using JWTApi.Application.Services.Categories;
+using JWTApi.Application.Services.ChatBots;
 using JWTApi.Application.Services.Menus;
 using JWTApi.Application.Services.Payments;
 using JWTApi.Application.Services.RealEstateses;
@@ -269,6 +270,7 @@ using JWTApi.Application.Services.Stories;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
+using JWTApi.Domain.Interfaces.ChatBots;
 using JWTApi.Domain.Interfaces.Menus;
 using JWTApi.Domain.Interfaces.Payments;
 using JWTApi.Domain.Interfaces.RealEstateses;
@@ -281,6 +283,7 @@ using JWTApi.Infrastructure.Data;
 using JWTApi.Infrastructure.Middleware;
 using JWTApi.Infrastructure.Repositories;
 using JWTApi.Infrastructure.Repositories.Categories;
+using JWTApi.Infrastructure.Repositories.ChatBots;
 using JWTApi.Infrastructure.Repositories.Menus;
 using JWTApi.Infrastructure.Repositories.Payments;
 using JWTApi.Infrastructure.Repositories.RealEstateses;
@@ -385,6 +388,9 @@ static void ConfigureCors(WebApplicationBuilder builder)
 
 static void ConfigureDependencies(WebApplicationBuilder builder)
 {
+
+    // ⭐ این خط رو اضافه کن
+    builder.Services.AddSignalR();
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     // Infrastructure
     builder.Services.AddMemoryCache();
@@ -437,6 +443,11 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
 
     // Token Management
     builder.Services.AddSingleton<ITokenBlacklist, InMemoryTokenBlacklist>();
+
+    // تزریق وابستگی‌ها - اینجا مشکل حل میشه
+    builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+    builder.Services.AddScoped<ICommandService, CommandService>();
+    builder.Services.AddScoped<ChatBotEngine>();
 }
 
 static void ConfigureAuthentication(WebApplicationBuilder builder)
@@ -574,6 +585,11 @@ static void ConfigureMiddlewarePipeline(WebApplication app)
     app.UseCustomExceptionHandler();
     app.UseMiddleware<MenuPermissionMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+    app.MapHub<ChatHub>("/chatHub");
+
+ 
+
 }
 
 static void ConfigureEndpoints(WebApplication app)

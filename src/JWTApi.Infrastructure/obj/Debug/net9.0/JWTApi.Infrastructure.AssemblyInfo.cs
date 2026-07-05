@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JWTApi.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3eed74bb4ce1b33c2706605c9081fd4d0e491e98")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7ea1d7724d84f1ed8ced7ca65d493f356d4cd0cb")]
 [assembly: System.Reflection.AssemblyProductAttribute("JWTApi.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JWTApi.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
