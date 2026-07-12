@@ -13,7 +13,33 @@ namespace JWTApi.Domain.Shared
         Procurement = 1
 
     }
+    public enum AdPriceRangeType : byte
+    {
+        /// <summary>
+        /// درج آگهی
+        /// </summary>
+        InsertAd = 1,
 
+        /// <summary>
+        /// درج بنر
+        /// </summary>
+        InsertBanner = 2,
+
+        /// <summary>
+        /// نمایش درخواست متقاضی
+        /// </summary>
+        ShowApplicantRequest = 3,
+
+        /// <summary>
+        /// پله
+        /// </summary>
+        Step = 4,
+
+        /// <summary>
+        /// پنجره
+        /// </summary>
+        Window = 5
+    }
     // نقش‌ها (فقط برای تعیین نوع کاربر)
     public enum UserRoleType
     {

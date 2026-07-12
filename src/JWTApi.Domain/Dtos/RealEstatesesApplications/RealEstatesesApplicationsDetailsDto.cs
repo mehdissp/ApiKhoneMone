@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JWTApi.Domain.Dtos.RealEstatesesApplications
 {
-    public class RealEstatesesApplicationsDto
+    public class RealEstatesesApplicationsDetailsDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -18,8 +18,13 @@ namespace JWTApi.Domain.Dtos.RealEstatesesApplications
         public bool IsPaid { get; set; }
         public string MobileNumber { get; set; }
         public string Desc { get; set; }
-        public decimal?   Budget { get; set; }
-
+        public decimal? Budget { get; set; }
+        public int? MinCountRoom { get; set; }
+        public int? MinConstructionYear { get; set; }
+        public int? MaxConstructionYear { get; set; }
+        public int? MinSquareMeter { get; set; }
+        public int? MaxSquareMeter { get; set; }
+        public string FullNameCustomer { get; set; }
 
         public string CreatedAtPersianRelative => CreatedAt.ToPersianRelativeDate();
     }

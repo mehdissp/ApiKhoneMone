@@ -19,6 +19,7 @@ public class PaymentController : ControllerBase
     private readonly PaymentService _paymentGateway;
     private readonly RealEstatesService _realEstatesService;
 
+
     public PaymentController(AppDbContext context, PaymentService paymentGateway, RealEstatesService realEstatesService)
     {
         _context = context;
@@ -179,7 +180,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("verify-callback-WithDraw")]
-    public async Task<IActionResult> VerifyCallbackWithDraw([FromQuery] string authority, [FromQuery] string status, [FromQuery] Guid paymentId, [FromQuery] int id,CancellationToken cancellationToken)
+    public async Task<IActionResult> VerifyCallbackWithDraw([FromQuery] string authority, [FromQuery] string status,int adPriceRangeType, [FromQuery] Guid paymentId, [FromQuery] int id,CancellationToken cancellationToken)
     {
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
         var payment = await _context.Payments.FindAsync(paymentId);
@@ -213,7 +214,7 @@ public class PaymentController : ControllerBase
               var deposit=  await _paymentGateway.DepostiWallet(Guid.Parse(userId), payment.Amount, "شارژ کیف پول", "", verification.RefId);
                 if (deposit.IsSuccess)
                 {
-                    var check= await _paymentGateway.WithdrawWalletForAd(userId, id, roleId, "");
+                    var check= await _paymentGateway.WithdrawWalletForAd(userId,(AdPriceRangeType)adPriceRangeType, id, roleId, "", cancellationToken);
                     if (check.IsSuccess)
                     {
                   await  _realEstatesService.UpdateStatusRealEstate(id, cancellationToken);
@@ -260,17 +261,60 @@ public class PaymentController : ControllerBase
         });
     }
 
+    //[HttpPost("PaymentWithWallet")]
+    //public async Task<IActionResult> PaymentWithWallet([FromBody]int id, [FromBody] int adPriceRangeType, CancellationToken cancellationToken)
+    //{
+    //    var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+    //    var roleId = User.Claims.FirstOrDefault(c => c.Type == "roleId")?.Value;
+    //    if (AdPriceRangeType.InsertAd==(AdPriceRangeType)adPriceRangeType)
+    //    {
+    //        var gatewayResult = await _paymentGateway.WithdrawWalletForAd(userId, (AdPriceRangeType)adPriceRangeType, id, roleId, "",cancellationToken);
+    //        if (gatewayResult.IsSuccess)
+    //        {
+    //            await _realEstatesService.UpdateStatusRealEstate(id, cancellationToken);
+    //        }
+    //    }
+    //    else if ((AdPriceRangeType)adPriceRangeType == AdPriceRangeType.ShowApplicantRequest)
+    //    {
+    //        var gatewayResult = await _paymentGateway.WithdrawWalletForAd(userId, (AdPriceRangeType)adPriceRangeType, id, roleId, "", cancellationToken);
+    //        if (gatewayResult.IsSuccess)
+    //        {
+    //            await _realEstatesService.UpdateStatusRealEstate(id, cancellationToken);
+    //        }
+    //    }
+
+    //        return ResponseApi.Ok().ToHttpResponse();
+    //}
     [HttpPost("PaymentWithWallet")]
-    public async Task<IActionResult> PaymentWithWallet([FromBody]int id,CancellationToken cancellationToken)
+    public async Task<IActionResult> PaymentWithWallet([FromBody] PaymentRequestDTOS request, CancellationToken cancellationToken)
     {
         var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
         var roleId = User.Claims.FirstOrDefault(c => c.Type == "roleId")?.Value;
-        var gatewayResult = await _paymentGateway.WithdrawWalletForAd(userId,id,roleId,"");
-        if (gatewayResult.IsSuccess)
+
+        if (AdPriceRangeType.InsertAd == (AdPriceRangeType)request.AdPriceRangeType)
         {
-            await _realEstatesService.UpdateStatusRealEstate(id, cancellationToken);
+            var gatewayResult = await _paymentGateway.WithdrawWalletForAd(userId, (AdPriceRangeType)request.AdPriceRangeType, request.Id, roleId, "", cancellationToken);
+            if (gatewayResult.IsSuccess)
+            {
+                await _realEstatesService.UpdateStatusRealEstate(request.Id, cancellationToken);
+            }
         }
+        else if ((AdPriceRangeType)request.AdPriceRangeType == AdPriceRangeType.ShowApplicantRequest)
+        {
+            var gatewayResult = await _paymentGateway.WithdrawWalletForAd(userId, (AdPriceRangeType)request.AdPriceRangeType, request.Id, roleId, "", cancellationToken);
+            if (gatewayResult.IsSuccess)
+            {
+                await _paymentGateway.AccessToShowMobileNumber(request.Id, roleId, userId, cancellationToken);
+            }
+        }
+
         return ResponseApi.Ok().ToHttpResponse();
     }
+    public class PaymentRequestDTOS
+    {
+        public int Id { get; set; }
+        public int AdPriceRangeType { get; set; }
+    }
+
 
 }

@@ -3,8 +3,10 @@ using JWTApi.Domain.Dtos.Wallets;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Menus;
 using JWTApi.Domain.Interfaces.Payments;
+using JWTApi.Domain.Interfaces.RealEstatesApplications;
 using JWTApi.Domain.Interfaces.RealEstateses;
 using JWTApi.Domain.Interfaces.Wallets;
+using JWTApi.Domain.Shared;
 using JWTApi.Infrastructure.Repositories.Wallets;
 using System;
 using System.Collections.Generic;
@@ -21,15 +23,17 @@ namespace JWTApi.Application.Services.Payments
         private IUnitOfWork _unitOfWork;
         private IWalletRepository _walletRepository;
         private readonly IRealEstatesRepository _realEstatesRepository;
-        public PaymentService(IPaymentGateway paymentGateway, IUnitOfWork unitOfWork, 
+        private readonly IRealEstatesApplicationsRepository _realEstatesApplicationsRepository;
+        public PaymentService(IPaymentGateway paymentGateway, IUnitOfWork unitOfWork,
             IWalletRepository walletRepository,
-            IRealEstatesRepository realEstatesRepository
+            IRealEstatesRepository realEstatesRepository, IRealEstatesApplicationsRepository realEstatesApplicationsRepository
             )
         {
             _paymentGateway = paymentGateway;
             _unitOfWork = unitOfWork;
-            _walletRepository=walletRepository;
-            _realEstatesRepository=realEstatesRepository;
+            _walletRepository = walletRepository;
+            _realEstatesRepository = realEstatesRepository;
+            _realEstatesApplicationsRepository = realEstatesApplicationsRepository;
         }
         public async Task<PaymentVerificationResult> VerifyPaymentAsync(VerificationRequest request)
         {
@@ -51,11 +55,25 @@ namespace JWTApi.Application.Services.Payments
             return await _walletRepository.GetBalanceAsync(userId);
         }
 
-        public async Task<TransactionResult> WithdrawWalletForAd(string userId,int id, string roleId
-    , string ipAddress )
+        public async Task<TransactionResult> WithdrawWalletForAd(string userId, AdPriceRangeType adPriceRangeType, int id, string roleId
+    , string ipAddress, CancellationToken cancellationToken)
         {
-            var balance = await _realEstatesRepository.GetPaymentStatus(id, Guid.Parse(roleId), Guid.Parse(userId));
+            PaymentStatusDtos balance = new PaymentStatusDtos();
+            if (AdPriceRangeType.InsertAd == adPriceRangeType)
+            {
+                balance = await _realEstatesRepository.GetPaymentStatus(id, Guid.Parse(roleId), Guid.Parse(userId));
+            }
+            else if (AdPriceRangeType.ShowApplicantRequest == adPriceRangeType)
+            {
+                balance = await _realEstatesApplicationsRepository.GetPaymentStatus(id, Guid.Parse(roleId), Guid.Parse(userId), cancellationToken);
+
+            }
             return await _walletRepository.WithdrawAsync(Guid.Parse(userId), (decimal)balance.AdPrice, ipAddress);
+        }
+
+        public async Task AccessToShowMobileNumber(int realEstateIdAppId, string roleId, string userId, CancellationToken cancellationToken)
+        {
+            await _realEstatesApplicationsRepository.AccessToShowMobileNumber(realEstateIdAppId, Guid.Parse(roleId), Guid.Parse(userId), cancellationToken);
         }
 
 

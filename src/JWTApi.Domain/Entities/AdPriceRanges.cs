@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JWTApi.Domain.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,6 @@ namespace JWTApi.Domain.Entities
         public bool IsActive { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public AdPriceRangeType?  AdPriceRangeType { get; set; }
     }
 }

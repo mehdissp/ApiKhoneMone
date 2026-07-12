@@ -943,6 +943,7 @@ SELECT @TotalCount;";
                     && s.CategoryId == realEstate.CategoryId
                     && s.StartDate <= DateTime.Now
                     && s.EndDate >= DateTime.Now
+                    && s.AdPriceRangeType== AdPriceRangeType.InsertAd
                 );
 
             if (getAdPrice == null)

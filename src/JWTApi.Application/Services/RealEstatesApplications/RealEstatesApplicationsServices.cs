@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using JWTApi.Domain.Dtos;
 using JWTApi.Domain.Dtos.RealEstatesesApplications;
+using JWTApi.Domain.Dtos.Wallets;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.RealEstatesApplications;
@@ -37,11 +38,18 @@ namespace JWTApi.Application.Services.RealEstatesApplications
             _realEstatesApplicationsRepository= realEstatesApplicationsRepository;
         }
 
-        public async Task<PagedResult<RealEstatesesApplicationsDto>> RealEstatesesApplicationsDtosAsync(string userId, int pageNumber, int pageSize, CancellationToken cancellationToken)
+        public async Task<PagedResult<RealEstatesesApplicationsDto>> RealEstatesesApplicationsDtosAsync(string userId, string searchTrem,int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
-            return await _realEstatesApplicationsRepository.RealEstatesesApplicationsDtosAsync(userId, pageNumber,pageSize, cancellationToken);
+            return await _realEstatesApplicationsRepository.RealEstatesesApplicationsDtosAsync(userId, searchTrem, pageNumber,pageSize, cancellationToken);
+        }
+        public async Task<RealEstatesesApplicationsDetailsDto> GetRealEstatesesApplicationsDetails(int id, string userId, CancellationToken cancellationToken)
+        {
+            return await _realEstatesApplicationsRepository.GetRealEstatesesApplicationsDetails(id, userId, cancellationToken);
         }
 
-
+        public async Task<PaymentStatusDtos> GetPaymentStatus(int realEstateIdAppId, string roleId, string userId, CancellationToken cancellationToken)
+        {
+            return await _realEstatesApplicationsRepository.GetPaymentStatus(realEstateIdAppId, Guid.Parse(roleId), Guid.Parse(userId), cancellationToken);
+        }
     }
 }

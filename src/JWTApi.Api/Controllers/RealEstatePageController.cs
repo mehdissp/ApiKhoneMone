@@ -339,6 +339,7 @@ int pageSize = 10)
         }
         [HttpGet("RealEstatesesApplicationsDtosAsync")]
         public async Task<IActionResult> RealEstatesesApplicationsDtosAsync(
+             string? searchTrem,
             int pageNumber ,
             int pageSize ,
             CancellationToken cancellationToken)
@@ -348,6 +349,7 @@ int pageSize = 10)
 
             var result = await _realEstatesApplicationsServices.RealEstatesesApplicationsDtosAsync(
                 userId,
+                  searchTrem,
                 pageNumber,
                 pageSize,
                 cancellationToken);
@@ -355,6 +357,24 @@ int pageSize = 10)
             return ResponseApi.Ok(result).ToHttpResponse();
         }
 
+        [HttpPost("GetRealEstatesesApplicationsDetails")]
+        public async Task<IActionResult> GetRealEstatesesApplicationsDetails([FromBody] int id, CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+         var result  = await _realEstatesApplicationsServices.GetRealEstatesesApplicationsDetails(id,userId, cancellationToken);
+            return ResponseApi.Ok(result).ToHttpResponse();
+        }
+        [HttpGet("GetPaymentStatusRealApp")]
+        public async Task<IActionResult> GetPaymentStatusRealApp(int id, CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var roleId = User.Claims.FirstOrDefault(c => c.Type == "roleId")?.Value;
+
+            var result = await _realEstatesApplicationsServices.GetPaymentStatus(id, roleId, userId, cancellationToken);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
         //[HttpGet("GetRealEstateDetails")]
         //public async Task<IActionResult> GetRealEstateDetails(int id, CancellationToken cancellationToken)
         //{

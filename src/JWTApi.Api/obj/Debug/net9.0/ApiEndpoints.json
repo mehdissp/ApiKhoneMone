@@ -504,8 +504,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "request",
+        "Type": "PaymentController\u002BPaymentRequestDTOS",
         "IsRequired": true
       }
     ],
@@ -553,6 +553,11 @@
       {
         "Name": "status",
         "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "adPriceRangeType",
+        "Type": "System.Int32",
         "IsRequired": false
       },
       {
@@ -699,6 +704,22 @@
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetPaymentStatus",
     "RelativePath": "api/RealEstatePage/GetPaymentStatus",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetPaymentStatusRealApp",
+    "RelativePath": "api/RealEstatePage/GetPaymentStatusRealApp",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -860,6 +881,22 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRealEstatesesApplicationsDetails",
+    "RelativePath": "api/RealEstatePage/GetRealEstatesesApplicationsDetails",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetRealStateMap",
     "RelativePath": "api/RealEstatePage/GetRealStateMap",
     "HttpMethod": "GET",
@@ -966,6 +1003,11 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "searchTrem",
+        "Type": "System.String",
+        "IsRequired": false
+      },
       {
         "Name": "pageNumber",
         "Type": "System.Int32",
