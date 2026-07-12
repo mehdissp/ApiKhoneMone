@@ -18,6 +18,7 @@ namespace JWTApi.Domain.Entities
         public bool HasRegion { get; set; } = false;
         public ICollection<Region> Children { get; set; } = new List<Region>(); // لیست 
         public ICollection<RealEstates> RealEstates { get; set; } = new List<RealEstates>();
+        public ICollection<RealEstatesApplicants> RealEstatesApplicants { get; set; } = new List<RealEstatesApplicants>();
 
     }
 }

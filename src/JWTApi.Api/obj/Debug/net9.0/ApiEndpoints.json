@@ -960,6 +960,27 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "RealEstatesesApplicationsDtosAsync",
+    "RelativePath": "api/RealEstatePage/RealEstatesesApplicationsDtosAsync",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "ToggleBookMark",
     "RelativePath": "api/RealEstatePage/ToggleBookMark",
     "HttpMethod": "POST",

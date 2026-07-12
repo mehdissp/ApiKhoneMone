@@ -64,10 +64,12 @@ namespace JWTApi.Infrastructure.Data
 
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<TrainingData> TrainingData { get; set; }
+        public DbSet<RealEstatesApplicants> RealEstatesApplicants { get; set; }
 
+        public DbSet<RealEstatesApplicants_Region> RealEstatesApplicants_Regions { get; set; }
+        public DbSet<RealEstatesApplicants_UserPaid> RealEstatesApplicants_UserPaids { get; set; }
 
-
-
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -281,7 +283,76 @@ namespace JWTApi.Infrastructure.Data
            .HasForeignKey(t => t.CategoryId);
 
             });
+            //------------RealEstatesApplication
+            modelBuilder.HasSequence<int>("RealEstatesApplicants_Sequence")
+    .StartsAt(1)
+    .IncrementsBy(1);
+            modelBuilder.Entity<RealEstatesApplicants>(b =>
+            {
+                b.HasKey(p => p.Id);
+
+          
+
+                // اضافه کردن فیلد شماره سریال
+                b.Property(p => p.Code)
+                    .HasDefaultValueSql("NEXT VALUE FOR RealEstatesApplicants_Sequence")
+                    .IsRequired();
+
+                // ایجاد ایندکس یونیک
+                b.HasIndex(p => p.Code)
+                    .IsUnique()
+                    .HasDatabaseName("IX_RealEstatesApplicants_SerialNumber");
+
+                b.Property(p => p.Title).HasMaxLength(200).IsRequired();
+                b.Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
+
+                b.Property(p => p.IsDeleted).HasDefaultValueSql("0");
+
+                b.Property(p => p.Desc).HasMaxLength(1000);
+              
+                b.HasOne(p => p.Category)
+              .WithMany(t => t.RealEstatesApplicants)
+              .HasForeignKey(p => p.CategoryId);
+
+                b.HasOne(p => p.User)
+      .WithMany(t => t.RealEstatesApplicants)
+      .HasForeignKey(p => p.UserId);
+
+                b.HasOne(p => p.Region)
+.WithMany(t => t.RealEstatesApplicants)
+.HasForeignKey(p => p.RegionId);
+
+
+
+                //            b.HasMany(p => p.Matches)
+                //.WithOne(t => t.RealEstates)
+                //.HasForeignKey(t => t.RealEstateId);
+                // مهمترین ایندکس - برای بیشتر کوئری‌ها
+                b.HasIndex(p => new {
+                    
+                    p.IsDeleted,
+                    p.CategoryId
+                }).HasDatabaseName("IX_RealEstatesApplicants_Main");
+
+                // برای جستجوی منطقه
+                b.HasIndex(p => new {
+                    p.RegionId,
+                   
+                    p.IsDeleted
+                }).HasDatabaseName("IX_RealEstatesApplicants_Region");
+
+                // برای املاک کاربر
+                b.HasIndex(p => new {
+                    p.UserId,
+                  
+                    p.IsDeleted
+                }).HasDatabaseName("IX_RealEstatesApplicants_User");
+
+
+
+            });
             //------------RealEstates
+
             modelBuilder.Entity<RealEstates>(b =>
             {
                 b.HasKey(p => p.Id);
@@ -535,6 +606,19 @@ namespace JWTApi.Infrastructure.Data
                 b.HasKey(rm => new { rm.RealEstatesId, rm.SpecialFeatureId });
             });
 
+            //---------------------RealEstatesApplicants_UserPaid
+            modelBuilder.Entity<RealEstatesApplicants_UserPaid>(b =>
+            {
+                b.HasKey(rm => new { rm.RealEstatesApplicantsId, rm.UserId });
+                b.Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
+            });
+            
+            //--------------------RealEstatesApplicants_Region
+            modelBuilder.Entity<RealEstatesApplicants_Region>(b =>
+            {
+                b.HasKey(rm => new { rm.RealEstatesApplicantsId, rm.RegionId });
+            });
+            
 
             //------------------RealEstatesRent_SpecialFeature
             modelBuilder.Entity<RealEstatesRent_SpecialFeature>(b =>

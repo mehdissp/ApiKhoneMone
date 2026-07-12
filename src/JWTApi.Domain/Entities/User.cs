@@ -54,7 +54,8 @@ namespace JWTApi.Domain.Entities
         public ICollection<UserPackage> UserPackages { get; set; } = new List<UserPackage>();
         public ICollection<ProjectUser> ProjectUsers { get; set; } = new List<ProjectUser>();
         public ICollection<RealEstates> RealEstates { get; set; } = new List<RealEstates>();
- 
+        public ICollection<RealEstatesApplicants> RealEstatesApplicants { get; set; } = new List<RealEstatesApplicants>();
+
 
 
 

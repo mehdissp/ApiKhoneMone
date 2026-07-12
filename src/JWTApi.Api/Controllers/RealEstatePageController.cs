@@ -3,6 +3,7 @@ using JWTApi.Api.ViewModels.RealEstates;
 using JWTApi.Api.ViewModels.Violations;
 using JWTApi.Application.DTOs.RealEstates;
 using JWTApi.Application.Services.Categories;
+using JWTApi.Application.Services.RealEstatesApplications;
 using JWTApi.Application.Services.RealEstateses;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces.Wallets;
@@ -25,9 +26,10 @@ namespace JWTApi.Api.Controllers
         private RealEstatesService _realEstatesService;
         private readonly string _encryptionKey;
         private readonly TempImageCache _cache;
+        private readonly RealEstatesApplicationsServices _realEstatesApplicationsServices;
 
         public RealEstatePageController(RealEstatesService realEstatesService, 
-            IConfiguration configuration, TempImageCache cache
+            IConfiguration configuration, TempImageCache cache, RealEstatesApplicationsServices realEstatesApplicationsServices
 
             )
         {
@@ -35,6 +37,7 @@ namespace JWTApi.Api.Controllers
             _encryptionKey = configuration["Encryption:Key"] ??
                    throw new Exception("Encryption key not found");
             _cache = cache;
+            _realEstatesApplicationsServices= realEstatesApplicationsServices;
 
         }
         [HttpGet("GetRandomLastItemRealEstates")]
@@ -334,7 +337,23 @@ int pageSize = 10)
             return ResponseApi.Ok(result).ToHttpResponse();
 
         }
+        [HttpGet("RealEstatesesApplicationsDtosAsync")]
+        public async Task<IActionResult> RealEstatesesApplicationsDtosAsync(
+            int pageNumber ,
+            int pageSize ,
+            CancellationToken cancellationToken)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
 
+
+            var result = await _realEstatesApplicationsServices.RealEstatesesApplicationsDtosAsync(
+                userId,
+                pageNumber,
+                pageSize,
+                cancellationToken);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+        }
 
         //[HttpGet("GetRealEstateDetails")]
         //public async Task<IActionResult> GetRealEstateDetails(int id, CancellationToken cancellationToken)

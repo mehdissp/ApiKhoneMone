@@ -20,6 +20,7 @@ namespace JWTApi.Domain.Entities
         public ICollection<Facilities> Facilities { get; set; } = new List<Facilities>();
         public ICollection<SpecialFeature> SpecialFeature { get; set; } = new List<SpecialFeature>();
         public ICollection<RealEstates> RealEstates { get; set; } = new List<RealEstates>();
+        public ICollection<RealEstatesApplicants> RealEstatesApplicants { get; set; } = new List<RealEstatesApplicants>();
         public ICollection<RealEstatesRent> RealEstatesRents { get; set; } = new List<RealEstatesRent>();
         public ICollection<SearchRequest> SearchRequests { get; set; } = new List<SearchRequest>();
         public ICollection<Warning> Warnings { get; set; } = new List<Warning>();
