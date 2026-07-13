@@ -29,7 +29,7 @@ public class MenuPermissionMiddleware
             "/swagger" , "/api/auth/checkuser" ,"/api/auth/captcha", "/api/auth/verify-captcha", "/api/UserProfile/upload-photo",
             "/api/payment/request", "/api/payment/test", "/api/aqayepardakht/request",
             "/api/realestatepage/getrandomlastitemrealestateswithuser", "/api/realestatepage/getindependentagent",
-            "/api/userprofile/uploadphoto","/api/chat/send" };
+            "/api/userprofile/uploadphoto","/api/chat/send" ,"/api/post/getcategorypostsdtos"};
         if (publicPaths.Any(p => path.StartsWith(p)))
         {
             await _next(context);

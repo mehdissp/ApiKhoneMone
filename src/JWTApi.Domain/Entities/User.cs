@@ -1,4 +1,5 @@
-﻿using JWTApi.Domain.Shared;
+﻿using JWTApi.Domain.Entities.Blogs;
+using JWTApi.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,8 @@ namespace JWTApi.Domain.Entities
         public ICollection<RealEstatesApplicants> RealEstatesApplicants { get; set; } = new List<RealEstatesApplicants>();
 
 
+        // Navigation Properties (رابطه یک به چند با پست)
+        public ICollection<Post> Posts { get; set; }
 
 
 

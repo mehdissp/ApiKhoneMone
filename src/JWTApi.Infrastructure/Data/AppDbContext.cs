@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using JWTApi.Domain.Entities;
+﻿using JWTApi.Domain.Entities;
+using JWTApi.Domain.Entities.Blogs;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
 
 namespace JWTApi.Infrastructure.Data
@@ -69,7 +70,12 @@ namespace JWTApi.Infrastructure.Data
         public DbSet<RealEstatesApplicants_Region> RealEstatesApplicants_Regions { get; set; }
         public DbSet<RealEstatesApplicants_UserPaid> RealEstatesApplicants_UserPaids { get; set; }
 
-        
+        public DbSet<CategoryPost> CategoryPosts { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -84,6 +90,138 @@ namespace JWTApi.Infrastructure.Data
                 b.Property(p => p.IsBanner).HasDefaultValueSql("0");
 
             });
+            // ============ پیکربندی Category ============
+            modelBuilder.Entity<CategoryPost>(entity =>
+            {
+                entity.ToTable("CategoryPosts");
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.Slug)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.HasIndex(e => e.Slug)
+                      .IsUnique();
+            });
+            // ============ پیکربندی Post (مهم‌ترین جدول) ============
+            modelBuilder.Entity<Post>(entity =>
+            {
+                entity.ToTable("Posts");
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Title)
+                      .IsRequired()
+                      .HasMaxLength(300);
+
+                entity.Property(e => e.Slug)
+                      .IsRequired()
+                      .HasMaxLength(300);
+
+                entity.HasIndex(e => e.Slug)
+                      .IsUnique();
+
+                entity.Property(e => e.Summary)
+                      .IsRequired()
+                      .HasMaxLength(500);
+
+                entity.Property(e => e.Content)
+                      .IsRequired()
+                      .HasColumnType("nvarchar(max)"); // برای محتوای طولانی
+
+                entity.Property(e => e.ImageUrl)
+                      .HasMaxLength(500);
+
+                entity.Property(e => e.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(e => e.UpdatedAt)
+                      .IsRequired(false);
+
+                // ====== تعیین روابط با Fluent API ======
+                // رابطه Post با User (هر پست یک نویسنده دارد)
+                entity.HasOne(p => p.User)
+                      .WithMany(u => u.Posts)
+                      .HasForeignKey(p => p.UserId)
+                      .OnDelete(DeleteBehavior.Restrict); // جلوگیری از حذف نویسنده‌ای که پست دارد
+
+                // رابطه Post با Category (هر پست یک دسته دارد)
+                entity.HasOne(p => p.Category)
+                      .WithMany(c => c.Posts)
+                      .HasForeignKey(p => p.CategoryId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // رابطه Post با Comment (یک پست چندین نظر دارد)
+                entity.HasMany(p => p.Comments)
+                      .WithOne(c => c.Post)
+                      .HasForeignKey(c => c.PostId)
+                      .OnDelete(DeleteBehavior.Cascade); // با حذف پست، نظرات هم حذف شوند
+            });
+            // ============ پیکربندی Tag ============
+            modelBuilder.Entity<Tag>(entity =>
+            {
+                entity.ToTable("Tags");
+                entity.HasKey(e => e.Id);
+
+                // رابطه Post با Category (هر پست یک دسته دارد)
+                entity.HasOne(p => p.Category)
+                      .WithMany(c => c.Tags)
+                      .HasForeignKey(p => p.CategoryId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.Name)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.Property(e => e.Slug)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.HasIndex(e => e.Slug)
+                      .IsUnique();
+            });
+
+            // ============ پیکربندی Comment ============
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.ToTable("Comments");
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.AuthorName)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.Email)
+                      .IsRequired()
+                      .HasMaxLength(256);
+
+                entity.Property(e => e.Content)
+                      .IsRequired()
+                      .HasMaxLength(2000);
+
+                entity.Property(e => e.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                // رابطه خودارجاعی برای پاسخ به نظرها
+                entity.HasOne(c => c.ParentComment)
+                      .WithMany(c => c.Replies)
+                      .HasForeignKey(c => c.ParentCommentId)
+                      .OnDelete(DeleteBehavior.Restrict); // جلوگیری از حذف زنجیره‌ای
+            });
+            // ============ پیکربندی رابطه چند به چند بین Post و Tag ============
+            // در EF Core 5 به بالا، به راحتی با یک کلید ترکیبی در جدول میانی
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Tags)
+                .WithMany(t => t.Posts)
+                .UsingEntity<Dictionary<string, object>>(
+                    "PostTag", // نام جدول میانی
+                    j => j.HasOne<Tag>().WithMany().HasForeignKey("TagId").OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<Post>().WithMany().HasForeignKey("PostId").OnDelete(DeleteBehavior.Cascade)
+                )
+                ;
             //---------------Wallet--------
             modelBuilder.Entity<Wallet>(b =>
             {

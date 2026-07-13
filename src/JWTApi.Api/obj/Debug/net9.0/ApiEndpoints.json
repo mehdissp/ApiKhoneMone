@@ -574,6 +574,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "JWTApi.Api.Controllers.PostController",
+    "Method": "GetCategoryPostsDTOs",
+    "RelativePath": "api/Post/GetCategoryPostsDTOs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.PostController",
+    "Method": "GetTagsDtosDTOs",
+    "RelativePath": "api/Post/GetTagsDtosDTOs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "catId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "JWTApi.Api.Controllers.ProjectController",
     "Method": "DeleteProject",
     "RelativePath": "api/Project/DeleteProject",
