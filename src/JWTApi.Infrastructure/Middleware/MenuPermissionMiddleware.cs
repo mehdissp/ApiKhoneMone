@@ -1,8 +1,10 @@
 ﻿using JWTApi.Domain.Dtos;
 using JWTApi.Infrastructure.Data;
 using JWTApi.Infrastructure.Exceptions;
+using JWTApi.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 
 
@@ -29,8 +31,22 @@ public class MenuPermissionMiddleware
             "/swagger" , "/api/auth/checkuser" ,"/api/auth/captcha", "/api/auth/verify-captcha", "/api/UserProfile/upload-photo",
             "/api/payment/request", "/api/payment/test", "/api/aqayepardakht/request",
             "/api/realestatepage/getrandomlastitemrealestateswithuser", "/api/realestatepage/getindependentagent",
-            "/api/userprofile/uploadphoto","/api/chat/send" ,"/api/post/getcategorypostsdtos"};
+            "/api/userprofile/uploadphoto","/api/chat/send" ,"/api/post/getcategorypostsdtos","/uploads/post","/post"
+            //,"/api/post/getpostcategorydto","/uploads/post"
+        
+        };
         if (publicPaths.Any(p => path.StartsWith(p)))
+        {
+            await _next(context);
+            return;
+        }
+
+        var isPublic = context.GetEndpoint()?.Metadata?.GetMetadata<PublicEndpointAttribute>() != null;
+
+        // همچنین می‌توانید برای کنترلرها هم چک کنید
+        var isControllerPublic = context.GetEndpoint()?.Metadata?.GetMetadata<PublicEndpointAttribute>() != null;
+
+        if (isPublic || isControllerPublic)
         {
             await _next(context);
             return;

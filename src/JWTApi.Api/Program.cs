@@ -290,7 +290,7 @@ using JWTApi.Infrastructure.Repositories.Categories;
 using JWTApi.Infrastructure.Repositories.ChatBots;
 using JWTApi.Infrastructure.Repositories.Menus;
 using JWTApi.Infrastructure.Repositories.Payments;
-using JWTApi.Infrastructure.Repositories.Post;
+using JWTApi.Infrastructure.Repositories.Posts;
 using JWTApi.Infrastructure.Repositories.RealEstateses;
 using JWTApi.Infrastructure.Repositories.RealEstatesesApplications;
 using JWTApi.Infrastructure.Repositories.Roles;
@@ -591,7 +591,7 @@ static void ConfigureMiddlewarePipeline(WebApplication app)
     app.UseAuthorization();
 
     // Custom Middleware
-    app.UseApiSecurity();
+    //app.UseApiSecurity();
     app.UseCustomExceptionHandler();
     app.UseMiddleware<MenuPermissionMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();

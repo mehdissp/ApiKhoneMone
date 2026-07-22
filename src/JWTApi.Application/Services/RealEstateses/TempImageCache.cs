@@ -57,6 +57,38 @@ namespace JWTApi.Application.Services.RealEstateses
             return cacheId;
         }
 
+        public async Task<(string cacheId, string fileName)> SaveToPoste(IFormFile image)
+        {
+            var cacheId = Guid.NewGuid().ToString();
+            var cacheFolder = Path.Combine(_env.WebRootPath, "temp");
+
+            Directory.CreateDirectory(cacheFolder);
+
+            var ext = Path.GetExtension(image.FileName);
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var filePath = Path.Combine(cacheFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+            // اضافه کردن واترمارک به تصویر
+            //   var watermarkedImageBytes = await WatermarkHelper.AddTextWatermark(image, "ملک چی", 0.6f);
+
+            // ذخیره تصویر واترمارک شده
+            //   await File.WriteAllBytesAsync(filePath, watermarkedImageBytes);
+            _cache[cacheId] = new TempImage
+            {
+                Id = cacheId,
+                Path = filePath,
+                ExpireAt = DateTime.UtcNow.AddHours(1),
+                OriginalName = image.FileName
+            };
+
+
+            return (cacheId, fileName);
+        }
+
         //public async Task<List<string>> MoveToPermanent(List<string> cacheIds, string currentUserId, int categoryId)
         //{
         //    var permanentUrls = new List<string>();
@@ -179,6 +211,112 @@ namespace JWTApi.Application.Services.RealEstateses
             return permanentImages;
         }
 
+
+        public async Task<List<ImagesInfo>> MoveToPermanentPostList(List<string> cacheIds, string currentUserId, int categoryId)
+        {
+            var permanentImages = new List<ImagesInfo>();
+
+            foreach (var cacheId in cacheIds)
+            {
+                if (!_cache.ContainsKey(cacheId)) continue;
+
+                var temp = _cache[cacheId];
+
+                // ساختار پوشه سئو پسند
+                var seoFolderName = CleanForUrl(categoryId.ToString());
+                var userFolder = Path.Combine(_env.WebRootPath, "uploads", "posts", seoFolderName, currentUserId);
+                Directory.CreateDirectory(userFolder);
+
+                // نام فایل سئو پسند
+                var originalName = Path.GetFileNameWithoutExtension(temp.OriginalName);
+                var cleanName = CleanForUrl(originalName);
+                var extension = Path.GetExtension(temp.Path).ToLower();
+
+                // تولید نام فایل بهینه برای سئو
+                var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+                var newFileName = $"{cleanName}-{timestamp}-{categoryId}.webp"; // استفاده از WebP
+                var newPath = Path.Combine(userFolder, newFileName);
+
+                // فشرده سازی و بهینه سازی عکس
+                var imageInfo = await OptimizeImageForSEO(temp.Path, newPath, temp.OriginalName);
+
+                // حذف فایل موقت
+                File.Delete(temp.Path);
+                var dir = Path.GetDirectoryName(temp.Path);
+                if (Directory.Exists(dir) && !Directory.EnumerateFileSystemEntries(dir).Any())
+                    Directory.Delete(dir);
+
+                _cache.Remove(cacheId);
+
+                imageInfo.Url = $"/uploads/posts/{seoFolderName}/{currentUserId}/{newFileName}";
+                permanentImages.Add(imageInfo);
+            }
+
+            return permanentImages;
+        }
+
+        public async Task<ImagesInfo> MoveToPermanentPost(string cacheId, string currentUserId, int categoryId)
+        {
+            if (string.IsNullOrEmpty(cacheId) || !_cache.ContainsKey(cacheId))
+                return null;
+
+            var temp = _cache[cacheId];
+            if (temp == null)
+                return null;
+
+            try
+            {
+                // ساختار پوشه سئو پسند
+                var seoFolderName = CleanForUrl(categoryId.ToString());
+                var userFolder = Path.Combine(_env.WebRootPath, "uploads", "posts");
+                Directory.CreateDirectory(userFolder);
+
+                // بررسی وجود فایل موقت
+                if (!File.Exists(temp.Path))
+                {
+                    _cache.Remove(cacheId);
+                    return null;
+                }
+
+                // نام فایل سئو پسند
+                var originalName = Path.GetFileNameWithoutExtension(temp.OriginalName ?? "image");
+                var cleanName = string.IsNullOrEmpty(originalName) ? "image" : CleanForUrl(originalName);
+
+                // تولید نام فایل بهینه برای سئو
+                var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+                var newFileName = $"{cleanName}-{timestamp}-{categoryId}.webp";
+                var newPath = Path.Combine(userFolder, newFileName);
+
+                // فشرده سازی و بهینه سازی عکس
+                var imageInfo = await OptimizeImageForSEO(temp.Path, newPath, temp.OriginalName);
+
+                // تنظیم URL برای ذخیره در دیتابیس
+                imageInfo.Url = $"/uploads/posts/{seoFolderName}/{currentUserId}/{newFileName}";
+
+                // حذف فایل موقت
+                if (File.Exists(temp.Path))
+                    File.Delete(temp.Path);
+
+                // حذف پوشه خالی موقت
+                var tempDir = Path.GetDirectoryName(temp.Path);
+                if (!string.IsNullOrEmpty(tempDir) && Directory.Exists(tempDir) &&
+                    !Directory.EnumerateFileSystemEntries(tempDir).Any())
+                {
+                    Directory.Delete(tempDir);
+                }
+
+                // حذف از کش
+                _cache.Remove(cacheId);
+
+                return imageInfo;
+            }
+            catch (Exception ex)
+            {
+                // لاگ خطا
+                // _logger.LogError(ex, $"Error processing image {cacheId}");
+                return null;
+            }
+        }
 
         public async Task<List<ImagesInfo>> MoveToPermanentStory(List<string> cacheIds, string currentUserId)
         {
@@ -351,6 +489,72 @@ namespace JWTApi.Application.Services.RealEstateses
                 _cache.Remove(cacheId);
             }
         }
+
+
+
+        public async Task<ImagesInfo> MoveToPermanentPostForContent(string cacheId)
+        {
+            if (string.IsNullOrEmpty(cacheId) || !_cache.ContainsKey(cacheId))
+                return null;
+
+            var temp = _cache[cacheId];
+            if (temp == null)
+                return null;
+
+            try
+            {
+                // ساختار پوشه سئو پسند
+       
+                var userFolder = Path.Combine(_env.WebRootPath, "post");
+                Directory.CreateDirectory(userFolder);
+
+                // بررسی وجود فایل موقت
+                if (!File.Exists(temp.Path))
+                {
+                    _cache.Remove(cacheId);
+                    return null;
+                }
+
+                // نام فایل سئو پسند
+                var originalName = Path.GetFileNameWithoutExtension(temp.OriginalName ?? "image");
+                var cleanName = string.IsNullOrEmpty(originalName) ? "image" : CleanForUrl(originalName);
+
+                // تولید نام فایل بهینه برای سئو
+                var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+                var newFileName = $"{cleanName}-{timestamp}.webp";
+                var newPath = Path.Combine(userFolder, newFileName);
+
+                // فشرده سازی و بهینه سازی عکس
+                var imageInfo = await OptimizeImageForSEO(temp.Path, newPath, temp.OriginalName);
+
+                // تنظیم URL برای ذخیره در دیتابیس
+                imageInfo.Url = $"/post/{newFileName}";
+
+                // حذف فایل موقت
+                if (File.Exists(temp.Path))
+                    File.Delete(temp.Path);
+
+                // حذف پوشه خالی موقت
+                var tempDir = Path.GetDirectoryName(temp.Path);
+                if (!string.IsNullOrEmpty(tempDir) && Directory.Exists(tempDir) &&
+                    !Directory.EnumerateFileSystemEntries(tempDir).Any())
+                {
+                    Directory.Delete(tempDir);
+                }
+
+                // حذف از کش
+                _cache.Remove(cacheId);
+
+                return imageInfo;
+            }
+            catch (Exception ex)
+            {
+                // لاگ خطا
+                // _logger.LogError(ex, $"Error processing image {cacheId}");
+                return null;
+            }
+        }
+
     }
 
 

@@ -1,8 +1,10 @@
 ﻿using JWTApi.Api.Response;
+using JWTApi.Api.ViewModels.Posts;
 using JWTApi.Api.ViewModels.RealEstates;
 using JWTApi.Api.ViewModels.Violations;
 using JWTApi.Application.DTOs.RealEstates;
 using JWTApi.Application.Services.Categories;
+using JWTApi.Application.Services.Posts;
 using JWTApi.Application.Services.RealEstatesApplications;
 using JWTApi.Application.Services.RealEstateses;
 using JWTApi.Domain.Entities;
@@ -27,9 +29,9 @@ namespace JWTApi.Api.Controllers
         private readonly string _encryptionKey;
         private readonly TempImageCache _cache;
         private readonly RealEstatesApplicationsServices _realEstatesApplicationsServices;
-
+        private PostsServices _postService;
         public RealEstatePageController(RealEstatesService realEstatesService, 
-            IConfiguration configuration, TempImageCache cache, RealEstatesApplicationsServices realEstatesApplicationsServices
+            IConfiguration configuration, TempImageCache cache, RealEstatesApplicationsServices realEstatesApplicationsServices, PostsServices postsServices
 
             )
         {
@@ -38,6 +40,7 @@ namespace JWTApi.Api.Controllers
                    throw new Exception("Encryption key not found");
             _cache = cache;
             _realEstatesApplicationsServices= realEstatesApplicationsServices;
+            _postService= postsServices;
 
         }
         [HttpGet("GetRandomLastItemRealEstates")]
@@ -200,6 +203,9 @@ int pageSize = 10)
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+
+        
 
 
         [HttpPost("ClearTempImage")]
@@ -403,6 +409,18 @@ int pageSize = 10)
         //    public string Iv { get; set; }
         //}
 
+        [HttpPost("GetPostCategoryDtoAdmin")]
+        [Authorize]
+
+        public async Task<IActionResult> GetPostCategoryDtoAdmin([FromBody] PostsRequestViewModel postsRequestViewModel, CancellationToken cancellationToken)
+        {
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            var result = await _postService.GetPostCategoryDtoAdmin(postsRequestViewModel.PageNumber, postsRequestViewModel.PageSize, postsRequestViewModel.SearchStream, postsRequestViewModel.CategoryId, postsRequestViewModel.IsPublished);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
 
 
     }

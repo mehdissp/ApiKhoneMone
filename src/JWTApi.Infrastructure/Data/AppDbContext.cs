@@ -74,7 +74,9 @@ namespace JWTApi.Infrastructure.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Post_Tags> Post_Tags { get; set; }
 
+        
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -736,6 +738,13 @@ namespace JWTApi.Infrastructure.Data
                  .IsRequired(false) // Parent می‌تواند null باشد (برای ریشه)
                  .OnDelete(DeleteBehavior.Restrict); // یا Cascade بسته به نیاز
 
+            });
+
+            //--------------------Post_Tags
+
+            modelBuilder.Entity<Post_Tags>(b =>
+            {
+                b.HasKey(rm => new { rm.PostId, rm.TagsId });
             });
             //--------------------RealEstates_SpecialFeature
 

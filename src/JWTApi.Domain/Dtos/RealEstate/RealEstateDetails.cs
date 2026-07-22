@@ -46,6 +46,7 @@ namespace JWTApi.Domain.Dtos.RealEstate
         public bool? InBookMark { get; set; }
         // پراپرتی جدید برای نمایش تاریخ به فرمت شمسی نسبی
         public string CreatedAtPersianRelative => CreatedAt.ToPersianRelativeDate();
+
     }
     public class Agent
     {

@@ -31,7 +31,7 @@ namespace JWTApi.Domain.Entities.Blogs
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Tag> Tags { get; set; } // رابطه چند به چند
 
-        public void create(string title,string slug,string summary,string content,string imgurl,bool ispublish,string userId)
+        public void create(string title,string slug,string summary,string content,string imgurl,bool ispublish,string userId,int categoryId)
         {
             Title=title;
             Slug=slug;
@@ -40,6 +40,7 @@ namespace JWTApi.Domain.Entities.Blogs
             ImageUrl=imgurl;
             IsPublished=ispublish;
             UserId = Guid.Parse(userId);
+            CategoryId = categoryId;
 
         }
     }

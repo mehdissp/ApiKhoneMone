@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\fonts\" />
+    <Folder Include="wwwroot\post\" />
     <Folder Include="wwwroot\uploads\Images\" />
   </ItemGroup>
 

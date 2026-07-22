@@ -225,6 +225,19 @@ namespace JWTApi.Infrastructure.Migrations
                     b.ToTable("Posts", (string)null);
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.Blogs.Post_Tags", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "TagsId");
+
+                    b.ToTable("Post_Tags");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.Blogs.Tag", b =>
                 {
                     b.Property<int>("Id")
