@@ -320,6 +320,285 @@ ORDER BY s.Id DESC";
             }
         }
 
+
+        //***************************//
+        public async Task<PagedResult<RealEstateWithCategoryDto>> GetFilteredRealEstatesWithCategoryFilterAsync(
+    FilterRealEstateAllDto filter,
+    CancellationToken cancellationToken = default)
+        {
+            // اعتبارسنجی سریع
+            if (filter.TabId <= 0 || filter.PageNumber < 1 || filter.PageSize < 1 || filter.PageSize > 50)
+            {
+                return new PagedResult<RealEstateWithCategoryDto>
+                {
+                    Items = new List<RealEstateWithCategoryDto>(),
+                    TotalCount = 0,
+                    PageNumber = filter.PageNumber,
+                    PageSize = filter.PageSize,
+                    TotalPages = 0
+                };
+            }
+
+            try
+            {
+                // ساخت کوئری داینامیک
+                var (sqlQuery, parameters) = BuildFilteredQuery(filter);
+
+                using (var multi = await _connection.QueryMultipleAsync(
+                    sqlQuery,
+                    parameters,
+                    commandTimeout: 10,
+                    commandType: CommandType.Text))
+                {
+                    var items = (await multi.ReadAsync<RealEstateWithCategoryDto>()).ToList();
+                    var totalCount = await multi.ReadFirstAsync<int>();
+
+                    return new PagedResult<RealEstateWithCategoryDto>
+                    {
+                        Items = items,
+                        TotalCount = totalCount,
+                        PageNumber = filter.PageNumber,
+                        PageSize = filter.PageSize,
+                        TotalPages = (int)Math.Ceiling(totalCount / (double)filter.PageSize)
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت املاک فیلتر شده برای tabId: {TabId}", filter.TabId);
+
+                return new PagedResult<RealEstateWithCategoryDto>
+                {
+                    Items = new List<RealEstateWithCategoryDto>(),
+                    TotalCount = 0,
+                    PageNumber = filter.PageNumber,
+                    PageSize = filter.PageSize,
+                    TotalPages = 0
+                };
+            }
+        }
+
+        private (string SqlQuery, object Parameters) BuildFilteredQuery(FilterRealEstateAllDto filter)
+        {
+            var parameters = new DynamicParameters();
+            var whereConditions = new List<string>();
+            var sqlBuilder = new StringBuilder();
+
+            // شرط پایه - دسته‌بندی
+            whereConditions.Add("c.Id = @TabId");
+            parameters.Add("TabId", filter.TabId);
+            if (filter.RegionId > 0)
+            {
+                // پیدا کردن تمام زیرمجموعه‌های این منطقه
+                whereConditions.Add(@"
+        (s.RegionId = @RegionId OR 
+         s.RegionId IN (SELECT Id FROM Regions WHERE ParentId = @RegionId) OR
+         s.RegionId IN (SELECT Id FROM Regions WHERE ParentId IN (SELECT Id FROM Regions WHERE ParentId = @RegionId)))");
+                parameters.Add("RegionId", filter.RegionId);
+            }
+
+            // فیلتر مناطق (محله‌ها)
+            if (!string.IsNullOrEmpty(filter.ChildIds))
+            {
+                var childIds = filter.ChildIds.Split(',')
+                    .Where(id => int.TryParse(id, out _))
+                    .Select(int.Parse)
+                    .ToList();
+
+                if (childIds.Any())
+                {
+                    whereConditions.Add($"s.RegionId IN @ChildIds");
+                    parameters.Add("ChildIds", childIds);
+                }
+            }
+
+            // فیلتر سال ساخت (چک‌باکس)
+            if (!string.IsNullOrEmpty(filter.ConstructionYears))
+            {
+                var years = filter.ConstructionYears.Split(',')
+                    .Where(y => int.TryParse(y, out _))
+                    .Select(int.Parse)
+                    .ToList();
+
+                if (years.Any())
+                {
+                    whereConditions.Add($"s.ConstructionYear IN @ConstructionYears");
+                    parameters.Add("ConstructionYears", years);
+                }
+            }
+
+            // فیلتر محدوده قیمت
+            if (filter.PriceMin.HasValue && filter.PriceMin.Value > 0)
+            {
+                whereConditions.Add("s.Price >= @PriceMin");
+                parameters.Add("PriceMin", filter.PriceMin.Value);
+            }
+
+            if (filter.PriceMax.HasValue && filter.PriceMax.Value > 0)
+            {
+                whereConditions.Add("s.Price <= @PriceMax");
+                parameters.Add("PriceMax", filter.PriceMax.Value);
+            }
+
+            // فیلتر محدوده متراژ (فرض می‌کنیم در جدول RealEstates فیلد Area وجود دارد)
+            if (filter.AreaMin.HasValue && filter.AreaMin.Value > 0)
+            {
+                whereConditions.Add("s.SquareMeter >= @AreaMin");
+                parameters.Add("AreaMin", filter.AreaMin.Value);
+            }
+
+            if (filter.AreaMax.HasValue && filter.AreaMax.Value > 0)
+            {
+                whereConditions.Add("s.SquareMeter <= @AreaMax");
+                parameters.Add("AreaMax", filter.AreaMax.Value);
+            }
+
+            // فیلتر محدوده سال ساخت
+            if (filter.YearMin.HasValue && filter.YearMin.Value > 0)
+            {
+                whereConditions.Add("s.ConstructionYear >= @YearMin");
+                parameters.Add("YearMin", filter.YearMin.Value);
+            }
+
+            if (filter.YearMax.HasValue && filter.YearMax.Value > 0)
+            {
+                whereConditions.Add("s.ConstructionYear <= @YearMax");
+                parameters.Add("YearMax", filter.YearMax.Value);
+            }
+
+            // فیلتر محدوده طبقات
+            if (filter.FloorMin.HasValue && filter.FloorMin.Value > 0)
+            {
+                whereConditions.Add("s.CountFloor >= @FloorMin");
+                parameters.Add("FloorMin", filter.FloorMin.Value);
+            }
+
+            if (filter.FloorMax.HasValue && filter.FloorMax.Value > 0)
+            {
+                whereConditions.Add("s.CountFloor <= @FloorMax");
+                parameters.Add("FloorMax", filter.FloorMax.Value);
+            }
+
+            // فیلتر محدوده اتاق (فرض می‌کنیم فیلد RoomCount در جدول وجود دارد)
+            if (filter.RoomMin.HasValue && filter.RoomMin.Value > 0)
+            {
+                whereConditions.Add("s.RoomCount >= @RoomMin");
+                parameters.Add("RoomMin", filter.RoomMin.Value);
+            }
+
+            if (filter.RoomMax.HasValue && filter.RoomMax.Value > 0)
+            {
+                whereConditions.Add("s.RoomCount <= @RoomMax");
+                parameters.Add("RoomMax", filter.RoomMax.Value);
+            }
+
+            // فیلتر امکانات
+            if (filter.IsHasElevator.HasValue)
+            {
+                whereConditions.Add($"s.IsHasElevator = @IsHasElevator");
+                parameters.Add("IsHasElevator", filter.IsHasElevator.Value ? 1 : 0);
+            }
+
+            if (filter.IsHasParking.HasValue)
+            {
+                whereConditions.Add($"s.IsHasParking = @IsHasParking");
+                parameters.Add("IsHasParking", filter.IsHasParking.Value ? 1 : 0);
+            }
+
+            if (filter.IsHasPool.HasValue)
+            {
+                whereConditions.Add($"s.IsHasPool = @IsHasPool");
+                parameters.Add("IsHasPool", filter.IsHasPool.Value ? 1 : 0);
+            }
+
+            if (filter.IsHasStoreRoom.HasValue)
+            {
+                whereConditions.Add($"s.IsHasStoreRoom = @IsHasStoreRoom");
+                parameters.Add("IsHasStoreRoom", filter.IsHasStoreRoom.Value ? 1 : 0);
+            }
+
+            // ساخت WHERE clause
+            string whereClause = whereConditions.Any()
+                ? "WHERE " + string.Join(" AND ", whereConditions)
+                : string.Empty;
+
+            // مرتب‌سازی
+            string orderByClause = GetOrderByClause(filter.SortBy);
+
+            // پارامترهای صفحه‌بندی
+            parameters.Add("Offset", (filter.PageNumber - 1) * filter.PageSize);
+            parameters.Add("PageSize", filter.PageSize);
+
+            // کوئری نهایی
+            string query = $@"
+        DECLARE @TotalCount INT;
+
+        -- دریافت تعداد کل با اعمال فیلترها
+        SELECT @TotalCount = COUNT(*)
+        FROM dbo.RealEstates s WITH (NOLOCK)
+        INNER JOIN dbo.Categories c WITH (NOLOCK) ON c.id = s.CategoryId
+        {whereClause};
+
+        -- دریافت داده‌های صفحه جاری
+        SELECT 
+            s.id,
+            s.ConstructionYear,
+            s.CountFloor,
+            s.Title,
+            s.AdditionalInformation,
+            s.IsHasElevator,
+            s.IsHasParking,
+            s.IsHasPool,
+            s.IsHasStoreRoom,
+            r.Name as RegionName,
+            ISNULL(q.Name,'') + ' / ' + ra.Name as ParentName,
+            i.address,
+            ISNULL(img.ImageCount, 0) as ImageCount,
+            s.Price,
+            s.CreatedAt
+        FROM dbo.RealEstates s WITH (NOLOCK)
+        INNER JOIN dbo.Categories c WITH (NOLOCK) ON c.id = s.CategoryId
+        LEFT JOIN dbo.Regions r WITH (NOLOCK) ON r.id = s.RegionId
+        LEFT JOIN dbo.Regions ra WITH (NOLOCK) ON ra.id = r.ParentId
+        LEFT JOIN dbo.Regions q WITH (NOLOCK) ON q.id = ra.ParentId
+        OUTER APPLY (
+            SELECT TOP 1 address as Address
+            FROM dbo.images i WITH (NOLOCK)
+            WHERE i.RealEstateId = s.id 
+            AND i.isbanner = 1
+            ORDER BY i.id
+        ) i
+        LEFT JOIN (
+            SELECT RealEstateId, COUNT(*) as ImageCount
+            FROM dbo.images WITH (NOLOCK)
+            GROUP BY RealEstateId
+        ) img ON img.RealEstateId = s.id
+        {whereClause}
+        {orderByClause}
+        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+        SELECT @TotalCount;";
+
+            return (query, parameters);
+        }
+
+        private string GetOrderByClause(string? sortBy)
+        {
+            if (string.IsNullOrEmpty(sortBy))
+                return "ORDER BY s.Id DESC"; // پیش‌فرض جدیدترین
+
+            return sortBy switch
+            {
+                "جدیدترین" => "ORDER BY s.CreatedAt DESC",
+                "قدیمی‌ترین" => "ORDER BY s.CreatedAt ASC",
+                "بیشترین امکانات" => "ORDER BY (CASE WHEN s.IsHasElevator = 1 THEN 1 ELSE 0 END + CASE WHEN s.IsHasParking = 1 THEN 1 ELSE 0 END + CASE WHEN s.IsHasPool = 1 THEN 1 ELSE 0 END + CASE WHEN s.IsHasStoreRoom = 1 THEN 1 ELSE 0 END) DESC",
+                "ارزان‌ترین" => "ORDER BY s.Price ASC",
+                "گران‌ترین" => "ORDER BY s.Price DESC",
+                _ => "ORDER BY s.Id DESC"
+            };
+        }
+        //***************************//
+
         //    public async Task<PagedResult<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithCategoryAsync(
         //int tabId,
         //int pageNumber = 1,
@@ -1224,6 +1503,50 @@ SELECT @TotalCount;";
                 TotalPages = totalPages
             };
         }
+
+
+
+        public async Task<List<RegionParentDto>> GetRegionsWithChildrenLinq(int regionId, CancellationToken cancellationToken = default)
+        {
+            const string cacheKey = "RegionsWithChildren";
+
+            // تلاش برای دریافت از کش
+            if (_cache.TryGetValue(cacheKey, out List<RegionParentDto> cachedData))
+            {
+                return cachedData;
+            }
+
+            // اگر در کش نبود، از دیتابیس بگیر
+            var query = from parent in _context.Regions
+                        join child in _context.Regions on parent.Id equals child.ParentId
+                        where parent.ParentId != null && parent.ParentId == regionId
+                        select new RegionParentDto
+                        {
+                            Id = parent.Id,
+                            ParentName = parent.Name,
+                            ChildrenNames = child.Name,
+                            ChildId = child.Id
+                        };
+                        //group child by new { parent.Id, parent.Name,child.Name as childName,child.Id as ChildId } into g
+                        //select new RegionParentDto
+                        //{
+                        //    Id = g.Key.Id,
+                        //    ParentName = g.Key.Name,
+                        //    ChildrenNames =g.   //"(" + string.Join(",", g.Select(x => x.Name)) + ")"
+                        //};
+
+            var result = await query.ToListAsync(cancellationToken);
+
+            // ذخیره در کش به مدت ۱۰ ساعت
+            _cache.Set(cacheKey, result, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(10)
+            });
+
+            return result;
+        }
+
+
 
 
     }

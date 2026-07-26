@@ -59,5 +59,10 @@ CancellationToken cancellationToken = default);
     int pageNumber = 1,
     int pageSize = 10,
     CancellationToken cancellationToken = default);
+        Task<List<RegionParentDto>> GetRegionsWithChildrenLinq(int regionId,CancellationToken cancellationToken = default);
+
+        Task<PagedResult<RealEstateWithCategoryDto>> GetFilteredRealEstatesWithCategoryFilterAsync(
+    FilterRealEstateAllDto filter,
+    CancellationToken cancellationToken = default);
     }
 }

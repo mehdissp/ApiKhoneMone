@@ -248,6 +248,44 @@ CancellationToken cancellationToken = default)
     {
         return await _userRepository.GetIndependentAgent(cancellationToken);
     }
+
+    public async Task<List<RegionParentDto>> GetRegionsWithChildrenLinq(int regionId)
+    {
+        return await _realEstatesRepository.GetRegionsWithChildrenLinq(regionId);
+    }
+
+    public async Task<PagedResult<RealEstateWithCategoryDto>> GetFilteredRealEstatesWithCategoryFilterAsync(
+        FilterRealEstateDto filter,
+        CancellationToken cancellationToken = default)
+    {
+        // تبدیل FilterRealEstateDto به FilterRealEstateAllDto
+        var filterAll = new FilterRealEstateAllDto
+        {
+            TabId = filter.TabId,
+            PageNumber = filter.PageNumber,
+            PageSize = filter.PageSize,
+            ChildIds = filter.ChildIds,
+            ConstructionYears = filter.ConstructionYears,
+            PriceMin = filter.PriceMin,
+            PriceMax = filter.PriceMax,
+            AreaMin = filter.AreaMin,
+            AreaMax = filter.AreaMax,
+            YearMin = filter.YearMin,
+            YearMax = filter.YearMax,
+            FloorMin = filter.FloorMin,
+            FloorMax = filter.FloorMax,
+            RoomMin = filter.RoomMin,
+            RoomMax = filter.RoomMax,
+            IsHasElevator = filter.IsHasElevator,
+            IsHasParking = filter.IsHasParking,
+            IsHasPool = filter.IsHasPool,
+            IsHasStoreRoom = filter.IsHasStoreRoom,
+            SortBy = filter.SortBy,
+            RegionId=filter.RegionId
+        };
+
+        return await _realEstatesRepository.GetFilteredRealEstatesWithCategoryFilterAsync(filterAll);
+    }
 }
 
 

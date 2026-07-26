@@ -63,17 +63,28 @@ namespace JWTApi.Api.Controllers
                 return ResponseApi.Ok(result).ToHttpResponse();
        
         }
-        [HttpGet("GetRandomLastItemRealEstatesWithCategoryAsync")]
-        public async Task<IActionResult> GetLastItems(
-    int tabId,
-    int pageNumber = 1,
-    int pageSize = 10)
-        {
-            var result = await _realEstatesService.GetRandomLastItemRealEstatesWithCategoryAsync(
-                tabId,
-                pageNumber,
-                pageSize);
+        //    [HttpGet("GetRandomLastItemRealEstatesWithCategoryAsync")]
+        //    [PublicEndpoint]
+        //    public async Task<IActionResult> GetLastItems(
+        //int tabId,
+        //int pageNumber = 1,
+        //int pageSize = 10)
+        //    {
+        //        var result = await _realEstatesService.GetRandomLastItemRealEstatesWithCategoryAsync(
+        //            tabId,
+        //            pageNumber,
+        //            pageSize);
 
+        //        return ResponseApi.Ok(result).ToHttpResponse();
+        //    }
+
+        // RealEstateController.cs
+        [HttpGet("GetRandomLastItemRealEstatesWithCategoryAsync")]
+        [PublicEndpoint]
+        public async Task<IActionResult> GetLastItems([FromQuery] FilterRealEstateDto filter)
+        {
+            //var result = await _realEstatesService.GetRandomLastItemRealEstatesWithCategoryAsync(filter.TabId,filter.PageNumber,filter.PageSize);
+            var result=await _realEstatesService.GetFilteredRealEstatesWithCategoryFilterAsync(filter);
             return ResponseApi.Ok(result).ToHttpResponse();
         }
         [HttpGet("GetRealStateMap")]
@@ -417,6 +428,18 @@ int pageSize = 10)
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
             var result = await _postService.GetPostCategoryDtoAdmin(postsRequestViewModel.PageNumber, postsRequestViewModel.PageSize, postsRequestViewModel.SearchStream, postsRequestViewModel.CategoryId, postsRequestViewModel.IsPublished);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+
+        [HttpPost("GetRegionsWithChildrenLinq")]
+        [PublicEndpoint]
+        public async Task<IActionResult> GetRegionsWithChildrenLinq([FromBody] int id)
+        {
+
+
+            var result = await _realEstatesService.GetRegionsWithChildrenLinq(id);
 
             return ResponseApi.Ok(result).ToHttpResponse();
 
