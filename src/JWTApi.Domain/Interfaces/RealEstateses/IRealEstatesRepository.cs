@@ -62,7 +62,16 @@ CancellationToken cancellationToken = default);
         Task<List<RegionParentDto>> GetRegionsWithChildrenLinq(int regionId,CancellationToken cancellationToken = default);
 
         Task<PagedResult<RealEstateWithCategoryDto>> GetFilteredRealEstatesWithCategoryFilterAsync(
-    FilterRealEstateAllDto filter,
+    FilterRealEstateAllDto filter, string? userId,
     CancellationToken cancellationToken = default);
+
+        Task UpdateViewCount(int id, CancellationToken cancellationToken);
+
+      Task<List<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithSimpleAsync(
+           int regionId,
+           CancellationToken cancellationToken = default);
+
+        Task<List<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync(
+            CancellationToken cancellationToken = default);
     }
 }

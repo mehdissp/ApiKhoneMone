@@ -255,7 +255,7 @@ CancellationToken cancellationToken = default)
     }
 
     public async Task<PagedResult<RealEstateWithCategoryDto>> GetFilteredRealEstatesWithCategoryFilterAsync(
-        FilterRealEstateDto filter,
+        FilterRealEstateDto filter, string? userId,
         CancellationToken cancellationToken = default)
     {
         // تبدیل FilterRealEstateDto به FilterRealEstateAllDto
@@ -284,7 +284,27 @@ CancellationToken cancellationToken = default)
             RegionId=filter.RegionId
         };
 
-        return await _realEstatesRepository.GetFilteredRealEstatesWithCategoryFilterAsync(filterAll);
+        return await _realEstatesRepository.GetFilteredRealEstatesWithCategoryFilterAsync(filterAll, userId);
+    }
+
+
+    public async Task UpdateViewCount(int id, CancellationToken cancellationToken)
+    {
+        await _realEstatesRepository.UpdateViewCount(id, cancellationToken);
+    }
+
+
+    public async Task<List<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithSimpleAsync
+        (
+     int regionId)
+    {
+        return await _realEstatesRepository.GetRandomLastItemRealEstatesWithSimpleAsync(regionId);
+    }
+
+
+  public  async Task<List<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync()
+    {
+        return await _realEstatesRepository.GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync();
     }
 }
 

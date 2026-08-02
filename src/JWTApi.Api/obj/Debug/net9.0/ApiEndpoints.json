@@ -1072,6 +1072,32 @@
   },
   {
     "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRandomLastItemRealEstatesWithSimpleAsync",
+    "RelativePath": "api/RealEstatePage/GetRandomLastItemRealEstatesWithSimpleAsync",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync",
+    "RelativePath": "api/RealEstatePage/GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
     "Method": "GetRandomLastItemRealEstatesWithUser",
     "RelativePath": "api/RealEstatePage/GetRandomLastItemRealEstatesWithUser",
     "HttpMethod": "GET",
@@ -1343,6 +1369,22 @@
     "Parameters": [
       {
         "Name": "realEstateId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.RealEstatePageController",
+    "Method": "UpdateViewCount",
+    "RelativePath": "api/RealEstatePage/UpdateViewCount",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
       }

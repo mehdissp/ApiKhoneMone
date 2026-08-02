@@ -273,6 +273,7 @@ using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces;
 using JWTApi.Domain.Interfaces.Categories;
 using JWTApi.Domain.Interfaces.ChatBots;
+using JWTApi.Domain.Interfaces.Core;
 using JWTApi.Domain.Interfaces.Menus;
 using JWTApi.Domain.Interfaces.Payments;
 using JWTApi.Domain.Interfaces.Posts;
@@ -288,6 +289,7 @@ using JWTApi.Infrastructure.Middleware;
 using JWTApi.Infrastructure.Repositories;
 using JWTApi.Infrastructure.Repositories.Categories;
 using JWTApi.Infrastructure.Repositories.ChatBots;
+using JWTApi.Infrastructure.Repositories.Core;
 using JWTApi.Infrastructure.Repositories.Menus;
 using JWTApi.Infrastructure.Repositories.Payments;
 using JWTApi.Infrastructure.Repositories.Posts;
@@ -420,6 +422,7 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
 
     builder.Services.AddScoped<IRealEstatesRepository, RealEstatesRepository>();
     builder.Services.AddScoped<IPaymentGateway, ZarinpalGateway>();
+    builder.Services.AddScoped<ICorsSettings, CorsSettings>();
     builder.Services.AddScoped<IStoryRepository, StoryRepository>();
     builder.Services.AddScoped<IRealEstatesApplicationsRepository, RealEstatesApplicationsRepository>();
     builder.Services.AddScoped<IPostsRepository, PostsRepository>();

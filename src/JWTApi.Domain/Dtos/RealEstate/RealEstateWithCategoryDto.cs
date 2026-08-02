@@ -30,5 +30,10 @@ namespace JWTApi.Domain.Dtos.RealEstate
         public DateTime CreatedAt { get; set; }
         // پراپرتی جدید برای نمایش تاریخ به فرمت شمسی نسبی
         public string CreatedAtPersianRelative => CreatedAt.ToPersianRelativeDate();
+        public bool HasBookMark { get; set; }
+        public int SquareMeter { get; set; }
+        public int CategoryType { get; set; }
+        public float Rent { get; set; }
+        public float Deposit { get; set; }
     }
 }

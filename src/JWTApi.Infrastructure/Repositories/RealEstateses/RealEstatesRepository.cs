@@ -323,7 +323,7 @@ ORDER BY s.Id DESC";
 
         //***************************//
         public async Task<PagedResult<RealEstateWithCategoryDto>> GetFilteredRealEstatesWithCategoryFilterAsync(
-    FilterRealEstateAllDto filter,
+    FilterRealEstateAllDto filter,string? userId,
     CancellationToken cancellationToken = default)
         {
             // اعتبارسنجی سریع
@@ -342,7 +342,7 @@ ORDER BY s.Id DESC";
             try
             {
                 // ساخت کوئری داینامیک
-                var (sqlQuery, parameters) = BuildFilteredQuery(filter);
+                var (sqlQuery, parameters) = BuildFilteredQuery(filter, userId);
 
                 using (var multi = await _connection.QueryMultipleAsync(
                     sqlQuery,
@@ -378,7 +378,7 @@ ORDER BY s.Id DESC";
             }
         }
 
-        private (string SqlQuery, object Parameters) BuildFilteredQuery(FilterRealEstateAllDto filter)
+        private (string SqlQuery, object Parameters) BuildFilteredQuery(FilterRealEstateAllDto filter,string? userId)
         {
             var parameters = new DynamicParameters();
             var whereConditions = new List<string>();
@@ -387,6 +387,9 @@ ORDER BY s.Id DESC";
             // شرط پایه - دسته‌بندی
             whereConditions.Add("c.Id = @TabId");
             parameters.Add("TabId", filter.TabId);
+          
+            parameters.Add("UserId", userId);
+            
             if (filter.RegionId > 0)
             {
                 // پیدا کردن تمام زیرمجموعه‌های این منطقه
@@ -556,6 +559,13 @@ ORDER BY s.Id DESC";
             ISNULL(img.ImageCount, 0) as ImageCount,
             s.Price,
             s.CreatedAt
+        ,case when (select count(*) from BookMarks t where t.RealEstatesId=s.Id and t.userId=@UserId ) >0
+            then 1 else 0 end as HasBookMark,
+s.SquareMeter,
+c.CategoryType,
+s.Rent,
+s.Deposit
+
         FROM dbo.RealEstates s WITH (NOLOCK)
         INNER JOIN dbo.Categories c WITH (NOLOCK) ON c.id = s.CategoryId
         LEFT JOIN dbo.Regions r WITH (NOLOCK) ON r.id = s.RegionId
@@ -893,10 +903,11 @@ SELECT @TotalCount;";
                 ShowExactLocation=realEstate.IsShowLocation,
                 Title = realEstate.Title,
                 IsHasPool = realEstate.IsHasPool,
-                views = 10,
+                views = realEstate.CountView,
                 Rooms=realEstate.RoomCount,
                 saved = await _context.BookMarks.CountAsync(s=>s.RealEstatesId== id),
                 RegionName = realEstate.Region.Name,
+                SquareMeter=realEstate.SquareMeter,
                 DescriptionRows=realEstate.DescriptionRows,
                 InBookMark = !string.IsNullOrEmpty(userId) &&
              await _context.BookMarks.AnyAsync(s => s.UserId.ToString() == userId && s.RealEstatesId==id),
@@ -1546,6 +1557,155 @@ SELECT @TotalCount;";
             return result;
         }
 
+
+        public async Task UpdateViewCount(int id, CancellationToken cancellationToken)
+        {
+            var realEstates = await _context.RealEstates.FindAsync(id, cancellationToken);
+            if (realEstates == null) return;
+
+            // اگر ViewCount نال بود، مقدار 0 بده
+            realEstates.CountView = realEstates.CountView  + 1;
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+
+        public async Task<List<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithSimpleAsync(
+            int realEstateId ,  // پیش‌فرض 49 مثل کوئری شما
+            CancellationToken cancellationToken = default)
+        {
+            // اعتبارسنجی
+            if (realEstateId <= 0)
+            {
+                return new List<RealEstateWithCategoryDto>();
+            }
+
+            try
+            {
+                var query = @"
+DECLARE @regionId INT = (SELECT RegionId FROM RealEstates r WHERE r.Id = @RealEstateId);
+DECLARE @categoryId int= (SELECT CategoryId FROM RealEstates r WHERE r.Id = @RealEstateId);
+
+SELECT TOP 10
+    s.id,
+    s.ConstructionYear,
+    s.CountFloor,
+    s.Title,
+    s.AdditionalInformation,
+    s.IsHasElevator,
+    s.IsHasParking,
+    s.IsHasPool,
+    s.IsHasStoreRoom,
+    r.Name as RegionName,
+    ISNULL(q.Name, '') + ' / ' + ra.Name as ParentName,
+    i.address,
+    ISNULL(img.ImageCount, 0) as ImageCount,
+    s.Price,
+    s.CreatedAt
+FROM dbo.RealEstates s WITH (NOLOCK)
+INNER JOIN dbo.Categories c WITH (NOLOCK) ON c.id = s.CategoryId
+LEFT JOIN dbo.Regions r WITH (NOLOCK) ON r.id = s.RegionId
+LEFT JOIN dbo.Regions ra WITH (NOLOCK) ON ra.id = r.ParentId
+LEFT JOIN dbo.Regions q WITH (NOLOCK) ON q.id = ra.ParentId
+OUTER APPLY (
+    SELECT TOP 1 address as Address
+    FROM dbo.images i WITH (NOLOCK)
+    WHERE i.RealEstateId = s.id 
+    AND i.isbanner = 1
+    ORDER BY i.id
+) i
+LEFT JOIN (
+    SELECT RealEstateId, COUNT(*) as ImageCount
+    FROM dbo.images WITH (NOLOCK)
+    GROUP BY RealEstateId
+) img ON img.RealEstateId = s.id
+WHERE s.RegionId = @regionId
+and s.CategoryId=@categoryId
+and s.id !=@RealEstateId
+ORDER BY s.Id DESC";
+
+                var parameters = new { RealEstateId = realEstateId };
+
+                var result = await _connection.QueryAsync<RealEstateWithCategoryDto>(
+                    query,
+                    parameters,
+                    commandTimeout: 5,
+                    commandType: CommandType.Text);
+
+                return result.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت املاک برای realEstateId: {RealEstateId}", realEstateId);
+                return new List<RealEstateWithCategoryDto>();
+            }
+        }
+
+
+
+
+        public async Task<List<RealEstateWithCategoryDto>> GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync(
+       
+            CancellationToken cancellationToken = default)
+        {
+        
+            try
+            {
+                var query = @"
+
+
+SELECT TOP 10
+    s.id,
+    s.ConstructionYear,
+    s.CountFloor,
+    s.Title,
+    s.AdditionalInformation,
+    s.IsHasElevator,
+    s.IsHasParking,
+    s.IsHasPool,
+    s.IsHasStoreRoom,
+    r.Name as RegionName,
+    ISNULL(q.Name, '') + ' / ' + ra.Name as ParentName,
+    i.address,
+    ISNULL(img.ImageCount, 0) as ImageCount,
+    s.Price,
+    s.CreatedAt
+FROM dbo.RealEstates s WITH (NOLOCK)
+INNER JOIN dbo.Categories c WITH (NOLOCK) ON c.id = s.CategoryId
+LEFT JOIN dbo.Regions r WITH (NOLOCK) ON r.id = s.RegionId
+LEFT JOIN dbo.Regions ra WITH (NOLOCK) ON ra.id = r.ParentId
+LEFT JOIN dbo.Regions q WITH (NOLOCK) ON q.id = ra.ParentId
+OUTER APPLY (
+    SELECT TOP 1 address as Address
+    FROM dbo.images i WITH (NOLOCK)
+    WHERE i.RealEstateId = s.id 
+    AND i.isbanner = 1
+    ORDER BY i.id
+) i
+LEFT JOIN (
+    SELECT RealEstateId, COUNT(*) as ImageCount
+    FROM dbo.images WITH (NOLOCK)
+    GROUP BY RealEstateId
+) img ON img.RealEstateId = s.id
+
+
+ORDER BY s.Id DESC";
+
+                var parameters = new {};
+
+                var result = await _connection.QueryAsync<RealEstateWithCategoryDto>(
+                    query,
+                    parameters,
+                    commandTimeout: 5,
+                    commandType: CommandType.Text);
+
+                return result.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت املاک برای realEstateId: {RealEstateId}");
+                return new List<RealEstateWithCategoryDto>();
+            }
+        }
 
 
 

@@ -7,6 +7,7 @@ using JWTApi.Application.Services.Categories;
 using JWTApi.Application.Services.Posts;
 using JWTApi.Application.Services.RealEstatesApplications;
 using JWTApi.Application.Services.RealEstateses;
+using JWTApi.Domain.Dtos.RealEstate;
 using JWTApi.Domain.Entities;
 using JWTApi.Domain.Interfaces.Wallets;
 using JWTApi.Domain.Shared;
@@ -83,8 +84,9 @@ namespace JWTApi.Api.Controllers
         [PublicEndpoint]
         public async Task<IActionResult> GetLastItems([FromQuery] FilterRealEstateDto filter)
         {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
             //var result = await _realEstatesService.GetRandomLastItemRealEstatesWithCategoryAsync(filter.TabId,filter.PageNumber,filter.PageSize);
-            var result=await _realEstatesService.GetFilteredRealEstatesWithCategoryFilterAsync(filter);
+            var result=await _realEstatesService.GetFilteredRealEstatesWithCategoryFilterAsync(filter, userId);
             return ResponseApi.Ok(result).ToHttpResponse();
         }
         [HttpGet("GetRealStateMap")]
@@ -444,6 +446,44 @@ int pageSize = 10)
             return ResponseApi.Ok(result).ToHttpResponse();
 
         }
+        [HttpPost("UpdateViewCount")]
+        [PublicEndpoint]
+        [AllowedOrigins]
+        public async Task<IActionResult> UpdateViewCount([FromBody] int id, CancellationToken cancellationToken)
+        {
+
+
+            await _realEstatesService.UpdateViewCount(id, cancellationToken);
+
+            return ResponseApi.Ok().ToHttpResponse();
+
+        }
+
+
+        [HttpPost("GetRandomLastItemRealEstatesWithSimpleAsync")]
+        [PublicEndpoint]
+        public async Task<IActionResult> GetRandomLastItemRealEstatesWithSimpleAsync([FromBody] int id)
+        {
+
+
+            var result = await _realEstatesService.GetRandomLastItemRealEstatesWithSimpleAsync(id);
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+
+        [HttpPost("GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync")]
+        [PublicEndpoint]
+        public async Task<IActionResult> GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync()
+        {
+
+
+            var result = await _realEstatesService.GetRandomLastItemRealEstatesWithTabIdVipSimpleAsync();
+
+            return ResponseApi.Ok(result).ToHttpResponse();
+
+        }
+
 
 
     }

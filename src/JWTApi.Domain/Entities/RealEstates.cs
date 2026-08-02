@@ -46,6 +46,7 @@ namespace JWTApi.Domain.Entities
         public string Address { get; set; }
         public bool IsShowLocation { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
+        public int CountView { get; set; }
         public RealEstateStatusEnum  Status { get; set; }
         public DocumentTypeEnum DocumentType { get; set; }
         public Category Category { get; set; } = default!;

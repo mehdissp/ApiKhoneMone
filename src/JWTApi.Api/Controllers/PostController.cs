@@ -168,7 +168,7 @@ namespace JWTApi.Api.Controllers
 
         [HttpPost("UpdateViewCount")]
         [PublicEndpoint]
-        [AllowedOrigins("http://localhost:3000", "https://localhost:3000")]
+        [AllowedOrigins]
         public async Task<IActionResult> UpdateViewCount([FromBody] int id, CancellationToken cancellationToken)
         {
 
