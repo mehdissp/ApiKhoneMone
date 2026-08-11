@@ -574,6 +574,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "JWTApi.Api.Controllers.PdfController",
+    "Method": "GeneratePropertyPdf",
+    "RelativePath": "api/Pdf/GeneratePropertyPdf",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "JWTApi.Api.Controllers.PostController",
     "Method": "ClearTempImage",
     "RelativePath": "api/Post/ClearTempImage",

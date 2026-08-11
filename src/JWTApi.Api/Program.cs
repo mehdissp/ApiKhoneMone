@@ -301,6 +301,7 @@ using JWTApi.Infrastructure.Repositories.Stories;
 using JWTApi.Infrastructure.Repositories.TokenBlacklist;
 using JWTApi.Infrastructure.Repositories.Wallets;
 using JWTApi.Infrastructure.Services;
+using JWTApi.Services.Pdf;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -429,6 +430,7 @@ static void ConfigureDependencies(WebApplicationBuilder builder)
     builder.Services.AddScoped<StoryService>();
     builder.Services.AddScoped<PostsServices>();
     builder.Services.AddScoped<RealEstatesApplicationsServices>();
+    builder.Services.AddScoped<IPdfGeneratorService, PdfGeneratorService>();
     // اگر می‌خواهید به صورت Singleton استفاده کنید (توصیه می‌شود برای کش)
     builder.Services.AddScoped<OtpSecurityService>();
     builder.Services.AddScoped<RoleService>();
