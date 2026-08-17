@@ -75,6 +75,28 @@ public class UserService
         return (true, "عملیات با موفقبت انجام شد");
     }
 
+    public async Task<(bool Success, string Message)> RegisterRealEstateAgentAsync(RegisterRealEstateAgent dto, CancellationToken cancellationToken)
+    {
+        if (await _userRepo.GetByUsernameAsync(dto.UserName, cancellationToken) != null)
+            return (false, "User already exists");
+        if (await _userRepo.checkMobileDublicated(dto.MobileNumber, cancellationToken) == true)
+            return (false, "MobileNumber already exists");
+        if (!NationalCodeValidator.IsValidNationalCode(dto.NationalCode))
+            return (false, "کدملی اشتباه");
+
+        User user = new User();
+        user.createIndepent(dto.UserName, dto.FullName, dto.FullName, dto.NationalCode, dto.MobileNumber, true, 1, dto.CodeMoaref);
+        RealEstateAgentProfile profile = new RealEstateAgentProfile();
+        
+        user.SetPassword(_hasher.HashPassword(user, dto.PassWord));
+        profile.CreateRealEstateAgentProfile(user.Id, dto.AgentCode, dto.NationalCartNumber, dto.OfficeAddress, dto.LicenseNumber, dto.LicenseExpiryDate, 5, 0, 0, 0);
+        await _userRepo.AddUserRealEstateAgent(user, profile, cancellationToken);
+   
+        await _WalletRepository.CreateWalletIndepentAsync(user.Id);
+        await _unit.SaveChanges(cancellationToken);
+        return (true, "عملیات با موفقبت انجام شد");
+    }
+
     public async Task<(bool Success, string Message)> UpdateUserAsync(UpdateNewUserDto dto, string userId, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(dto.UserId, out Guid userGuidId))

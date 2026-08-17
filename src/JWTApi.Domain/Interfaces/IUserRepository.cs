@@ -44,6 +44,7 @@ namespace JWTApi.Domain.Interfaces
 
         Task<UserForSite> GetUserForSite(string userId, CancellationToken cancellationToken);
         Task<List<IndependentAgentDtos>> GetIndependentAgent(CancellationToken cancellationToken);
+        Task AddUserRealEstateAgent(User user, RealEstateAgentProfile realEstateAgentProfile, CancellationToken cancellationToken);
 
     }
 }

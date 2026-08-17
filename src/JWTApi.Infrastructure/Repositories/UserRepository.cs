@@ -208,7 +208,44 @@ namespace JWTApi.Infrastructure.Repositories
             }
         }
 
+        public async Task AddUserRealEstateAgent(User user,RealEstateAgentProfile realEstateAgentProfile, CancellationToken cancellationToken)
+        {
+            // 1. تبدیل شناسه‌ها به Guid
 
+            var roleGuid = await _context.Roles.Where(s => s.TypeRole == 1).Select(s => s.Id).FirstAsync();
+
+
+            // 3. استفاده از تراکنش برای عملیات اتمیک
+            using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+            try
+            {
+                // 4. افزودن کاربر جدید
+
+                await _context.Users.AddAsync(user, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                // 5. اختصاص نقش به کاربر
+                var userRole = new UserRole
+                {
+                    UserId = user.Id, // فرض می‌کنیم User.Id خودکار تولید می‌شود
+                    RoleId = roleGuid
+                };
+                realEstateAgentProfile.UserId = user.Id;
+                await _context.RealEstateAgentProfiles.AddAsync(realEstateAgentProfile);
+
+                await _context.UserRoles.AddAsync(userRole, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                // 6. تأیید تراکنش
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
         //public async Task UpdateUser(string userId,string fullName,string password,string userName,string mobileNumber,bool isActive,bool isChangePasssword,CancellationToken cancellationToken)
         //   {
         //       var user = await GetByUserIdAsync(userId, cancellationToken);

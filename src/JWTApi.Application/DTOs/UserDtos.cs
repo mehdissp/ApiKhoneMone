@@ -14,7 +14,7 @@ namespace JWTApi.Application.DTOs
 
     public record RegisterRealEstateAgent(string UserName, string MobileNumber,
     string PassWord, string FullName, string CodeMoaref, string NationalCode,string AgentCode,string NationalCartNumber
-        ,string OfficeAddress,string LicenseNumber,string LicenseExpiryDate
+        ,string OfficeAddress,string LicenseNumber,DateTime LicenseExpiryDate
         , string CaptchaId
     , string CaptchaInput
     );

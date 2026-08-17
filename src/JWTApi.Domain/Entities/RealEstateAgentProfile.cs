@@ -32,5 +32,23 @@ namespace JWTApi.Domain.Entities
 
         // لیست مشاوران املاکی که این شخص ثبت کرده
         public virtual ICollection<User> RegisteredAgents { get; set; } = new List<User>();
+
+        public void CreateRealEstateAgentProfile(Guid userId,string agentCode,string nationalCartNumber,string officeAddress,string licenseNumber,DateTime licenseExpiryDate
+            ,int max,int currentSubAgentsCount,int agentRank,decimal successFee)
+        {
+            UserId = userId;
+            AgentCode = agentCode;
+            NationalCartNumber = nationalCartNumber;
+            OfficeAddress = officeAddress;
+            LicenseNumber = licenseNumber;
+            LicenseExpiryDate = licenseExpiryDate;
+            MaxSubAgents = max;
+            CurrentSubAgentsCount = currentSubAgentsCount;
+            AgentRank = agentRank;
+            SuccessFee = successFee;
+
+                
+
+        }
     }
 }

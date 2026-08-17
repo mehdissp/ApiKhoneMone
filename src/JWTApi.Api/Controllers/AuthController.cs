@@ -574,6 +574,7 @@ namespace JWTApi.API.Controllers
         }
 
         [HttpPost("registerNewUserRealEstateAgent")]
+        [PublicEndpoint]
         public async Task<IActionResult> registerNewUserRealEstateAgent(RegisterRealEstateAgent dto, CancellationToken cancellationToken)
         {
             // **چک کپچا اولویت اول**
@@ -592,7 +593,7 @@ namespace JWTApi.API.Controllers
 
             // حالا ثبت‌نام انجام شود
             var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-            //var (success, message) = await _userService.RegisterIndependentAsync(dto, cancellationToken);
+            var (success, message) = await _userService.RegisterRealEstateAgentAsync(dto, cancellationToken);
             return ResponseApi.Ok("").ToHttpResponse();
 
             //return success
