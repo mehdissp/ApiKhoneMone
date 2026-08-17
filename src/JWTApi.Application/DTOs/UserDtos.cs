@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 namespace JWTApi.Application.DTOs
 {
     public record RegisterDto(string Username, string Email, string Password);
-    public record RegisterRealEstateAgent(string UserName,string MobileNumber,
+    public record RegisterIndepentAgent(string UserName,string MobileNumber,
         string PassWord,string FullName,string CodeMoaref,string NationalCode, string CaptchaId
         , string CaptchaInput
         );
+
+    public record RegisterRealEstateAgent(string UserName, string MobileNumber,
+    string PassWord, string FullName, string CodeMoaref, string NationalCode,string AgentCode,string NationalCartNumber
+        ,string OfficeAddress,string LicenseNumber,string LicenseExpiryDate
+        , string CaptchaId
+    , string CaptchaInput
+    );
     public record RegisterNewUserDto(string Username, string Email, string Password,bool IsActive,string MobileNumber,string fullname,string RoleId);
     public record UpdateNewUserDto(string UserId,string RoleId,string Username, string? Email,
         string? Password, bool IsActive, 

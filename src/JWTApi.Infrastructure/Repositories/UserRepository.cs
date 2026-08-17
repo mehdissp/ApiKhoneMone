@@ -187,7 +187,14 @@ namespace JWTApi.Infrastructure.Repositories
                     UserId = user.Id, // فرض می‌کنیم User.Id خودکار تولید می‌شود
                     RoleId = roleGuid
                 };
+                IndependentAgentProfile realEstateAgentProfile = new IndependentAgentProfile()
+                {
+                    RegisteredAt = DateTime.Now,
+                    BusinessLicense = "0",
+                    UserId = user.Id,
 
+                };
+                await _context.IndependentAgentProfiles.AddAsync(realEstateAgentProfile, cancellationToken);
                 await _context.UserRoles.AddAsync(userRole, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
 

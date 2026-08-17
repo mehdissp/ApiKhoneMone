@@ -548,7 +548,7 @@ namespace JWTApi.API.Controllers
 
         // سرویس یا متد ثبت‌نام تغییر یافته
         [HttpPost("registerNewUserIndependent")]
-        public async Task<IActionResult> registerNewUserIndependent(RegisterRealEstateAgent dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> registerNewUserIndependent(RegisterIndepentAgent dto, CancellationToken cancellationToken)
         {
             // **چک کپچا اولویت اول**
             if (!_memoryCache.TryGetValue(dto.CaptchaId, out string correctCode))
@@ -571,6 +571,33 @@ namespace JWTApi.API.Controllers
             return success
                 ? ResponseApi.Ok(message).ToHttpResponse()
                 : BadRequest(message);
+        }
+
+        [HttpPost("registerNewUserRealEstateAgent")]
+        public async Task<IActionResult> registerNewUserRealEstateAgent(RegisterRealEstateAgent dto, CancellationToken cancellationToken)
+        {
+            // **چک کپچا اولویت اول**
+            if (!_memoryCache.TryGetValue(dto.CaptchaId, out string correctCode))
+            {
+                return BadRequest(new { error = "captcha_expired", message = "کپچا منقضی شده است" });
+            }
+
+            if (!string.Equals(correctCode, dto.CaptchaInput, StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { error = "captcha_invalid", message = "کد کپچا اشتباه است" });
+            }
+
+            // حذف کپچا از کش بعد از استفاده (مهم!)
+            _memoryCache.Remove(dto.CaptchaId);
+
+            // حالا ثبت‌نام انجام شود
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            //var (success, message) = await _userService.RegisterIndependentAsync(dto, cancellationToken);
+            return ResponseApi.Ok("").ToHttpResponse();
+
+            //return success
+            //    ? ResponseApi.Ok(message).ToHttpResponse()
+            //    : BadRequest(message);
         }
 
     }

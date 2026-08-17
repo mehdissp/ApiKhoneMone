@@ -171,6 +171,22 @@
     "Parameters": [
       {
         "Name": "dto",
+        "Type": "JWTApi.Application.DTOs.RegisterIndepentAgent",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.API.Controllers.AuthController",
+    "Method": "registerNewUserRealEstateAgent",
+    "RelativePath": "api/Auth/registerNewUserRealEstateAgent",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
         "Type": "JWTApi.Application.DTOs.RegisterRealEstateAgent",
         "IsRequired": true
       }

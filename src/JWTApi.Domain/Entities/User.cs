@@ -76,8 +76,12 @@ namespace JWTApi.Domain.Entities
             Name= name;
             Role = (UserRoleType)role;
             CodeMoaref= codeMoaref;
+            
 
         }
+
+   
+
 
         public User(string username, string email)
         {

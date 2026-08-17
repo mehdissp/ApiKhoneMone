@@ -31,17 +31,27 @@ namespace JWTApi.Infrastructure.Repositories.Wallets
         {
             try
             {
+                var getRole = await _context.UserRoles.Where(s => s.UserId == userId).FirstOrDefaultAsync();
+                int balance = 0;
+                if (getRole.RoleId.ToString() == "2C0C91C9-AF94-4D93-8875-D3BE8FE7F73C")
+                {
+                    balance = 150000;
+                }
+                if (getRole.RoleId.ToString() == "0B0FFF66-D17E-4958-BB1C-AE38A9EB7270")
+                {
+                    balance = 550000;
+                }
                 // چک کردن وجود کیف پول
                 var existing = await _context.Wallets
                     .FirstOrDefaultAsync(w => w.UserId == userId);
 
                 if (existing != null)
                     return WalletResult.Error("کیف پول قبلاً ایجاد شده است");
-
+            
                 var wallet = new Wallet
                 {
                     UserId = userId,
-                    Balance = 150000,
+                    Balance = balance,
                     PendingBalance = 0,
                     Currency = "IRI",
                     IsActive = true

@@ -57,7 +57,7 @@ public class UserService
         return (true, "User created successfully");
     }
 
-    public async Task<(bool Success, string Message)> RegisterIndependentAsync(RegisterRealEstateAgent dto, CancellationToken cancellationToken)
+    public async Task<(bool Success, string Message)> RegisterIndependentAsync(RegisterIndepentAgent dto, CancellationToken cancellationToken)
     {
         if (await _userRepo.GetByUsernameAsync(dto.UserName, cancellationToken) != null)
             return (false, "User already exists");
