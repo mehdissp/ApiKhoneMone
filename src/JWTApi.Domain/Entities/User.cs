@@ -40,6 +40,7 @@ namespace JWTApi.Domain.Entities
         public int FailedOtpAttempts { get; private set; } = 0;
         public DateTime? LastOtpRequestTime { get; private set; }
         public DateTime? OtpLockUntil { get; private set; } // قفل درخواست OTP تا زمان مشخص
+        
 
         public virtual RealEstateAgentProfile? RealEstateAgentProfile { get; set; }
 
@@ -56,7 +57,9 @@ namespace JWTApi.Domain.Entities
         public ICollection<ProjectUser> ProjectUsers { get; set; } = new List<ProjectUser>();
         public ICollection<RealEstates> RealEstates { get; set; } = new List<RealEstates>();
         public ICollection<RealEstatesApplicants> RealEstatesApplicants { get; set; } = new List<RealEstatesApplicants>();
+        public ICollection<VerificationShahkar> VerificationShahkars { get; set; } = new List<VerificationShahkar>();
 
+        
 
         // Navigation Properties (رابطه یک به چند با پست)
         public ICollection<Post> Posts { get; set; }

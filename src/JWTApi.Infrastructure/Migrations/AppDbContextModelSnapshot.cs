@@ -9854,6 +9854,51 @@ namespace JWTApi.Infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.VerificationShahkar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("Cost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("FeeReceived")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("MobileNumber")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("NationalCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("TimeRequest")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NationalCode")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("VerificationShahkars", (string)null);
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.Violation", b =>
                 {
                     b.Property<int>("Id")
@@ -10444,6 +10489,17 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JWTApi.Domain.Entities.VerificationShahkar", b =>
+                {
+                    b.HasOne("JWTApi.Domain.Entities.User", "User")
+                        .WithMany("VerificationShahkars")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JWTApi.Domain.Entities.Violation", b =>
                 {
                     b.HasOne("JWTApi.Domain.Entities.RealEstates", "RealEstates")
@@ -10625,6 +10681,8 @@ namespace JWTApi.Infrastructure.Migrations
                     b.Navigation("UserPackages");
 
                     b.Navigation("UserRoles");
+
+                    b.Navigation("VerificationShahkars");
 
                     b.Navigation("Wallet")
                         .IsRequired();

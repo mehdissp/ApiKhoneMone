@@ -75,6 +75,7 @@ namespace JWTApi.Infrastructure.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Post_Tags> Post_Tags { get; set; }
+        public DbSet<VerificationShahkar> VerificationShahkars { get; set; }
 
         
 
@@ -85,7 +86,39 @@ namespace JWTApi.Infrastructure.Data
             modelBuilder.Entity<Attachment>()
     .HasKey(d => d.Id);
 
+            // ============ پیکربندی VerificationShahkar (مهم‌ترین جدول) ============
+            modelBuilder.Entity<VerificationShahkar>(entity =>
+            {
+                entity.ToTable("VerificationShahkars");
+                entity.HasKey(e => e.Id);
 
+                entity.Property(e => e.MobileNumber)
+                      .IsRequired()
+                      .HasMaxLength(11);
+
+                entity.Property(e => e.NationalCode)
+                      .IsRequired()
+                      .HasMaxLength(10);
+
+
+                entity.Property(e => e.TimeRequest).HasDefaultValueSql("GETUTCDATE()");
+
+
+                entity.HasIndex(e => e.NationalCode)
+                      .IsUnique();
+
+           
+
+                // ====== تعیین روابط با Fluent API ======
+                // رابطه Post با User (هر پست یک نویسنده دارد)
+                entity.HasOne(p => p.User)
+                      .WithMany(u => u.VerificationShahkars)
+                      .HasForeignKey(p => p.UserId)
+                      .OnDelete(DeleteBehavior.Restrict); // جلوگیری از حذف نویسنده‌ای که پست دارد
+
+                // رابطه Post با Category (هر پست یک دسته دارد)
+       
+            });
             modelBuilder.Entity<Image>(b =>
             {
                 b.HasKey(x => x.Id);

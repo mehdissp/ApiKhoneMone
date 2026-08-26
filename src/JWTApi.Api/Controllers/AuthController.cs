@@ -594,11 +594,11 @@ namespace JWTApi.API.Controllers
             // حالا ثبت‌نام انجام شود
             var userId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
             var (success, message) = await _userService.RegisterRealEstateAgentAsync(dto, cancellationToken);
-            return ResponseApi.Ok("").ToHttpResponse();
+            //return ResponseApi.Ok("").ToHttpResponse();
 
-            //return success
-            //    ? ResponseApi.Ok(message).ToHttpResponse()
-            //    : BadRequest(message);
+            return success
+                ? ResponseApi.Ok(message).ToHttpResponse()
+                : BadRequest(message);
         }
 
     }

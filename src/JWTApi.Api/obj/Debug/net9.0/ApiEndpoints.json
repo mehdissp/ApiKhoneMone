@@ -1679,5 +1679,26 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "JWTApi.Api.Controllers.VerificationController",
+    "Method": "VerficationShahkarLite",
+    "RelativePath": "api/Verification/VerficationShahkarLite",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mobileNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "nationalCode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
